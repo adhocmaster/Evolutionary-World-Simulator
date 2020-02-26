@@ -1,0 +1,1 @@
+"""This helps to create common actions and keep them consistent."""

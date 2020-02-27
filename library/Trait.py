@@ -7,3 +7,17 @@ class Trait:
         self.defensiveActions = defensiveActions
 
         pass
+
+
+    def __str__(self):
+
+        actions = [str(action) for action in self.actions]
+        offensiveActions = [str(action) for action in self.offensiveActions]
+        defensiveActions = [str(action) for action in self.defensiveActions]
+
+        return f"""
+        name: {self.name}
+        actions: {actions}
+        offensiveActions: {offensiveActions}
+        defensiveActions: {defensiveActions}
+        """

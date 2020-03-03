@@ -61,3 +61,11 @@ Plants cannot encounter animals. But they can consume resources available in the
 # Agents
 Agents cannot change their strategy? Because agents are strategies. Or should we model strategies seperately and at any point agent shares denote strategy shares? If we model strategy seperately, there can be interesting results.
 
+# Perceptions
+Now comes the hardest part. How do we model perceptions and perception strategies?
+
+1. Perception of resources
+2. Perception of need
+3. Perception of other agents
+4. How doe perception evolves? Evolution of perception? Where is the limitation of EvG?+
+

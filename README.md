@@ -5,9 +5,12 @@ Reward, u  = f(state, action, encounter) where encounter might be null
 
 # Actions vs PowerActions
 
-Actions are non-encounter actions. When two agents encounters each other, their power actions come into play. We can devise a whole new plan how power actions be simulated. Currently power actions have different kinds of powers and defence against them. So, if an agent has no defence against a power, it loses health.
+Actions are non-encounter actions. When two agents encounters each other, their power actions come into play. We can devise a whole new plan how power actions be simulated. Currently power actions have different kinds of powers and defence against them. So, if an agent has no defence against an offensive, it loses health.
 
 health = health - power + defense
+
+## Move Action
+Different species move in different speed. So, each move action needs to define the speed at which an agent can move. In a grid world the unit is a cell.
 
 # Simple simulation of encounters
 

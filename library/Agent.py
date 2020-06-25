@@ -16,6 +16,7 @@ class Agent(ABC):
 
         self.inventory = inventory # a dictionary of inventory where keys are resource types and values are amount
         self.rules = rules # keys are types of rules
+        self.history =
         
         self.populateActions()
         self.populatePowerActions()

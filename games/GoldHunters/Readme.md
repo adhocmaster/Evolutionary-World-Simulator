@@ -12,7 +12,7 @@ There will be a grid world. Agents need to explore the world and collect golds. 
 9. How will an agent know if another agent is a digger or a robber.
 10. a gold resource has an amount of gold. A digger has a higher speed and efficiency of collecting golds than a robber. Efficiency = % of gold they can collect from a resource.
 11. A robber can choose to dig of find a digger and wait for them to dig.
-12. There will be many robbers and diggers in the world. 
+12. There will be many robbers and diggers in the world. Both must be dependent on each other some way.
 13. Goals:
     1. Per run: maximum yield per agent, overall production
     2. Evolution: find strategies for each agent that can ensure stability of an optimal production rate. Production rate = total yield per run.
@@ -34,3 +34,9 @@ There will be a grid world. Agents need to explore the world and collect golds. 
 16. Utility functions:
     1. UtilityRobber(state, action). Each cell around the robber may have a gold resource, a digger, a robber,  or nothing. If there is a digger(which the robber cannot be sure about), robber has to estimate how much gold can they get from robbery. They can make a prediction based on number of turns played, probability of identifying diggers correctly, 
 
+17. Changing strategies:
+    1. If the production rate of a digger falls below a threshold, it changes strategy
+    2. If the a digger cannot find any gold in n consequtive turns, it can become a robber.
+    3. If a robber cannot find diggers for n consequtive turns, it can become a digger.
+    4. Gold in the world can be depleted and regenerated. 
+    5. So, if there are too much gold in the world, everyone may become a digger, and if gold is scared everyone may become a robber.

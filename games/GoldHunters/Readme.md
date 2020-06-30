@@ -39,5 +39,7 @@ There will be a grid world. Agents need to explore the world and collect golds. 
     2. If the a digger cannot find any gold in n consequtive turns, it can become a robber.
     3. If a robber cannot find diggers for n consequtive turns, it can become a digger.
     4. Gold in the world can be depleted and regenerated. 
-    5. So, if there are too much gold in the world, everyone may become a digger, and if gold is scared everyone may become a robber.
+    5. So, if there are too much gold in the world, everyone may become a digger, and if gold is scarce everyone may become a robber.
     6. Should the agents assume other agents are rational? How do we model intelligence.
+
+18. Encounter: If more than one agent is moving to a new cell, we need to order the actions. For example, if two are moving to the same cell, one will call the encounter function because that updates states of both the agents.

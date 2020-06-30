@@ -4,6 +4,7 @@ from library.PowerType import PowerType
 class Action(ABC):
 
     def __init__(self, name, powerType:PowerType=None, power:int=0):
+        
         self.name = name
         self.powerType = powerType
         self.power = power  

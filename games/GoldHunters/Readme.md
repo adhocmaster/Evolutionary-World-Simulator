@@ -40,3 +40,4 @@ There will be a grid world. Agents need to explore the world and collect golds. 
     3. If a robber cannot find diggers for n consequtive turns, it can become a digger.
     4. Gold in the world can be depleted and regenerated. 
     5. So, if there are too much gold in the world, everyone may become a digger, and if gold is scared everyone may become a robber.
+    6. Should the agents assume other agents are rational? How do we model intelligence.

@@ -2,7 +2,18 @@ from abc import ABC, abstractmethod
 
 class Agent(ABC):
 
-    def __init__(self, type, id, health, age=0, populationContribution = 1, initialTraits ={}, inventory={}, rules={}):
+    def __init__(
+            self, 
+            type, 
+            id, 
+            health, 
+            age=0, 
+            populationContribution = 1, 
+            initialTraits ={}, 
+            inventory={}, 
+            rules={}
+        ):
+
         self.type = type
         self.id = id
         self.health = health
@@ -16,10 +27,11 @@ class Agent(ABC):
 
         self.inventory = inventory # a dictionary of inventory where keys are resource types and values are amount
         self.rules = rules # keys are types of rules
-        self.history =
+        self.history = {}
         
         self.populateActions()
         self.populatePowerActions()
+
         pass
 
 

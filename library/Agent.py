@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
+from library.Object import Object
 
-class Agent(ABC):
+class Agent(Object):
 
     def __init__(
             self, 
@@ -14,6 +15,8 @@ class Agent(ABC):
             rules={},
             otherProperties = {}
         ):
+
+        super(id, type)
 
         self.type = type
         self.id = id

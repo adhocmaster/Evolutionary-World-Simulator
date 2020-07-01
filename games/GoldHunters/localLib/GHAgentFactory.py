@@ -1,13 +1,12 @@
 from library.AgentFactory import AgentFactory
-from localLib.GoldHungerAgent import GoldHunterAgent
+from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
 
 GHAgentConfig = {
 
     'diggerEfficiency': 0.8,
     'diggerDiggingRate': 10,
-    'robberEfficiency': 0.8,
-    'robberDiggingRate': 10,
-
+    'robberEfficiency': 0.2,
+    'robberDiggingRate': 5,
 
 }
 

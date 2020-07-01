@@ -18,7 +18,7 @@ class GameHunters(Game):
 
         pass
 
-    def run(timesToRun = 1000):
+    def run(self, timesToRun = 1000):
         # run the loop for timesToRun times
 
         pass

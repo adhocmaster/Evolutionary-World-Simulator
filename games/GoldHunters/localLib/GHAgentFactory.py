@@ -20,8 +20,8 @@ class GHAgentFactory(AgentFactory):
     
     def create(self, type, id, efficiency, diggingRate):
         agent = GoldHunterAgent(type = type, id = id)
-        agent.setToOtherProperties('efficiency', efficiency)
-        agent.setToOtherProperties('diggingRate', diggingRate)
+        agent.setToOtherProperties('efficiency', efficiency) # TODO replace with GoldHunterAgent method
+        agent.setToOtherProperties('diggingRate', diggingRate) # TODO replace with GoldHunterAgent method
         return agent
 
     

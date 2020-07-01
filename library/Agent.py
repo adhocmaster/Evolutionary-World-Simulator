@@ -6,12 +6,13 @@ class Agent(ABC):
             self, 
             type, 
             id, 
-            health, 
+            health=1, 
             age=0, 
             populationContribution = 1, 
             initialTraits ={}, 
             inventory={}, 
-            rules={}
+            rules={},
+            otherProperties = {}
         ):
 
         self.type = type
@@ -20,6 +21,7 @@ class Agent(ABC):
         self.age =age
         self.populationContribution = populationContribution
         self.traits = initialTraits
+        self.otherProperties = otherProperties
 
         self.actions = []
         self.offensiveActions = []
@@ -29,10 +31,14 @@ class Agent(ABC):
         self.rules = rules # keys are types of rules
         self.history = {}
         
-        self.populateActions()
-        self.populatePowerActions()
+        self.reloadTraits()
 
         pass
+
+    
+    def reloadTraits(self):
+        self.populateActions()
+        self.populatePowerActions()
 
 
     def populateActions(self):
@@ -53,4 +59,62 @@ class Agent(ABC):
 
         pass
 
+
+    def addToInventory(self, key, value):
+
+        if key in self.inventory:
+            self.inventory[key] = self.inventory[key] + value
+        else:
+            self.updateInventory(key, value)
+
+        pass
+
+
+    def updateInventory(self, key, value):
+        self.inventory[key] = value
+
+
+    def removeFromInventory(self, key):
+        self.inventory.pop(self)
+
     
+    def getFromInventory(self, key):
+        if key in self.inventory:
+            return self.inventory[key]
+        else:
+            raise Exception(f'No such item in inventory with key {key}')
+        pass
+
+
+    def addTrait(self, trait):
+        self.traits[trait.name] = trait
+        self.reloadTraits()
+        pass
+
+
+    def removeTrait(self, trait):
+        self.traits.pop(trait.name)
+        self.reloadTraits()
+        pass
+
+
+    def removeTraitByName(self, name):
+        self.traits.pop(name)
+        self.reloadTraits()
+        pass
+
+    
+    def setToOtherProperties(self, key, value):
+        self.otherProperties[key] = value
+        pass
+
+    
+    def getFromOtherProperties(self, key):
+        if key in self.otherProperties:
+            return self.otherProperties
+        else:
+            raise Exception(f'No such item in otherProperties with key {key}')
+        pass
+
+
+

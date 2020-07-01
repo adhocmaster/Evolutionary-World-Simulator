@@ -9,12 +9,27 @@ class World(ABC):
         self.nodes = {} # each node is a possible location in the world.
         pass
 
+
+    def __str__(self):
+        nodeStr = ''
+        for node in self.nodes.values():
+            nodeStr = nodeStr + str(node)
+        return (
+            f"name: {self.name} \n"
+            f"state: {self.state} \n"
+            f"nodes: {nodeStr} \n"
+        )
+    
+    @abstractmethod
+    def createNodes(self):
+        pass
+
     
     def createNode(self, id, name, position):
         node = Node(id, name, position)
         self.nodes[id] = node
         pass
-    
+
 
     def getNodes(self):
         return self.nodes

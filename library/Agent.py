@@ -16,7 +16,7 @@ class Agent(Object):
             otherProperties = {}
         ):
 
-        super(id, type)
+        super().__init__(id, type)
 
         self.type = type
         self.id = id

@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
+from library.ResourceType import Resourcetype
 
 class Resource(ABC):
 
-    def __init__(self, name, quantity, type='discrete', unit='piece', reusable=False, relocatable=False):
+    def __init__(self, name, quantity, type=Resourcetype.GENERIC, unit='piece', reusable=False, relocatable=False):
         self.name = name
         self.quantity = quantity
+        self.type = type
         self.unit = unit
         self.reusable = reusable
         self.relocatable = relocatable

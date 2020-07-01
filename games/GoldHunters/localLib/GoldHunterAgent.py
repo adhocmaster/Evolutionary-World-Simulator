@@ -16,7 +16,31 @@ class GoldHunterAgent(Agent):
         pass
     
 
+    def setEfficiency(self):
+        pass
+
+
     def getDiggingRate(self):
+        pass
+
+
+    def setDiggingRate(self):
+        pass
+
+
+    def getNodeId(self):
+        pass
+
+    
+    def moveTo(self, x, y):
+        pass
+
+
+    def dig(self, gold):
+        pass
+
+
+    def rob(self, otherAgent):
         pass
 
     

@@ -3,38 +3,39 @@ from library.ResourceType import Resourcetype
 
 class GoldHunterEncounter(Encounter):
 
-    def __init__(self, agents, resourceToShare):
+    def compete(self, agents):
 
-        self.agents = agents
-        self.resourceToShare = resourceToShare
+        for i in range(len(agents)):
+
+            robbingAgent = agents[i]
+            victimAgent = agents[0]
+
+            if i < len(agents) - 1:
+                victimAgent = agents[i + 1]
+
+            robbingAgent.rob(victimAgent)
 
 
-    def compete(self):
-        #TODO implement compete method
-        pass
+    def collaborate(self, agents, resourceToShare):
 
-
-    def collaborate(self):
-
-        originalResourceQuantity = self.resourceToShare.quantity
-        totalDiggingRate = self.getTotalDiggingRate()
+        originalResourceQuantity = resourceToShare.quantity
+        totalDiggingRate = self.getTotalDiggingRate(agents)
         
-        for agent in self.agents:
+        for agent in agents:
 
             quantityToCollect = agent.getMaxGoldPerTurn()
 
             if totalDiggingRate > originalResourceQuantity:
                 quantityToCollect *= originalResourceQuantity / totalDiggingRate
 
-            agent.dig(self.resourceToShare, quantityToCollect)
+            agent.dig(resourceToShare, quantityToCollect)
 
 
-    def getTotalDiggingRate(self):
+    def getTotalDiggingRate(self, agents):
 
         totalDiggingRate = 0
 
-        for agent in self.agents:
-            
+        for agent in agents:
             totalDiggingRate += agent.getDiggingRate()
 
         return totalDiggingRate

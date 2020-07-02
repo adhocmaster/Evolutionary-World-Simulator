@@ -17,19 +17,17 @@ class GHAgentFactory(AgentFactory):
 
     def __init__(self, agentConfig = GHAgentConfig):
         self.agentConfig = agentConfig
+        pass
 
     
     def create(self, type, id, efficiency, diggingRate, strength):
-
         agent = GoldHunterAgent(type = type, id = id)
-
-        agent.setEfficiency(efficiency)
-        agent.setDiggingRate(diggingRate)
-        agent.setStrength(strength)
-        
+        agent.setToOtherProperties('efficiency', efficiency) # TODO replace with GoldHunterAgent method
+        agent.setToOtherProperties('diggingRate', diggingRate)# TODO replace with GoldHunterAgent method
+        agent.setToOtherProperties('strength', strength)# TODO replace with GoldHunterAgent method
         return agent
 
-
+    
     def buildDigger(self):
         return self.create('digger', 'NA', self.agentConfig['diggerEfficiency'], self.agentConfig['diggerDiggingRate'], self.agentConfig['diggerStrength'])
 
@@ -39,20 +37,5 @@ class GHAgentFactory(AgentFactory):
 
 
     def buildDiggers(self, numberOfDiggers = 10):
-
-        diggersMade = []
-
-        for _ in range(numberOfDiggers):
-            diggersMade.append(self.buildDigger())
-
-        return diggersMade
-
-
-    def buildRobbers(self, numberOfRobbers = 10):
-
-        robbersMade = []
-
-        for _ in range(numberOfRobbers):
-            robbersMade.append(self.buildRobber())
-
-        return robbersMade
+        # TODO
+        pass

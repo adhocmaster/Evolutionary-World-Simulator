@@ -70,30 +70,23 @@ class Agent(Object):
         else:
             self.updateInventory(key, value)
 
+        pass
+
 
     def updateInventory(self, key, value):
         self.inventory[key] = value
 
 
-    def removeFromInventory(self, key, value):
+    def removeFromInventory(self, key):
+        self.inventory.pop(self)
 
-        if key in self.inventory:
-            self.inventory[key] -= value
-            if self.inventory[key] < 0:
-                self.updateInventory(key, 0)
-        else:
-            self.updateInventory(key, 0)
     
-
     def getFromInventory(self, key):
         if key in self.inventory:
             return self.inventory[key]
         else:
             raise Exception(f'No such item in inventory with key {key}')
-
-    
-    def deleteKeyFromInventory(self, key):
-        self.inventory.pop(self)
+        pass
 
 
     def addTrait(self, trait):
@@ -121,7 +114,7 @@ class Agent(Object):
     
     def getFromOtherProperties(self, key):
         if key in self.otherProperties:
-            return self.otherProperties[key]
+            return self.otherProperties
         else:
             raise Exception(f'No such item in otherProperties with key {key}')
         pass

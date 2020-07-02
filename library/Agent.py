@@ -86,6 +86,7 @@ class Agent(Object):
     
 
     def getFromInventory(self, key):
+        
         if key in self.inventory:
             return self.inventory[key]
         else:

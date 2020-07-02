@@ -59,6 +59,7 @@ class GoldHunterAgent(Agent):
 
 
     def rob(self, otherAgent):
+        
         otherAgentGold = otherAgent.getFromInventory(Resourcetype.GOLD)
         quantityToRob = self.getStrength() - otherAgent.getStrength()
         robbingPenalty = otherAgent.getStrength() # the more the victim struggles, the more costly the robbery

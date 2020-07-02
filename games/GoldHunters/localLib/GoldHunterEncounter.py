@@ -1,6 +1,5 @@
 from library.Encounter import Encounter
 from library.ResourceType import Resourcetype
-import math
 
 class GoldHunterEncounter(Encounter):
 
@@ -11,28 +10,23 @@ class GoldHunterEncounter(Encounter):
 
 
     def compete(self):
-
+        #TODO implement compete method
         pass
 
 
     def collaborate(self):
 
         originalResourceQuantity = self.resourceToShare.quantity
-        
         totalDiggingRate = self.getTotalDiggingRate()
         
         for agent in self.agents:
 
-            agentEfficiency = agent.otherProperties['efficiency']
-            agentDiggingRate = agent.otherProperties['diggingRate']
+            quantityToCollect = agent.getMaxGoldPerTurn()
 
             if totalDiggingRate > originalResourceQuantity:
-                agentDiggingRate *= originalResourceQuantity / totalDiggingRate
-            
-            quantityToCollect  = math.floor(agentEfficiency * agentDiggingRate)
+                quantityToCollect *= originalResourceQuantity / totalDiggingRate
 
-            agent.addToInventory(Resourcetype.GOLD, quantityToCollect)
-            self.resourceToShare.dec(quantityToCollect)
+            agent.dig(self.resourceToShare, quantityToCollect)
 
 
     def getTotalDiggingRate(self):
@@ -41,7 +35,7 @@ class GoldHunterEncounter(Encounter):
 
         for agent in self.agents:
             
-            totalDiggingRate += agent.otherProperties['diggingRate']
+            totalDiggingRate += agent.getDiggingRate()
 
         return totalDiggingRate
 

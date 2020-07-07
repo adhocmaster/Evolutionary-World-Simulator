@@ -22,7 +22,7 @@ The actions available to the agent:
 
 - All agents take turns digging once from the same resource.
 - Agents with lower strength dig first.
-- If the resource runs out, agents who haven't dug yet get nothing.
+- If the resource runs out, the encounter ends.
 
 ## Competition: Weighted based on resource availability
 
@@ -37,22 +37,22 @@ The actions available to the agent:
 
 - All agents take turns digging once from the same resource.
 - Agents with higher strength dig first.
-- If the resource runs out, agents who haven't dug yet get nothing.
+- If the resource runs out, the encounter ends.
 
-## Intimidation : Unconfrontational stealing
+## Intimidation : Non-violent stealing
 
 **When to Trigger -** Multiple aggressive agents confront multiple passive agents
 
-- If the total strength of the agressive agents is over 2x that of the passive agents, all resources are stolen from the passive agents and distributed to the agressive agents based on their strength.-
- Otherwise, the encounter ends.
+- If the total strength of the agressive agents is over 2x that of the passive agents, all resources are stolen from the passive agents and distributed to the agressive agents based on their strength.
+- Otherwise, the encounter ends.
 
-## Theft : Confrontational stealing
+## Theft : Violent stealing
 
 **When to Trigger -** Multiple aggressive agents confront multiple passive agents
 
 - Aggressive agents take turns attempting to rob a random passive agent once.
 - The amount stolen is equal to (robber's strength) - (victim's strength).
-- Aggressive agent suffers penalty = victim's strength
+- Aggressive agent suffers penalty = victim's strength.
 - Stronger agents rob first.
 - Passive agents can only be robbed once.
 - Resources robbed go directly to the agent who stole it.

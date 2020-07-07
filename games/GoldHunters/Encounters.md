@@ -16,13 +16,13 @@ The actions available to the agent:
 - All agents add up their potential collection of the resource and attempt to collect that amount.
 - All collections will be pooled and distributed evenly.
 
-## Philanthropy: Weighted based on need for resource
+## Philanthropy: Weakest dig first
 
 **When to Trigger -** Multiple passive agents attempt to harvest the same resource.
 
-- All agents add up their potential collection of the resource and attempt to collect that amount.
-- All collections will be pooled and distributed based on how much resource each agent has.
-- The less resource an agent has, the more they receive.
+- All agents take turns digging once from the same resource.
+- Agents with lower strength dig first.
+- If the resource runs out, agents who haven't dug yet get nothing.
 
 ## Competition: Weighted based on resource availability
 

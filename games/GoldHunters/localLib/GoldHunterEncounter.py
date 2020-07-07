@@ -1,7 +1,21 @@
 from library.Encounter import Encounter
 from library.ResourceType import Resourcetype
+import random
 
 class GoldHunterEncounter(Encounter):
+
+
+    def rob(self, robbingAgents, victimAgents):
+
+        for robbingAgent in robbingAgents:
+            
+            if len(victimAgents) > 0:
+                
+                victimAgent = random.choice(victimAgents)
+                victimAgents.remove(victimAgent)
+
+                robbingAgent.rob(victimAgent)
+
 
     def compete(self, agents):
 

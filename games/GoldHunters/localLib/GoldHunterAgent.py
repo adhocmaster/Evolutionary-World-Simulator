@@ -56,22 +56,21 @@ class GoldHunterAgent(Agent):
 
         self.addToInventory(Resourcetype.GOLD, quantityToCollect)
         goldResource.dec(quantityToCollect)
-
-
+    
+    
     def rob(self, otherAgent):
-        
+            
         otherAgentGold = otherAgent.getFromInventory(Resourcetype.GOLD)
         quantityToRob = self.getStrength() - otherAgent.getStrength()
-        robbingPenalty = otherAgent.getStrength()       # the more the victim struggles, the more costly the robbery
+        RobingPenalty = otherAgent.getStrength()       # the more the victim struggles, the more costly the robbery
 
-        if quantityToRob < 0:
-            quantityToRob = 0
+        if (quantityToRob > 0):   # cant rob negative amount of gold
+
+            if quantityToRob > otherAgentGold:
+                quantityToRob = otherAgentGold
             
-        if quantityToRob > otherAgentGold:
-            quantityToRob = otherAgentGold
-        
-        self.addToInventory(Resourcetype.GOLD, quantityToRob)
-        otherAgent.removeFromInventory(Resourcetype.GOLD, quantityToRob)
-        self.removeFromInventory(Resourcetype.GOLD, robbingPenalty)
+            self.addToInventory(Resourcetype.GOLD, quantityToRob)
+            otherAgent.removeFromInventory(Resourcetype.GOLD, quantityToRob)
+            self.removeFromInventory(Resourcetype.GOLD, RobingPenalty)
 
     

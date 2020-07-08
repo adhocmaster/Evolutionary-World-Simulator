@@ -33,6 +33,9 @@ class GoldHunterAgent(Agent):
 
     
     def moveTo(self, x, y):
+        self.setToOtherProperties("locationX", x)
+        self.setToOtherProperties("locationY", y)
+
         pass
 
 
@@ -41,6 +44,12 @@ class GoldHunterAgent(Agent):
 
 
     def rob(self, otherAgent):
+        pass
+    
+    def getLocation(self):
+        pass
+
+    def setLocation(self):
         pass
 
     

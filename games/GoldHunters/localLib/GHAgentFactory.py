@@ -1,5 +1,5 @@
 from library.AgentFactory import AgentFactory
-from GoldHunterAgent import GoldHunterAgent
+from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
 
 GHAgentConfig = {
 

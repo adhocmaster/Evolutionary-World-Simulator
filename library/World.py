@@ -30,6 +30,9 @@ class World(ABC):
         self.nodes[id] = node
         pass
 
+    def getNode(self, id):
+        return self.nodes[id]
+
 
     def getNodes(self):
         return self.nodes

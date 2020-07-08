@@ -60,6 +60,10 @@ class GoldHunterAgent(Agent):
 
         pass
 
+    def getLocation(self):
+        x = self.getFromOtherProperties("locationX")
+        y = self.getFromOtherProperties("locationY")
+        return (x, y)
 
     def dig(self, goldResource):
         

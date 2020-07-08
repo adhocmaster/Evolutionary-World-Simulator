@@ -5,8 +5,8 @@ from library.ResourceType import Resourcetype
 class GoldResource(Resource):
     
 
-    def __init__(self, name, quantity):
-        super().__init__(name, quantity, type=Resourcetype.GOLD)
+    def __init__(self, quantity):
+        super().__init__('gold', quantity, type=Resourcetype.GOLD)
     
 
     def getQuantity(self):
@@ -25,3 +25,6 @@ class GoldResource(Resource):
             self.quantity = 0
             
         return amountDug
+
+    def use(self):
+        pass

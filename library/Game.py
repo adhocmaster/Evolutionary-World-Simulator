@@ -20,7 +20,7 @@ class Game(ABC):
 
 
     @abstractmethod
-    def create(self):
+    def init(self):
         pass
 
 

@@ -4,7 +4,7 @@ from games.GoldHunters.localLib.GHAgentFactory import GHAgentFactory
 from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
 from games.GoldHunters.localLib.GoldResource import GoldResource
 from random import randint
-class GameHunters(Game):
+class GoldHunters(Game):
     
     def __init__(self):
 
@@ -23,7 +23,7 @@ class GameHunters(Game):
         # 2. Create some agents
         self.createAgents()
         # 3. Put agents in the world (you will need to remove them from previous node, move the agent to the location and also add them to the corresponding node in the world)
-        self.putAgentsInWorld(self.world, self.agents)
+        self.putAgentsInWorld(self.agents)
         # 4. Create some gold resources
         self.createGoldResources()
         # 5. Put gold resources in the world.
@@ -38,12 +38,30 @@ class GameHunters(Game):
         self.agents = [factory.buildDigger(), factory.buildRobber()]
         pass
 
-    def putAgentsInWorld(self, gridworld, agents):
+    def putAgentsInWorld(self, agents):
         for agent in agents:
-            randomXLocation = randint(0,gridworld.size(0))
-            randomYLocation = randint(0,gridworld.size(10))
+            randomXLocation = randint(0,self.world.size[0])
+            randomYLocation = randint(0,self.world.size[1])
             agent.moveTo(randomXLocation, randomYLocation)
         pass
+
+
+    def addAgent(self, agent, newLocation):
+        oldLocation = agent.getLocation()
+        oldNode = self.world.getNodeAt(oldLocation[0], oldLocation[1])
+        oldNode.remove(agent)
+
+        agent.moveTo(newLocation[0], newLocation[1])
+
+        newNode = self.world.getNodeAt(newLocation[0], newLocation[1])
+        newNode.add(agent)
+
+        self.agents.append(agent)
+
+
+    def getAgents(self):
+        return self.agents
+
 
     def createGoldResources(self):
         self.resources = []

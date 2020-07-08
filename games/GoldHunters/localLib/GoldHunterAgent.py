@@ -1,19 +1,25 @@
+import math
+
 from library.Agent import Agent
 from library.ResourceType import Resourcetype
-import math
+
 
 class GoldHunterAgent(Agent):
 
     # needed properties:
-    # 1. efficiency : .8 means it can get a maximum of 80% of the gold
-    # 2. diggingRate: x amount per turn from a resource
+    # 1. diggingRate: maximum amount an agent can dig from the resource
+    # 2. efficiency : .8 means it can get a maximum of 80% of the gold collected, discard the other 20%
     # 3. max amount of gold per turn: efficiency * diggingRate.
 
 
     def addGold(self, amount):
         self.addToInventory('gold', amount)
 
+
+    def getGold(self):
+        return self.getFromInventory('gold')
     
+
     def getEfficiency(self):
         return self.getFromOtherProperties('efficiency')
     
@@ -39,7 +45,7 @@ class GoldHunterAgent(Agent):
 
 
     def getMaxGoldPerTurn(self):
-        return math.floor(self.getEfficiency * self.getDiggingRate)
+        return math.ceil(self.getEfficiency * self.getDiggingRate)
 
 
     def getNodeId(self):
@@ -55,10 +61,11 @@ class GoldHunterAgent(Agent):
         pass
 
 
-    def dig(self, goldResource, quantityToCollect):
-
-        self.addToInventory(Resourcetype.GOLD, quantityToCollect)
-        goldResource.dec(quantityToCollect)
+    def dig(self, goldResource):
+        
+        amountDug = goldResource.attemptToDig(self.getDiggingRate())
+        collectableAmount = math.ceil(amountDug * self.getEfficiency())
+        return collectableAmount
     
     
     def rob(self, otherAgent):
@@ -75,5 +82,3 @@ class GoldHunterAgent(Agent):
             self.addToInventory(Resourcetype.GOLD, quantityToRob)
             otherAgent.removeFromInventory(Resourcetype.GOLD, quantityToRob)
             self.removeFromInventory(Resourcetype.GOLD, RobingPenalty)
-
-    

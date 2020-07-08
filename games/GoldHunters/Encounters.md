@@ -9,6 +9,8 @@ The actions available to the agent:
 - Fight
 - Nothing
 
+All calculations for gains and losses are rounded up.
+
 ## Collaboration: Everyone receives the same amount
 
 **When to Trigger -** Multiple passive agents attempt to harvest the same resource.
@@ -44,9 +46,9 @@ The actions available to the agent:
 **When to Trigger -** Multiple aggressive agents confront multiple passive agents
 
 - If the total strength of the agressive agents is over 2x that of the passive agents, all resources are stolen from the passive agents and distributed to the agressive agents based on their strength.
-- Otherwise, the encounter ends.
+- Otherwise, the aggressive agents collectively suffer a fighting penalty = total passive agents' strength.
 
-## Theft : Violent stealing
+## Raid : Unorganized stealing of resources
 
 **When to Trigger -** Multiple aggressive agents confront multiple passive agents
 
@@ -62,19 +64,25 @@ The actions available to the agent:
 
 **When to Trigger -** Multiple aggressive agents confront multiple passive agents
 
-- Ag
-
-## Raid : Unorganized stealing of resources
-
-**When to Trigger -** Multiple aggressive agents confront multiple passive agents
-
-**Result -** 
+- The total strength of the aggressive agents is compared to the total strength of the passive agents.
+- The amount stolen is equal to (totla robbers' strength) - (total victims' strength).
+- Aggressive agents suffers penalty = total victims' strength.
+- Aggressive agents collectively steal from the total amount of gold the passive agents have.
+- Passive agents suffer losses based on the gold they have, the more gold an agent has, the more they lose.
+- Aggressive agents suffer losses based on their strength, the less strength an agent has, the more they lose.
+- Aggressive agents gain gold based on their strength, the more strength an agent has, the more they gain.
 
 ## Sabotage : Steal each other's resources
 
 **When to Trigger -** Multiple aggressive agents confront each other
 
- 
+- Agents attempt to steal from each other.
+
 ## Combat : Fight for each other's resources
 
 **When to Trigger -** Multiple aggressive agents confront each other
+
+- Agents fight each other to take all the others' gold.
+- Strongest agent "wins" half of everyone else's gold.
+- Winner recieves a fighting penalty = (average strength of other enemies) / 3.
+- Everyone else recieves a fighting penalty = (strongest enemy's strength) / 2.

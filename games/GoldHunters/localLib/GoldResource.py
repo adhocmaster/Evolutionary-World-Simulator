@@ -1,44 +1,27 @@
 from library.Resource import Resource
+from library.ResourceType import Resourcetype
+
 
 class GoldResource(Resource):
-
-    def __init__(self, quantity):
-        self.quantity = quantity
-        self.value = 3
-        self.locationX = None
-        self.locationY = None
-        pass
     
+
+    def __init__(self, name, quantity):
+        super().__init__(name, quantity, type=Resourcetype.GOLD)
+    
+
     def getQuantity(self):
         return self.quantity
 
-    def setQuantity(self, newQuantity):
-        self.quantity = newQuantity
-        pass
+        
+    def attemptToDig(self, attemptedAmount):
 
-    def getValue(self):
-        return self.value
-    
-    def setValue(self, newValue):
-        self.value = newValue
-        pass
+        amountDug = attemptedAmount
 
-    def getLocationX(self):
-        return self.locationX
+        self.quantity -= attemptedAmount
 
-    def setLocationX(self, newLocationX):
-        self.locationX = newLocationX
-        pass
-
-    def getLocationY(self):
-        return self.locationY
-
-    
-    def setLocationY(self, newLocationY):
-        self.locationY = newLocationY
-        pass
-    
-    def use(self):
-        pass
-
-
+        if self.quantity < 0:
+           
+            amountDug -= self.quantity
+            self.quantity = 0
+            
+        return amountDug

@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
+
 from library.ResourceType import Resourcetype
+
 
 class Resource(ABC):
 
@@ -28,5 +30,3 @@ class Resource(ABC):
     @abstractmethod
     def use(self):
         pass
-
-    

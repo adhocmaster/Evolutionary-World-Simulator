@@ -1,56 +1,145 @@
+import math
+import random
+
 from library.Encounter import Encounter
 from library.ResourceType import Resourcetype
-import random
+
 
 class GoldHunterEncounter(Encounter):
 
 
-    def rob(self, robbingAgents, victimAgents):
+    def getTotalMaxGoldPerTurn(self, agents):
 
-        for robbingAgent in robbingAgents:
-            
-            if len(victimAgents) > 0:
-                
-                victimAgent = random.choice(victimAgents)
-                victimAgents.remove(victimAgent)
+        totalMaxGold = 0
 
-                robbingAgent.rob(victimAgent)
-
-
-    def compete(self, agents):
-
-        for i in range(len(agents)):
-
-            robbingAgent = agents[i]
-            victimAgent = agents[0]
-
-            if i < len(agents) - 1:
-                victimAgent = agents[i + 1]
-
-            robbingAgent.rob(victimAgent)
-
-
-    def collaborate(self, agents, resourceToShare):
-
-        originalResourceQuantity = resourceToShare.quantity
-        totalDiggingRate = self.getTotalDiggingRate(agents)
+        for agent in agents:
+            totalMaxGold = agent.getMaxGoldPerTurn()
         
-        for agent in agents:
+        return totalMaxGold
 
-            quantityToCollect = agent.getMaxGoldPerTurn()
+    
+    def getTotalStrength(self, agents):
 
-            if totalDiggingRate > originalResourceQuantity:
-                quantityToCollect *= originalResourceQuantity / totalDiggingRate
-
-            agent.dig(resourceToShare, quantityToCollect)
-
-
-    def getTotalDiggingRate(self, agents):
-
-        totalDiggingRate = 0
+        totalStrength = 0
 
         for agent in agents:
-            totalDiggingRate += agent.getDiggingRate()
+            totalStrength += agent.getStrength()
 
-        return totalDiggingRate
+        return totalStrength
 
+
+    def keyToSortByGold(self, agent):
+        return agent.getGold()
+
+    
+    def keyToSortByStrength(self, agent):
+        return agent.getStrength()
+
+
+    def priorityDigging(self, agents, goldResource):
+        """Diggers dig once in a set order."""
+
+        for agent in agents:
+            
+            amountCollected = agent.dig(goldResource)
+            agent.addGold(amountCollected)
+        
+        pass
+
+
+    def collectiveDigging(self, agents, goldResource):
+        """All diggers pool their collections for future distribution."""
+
+        totalAmountCollected = 0
+
+        for agent in agents:
+
+            amountCollected = agent.dig(goldResource)
+            totalAmountCollected += amountCollected
+        
+        return totalAmountCollected
+
+
+    def individualRobbing(self, robbingAgents, victimAgents):
+
+        pass
+
+
+    def groupRobbing(self, robbingAgents, victimAgents):
+
+        pass
+
+
+    def collaboration(self, agents, goldResource):
+        """All agents attempt to dig their max amount and distribute the gold evenly."""
+        
+        totalAmountCollected = self.collectiveDigging(agents, goldResource)
+
+        goldPerAgent = math.floor(totalAmountCollected / len(agents))
+
+        for agent in agents:
+            agent.addGold(goldPerAgent)
+
+        pass
+
+
+    def philanthropy(self, agents, goldResource):
+        """Agents with less gold dig from the resource first"""
+
+        agents.sort(reverse = False, key = self.keyToSortByGold)
+
+        self.priorityDigging(agents, goldResource)
+
+
+    def competition(self, agents, goldResource):
+        """Agents gain gold based on their digging rate"""
+
+        totalMaxGold = self.getTotalMaxGoldPerTurn(agents)
+
+        totalAmountCollected = self.collectiveDigging(agents, goldResource)
+
+        for agent in agents:
+            agent.addGold(self.getMaxGoldPerTurn() * totalAmountCollected / totalMaxGold)
+
+        pass
+
+
+    def monopoly(self, agents, goldResource):
+        """Agents with more strength dig from the resource first"""
+
+        agents.sort(reverse = True, key = self.keyToSortByStrength)
+
+        self.priorityDigging(agents, goldResource)
+
+
+    def intimidation(self, aggressiveAgents, passiveAgents):
+        """Aggressive agents threaten passive agents into giving the gold over."""
+
+        totalAggressiveStrength = self.getTotalStrength(aggressiveAgents)
+        totalPassiveStrength = self.getTotalStrength(passiveAgents)
+
+        if totalAggressiveStrength >= totalPassiveStrength * 2:
+            # stealing stuff
+            pass
+        else:
+            # get punished
+            pass
+        pass
+
+
+    def raid(self, aggressiveAgents, passiveAgents):
+
+        pass
+
+
+    def heist(self, aggressiveAgents, passiveAgents):
+
+        pass
+
+
+    def sabotage(self, agents):
+        pass
+
+
+    def combat(self, agents):
+        pass

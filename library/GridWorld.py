@@ -2,7 +2,7 @@ from library.World import World
 
 class GridWorld(World):
 
-    def __init__(self, size = (10, 10), name = 'A beautiful world', initialState = {}):
+    def __init__(self, size = (10, 10), name = 'A beautiful world', initialState = None):
         
         super().__init__(name, initialState)
 

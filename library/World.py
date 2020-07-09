@@ -3,9 +3,14 @@ from library.Node import Node
 
 class World(ABC):
 
-    def __init__(self, name, initialState = {}):
+    def __init__(self, name, initialState = None):
         self.name = name
-        self.state = initialState
+        
+        if initialState is None:
+            self.state = {} 
+        else:
+            self.state = initialState
+            
         self.nodes = {} # each node is a possible location in the world.
         pass
 

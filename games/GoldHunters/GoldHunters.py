@@ -51,7 +51,9 @@ class GoldHunters(Game):
 
     def moveAgent(self, agent, newLocation):
 
-        self.removeAgentFromOldLocation(agent, newLocation)
+        print(f"moving agent {agent} to location {newLocation}")
+
+        self.removeAgentFromOldLocation(agent)
 
         agent.updateAgentLocation(newLocation)
 
@@ -60,7 +62,7 @@ class GoldHunters(Game):
 
         pass
 
-    def removeAgentFromOldLocation(self, agent, newLocation):
+    def removeAgentFromOldLocation(self, agent):
         
         try:
             oldLocation = agent.getLocation()

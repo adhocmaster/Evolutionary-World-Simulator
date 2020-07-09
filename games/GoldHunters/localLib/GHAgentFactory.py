@@ -1,5 +1,6 @@
 from library.AgentFactory import AgentFactory
 from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
+import uuid
 
 GHAgentConfig = {
 
@@ -31,11 +32,13 @@ class GHAgentFactory(AgentFactory):
 
 
     def buildDigger(self):
-        return self.create('digger', 'NA', self.agentConfig['diggerEfficiency'], self.agentConfig['diggerDiggingRate'], self.agentConfig['diggerStrength'])
+        id = hex(uuid.getnode())
+        return self.create('digger', id, self.agentConfig['diggerEfficiency'], self.agentConfig['diggerDiggingRate'], self.agentConfig['diggerStrength'])
 
 
     def buildRobber(self):
-        return self.create('digger', 'NA', self.agentConfig['robberEfficiency'], self.agentConfig['robberDiggingRate'], self.agentConfig['robberStrength'])
+        id = hex(uuid.getnode())
+        return self.create('robber', id, self.agentConfig['robberEfficiency'], self.agentConfig['robberDiggingRate'], self.agentConfig['robberStrength'])
 
 
     def buildDiggers(self, numberOfDiggers = 10):

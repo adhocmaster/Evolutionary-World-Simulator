@@ -2,6 +2,7 @@ import math
 
 from library.Agent import Agent
 from library.ResourceType import Resourcetype
+from games.GoldHunters.localLib.NotFoundInTheWorld import NotFoundInTheWorld
 
 
 class GoldHunterAgent(Agent):
@@ -53,17 +54,19 @@ class GoldHunterAgent(Agent):
         pass
 
     
-    def moveTo(self, x, y):
+    def updateAgentLocation(self, location):
         #TODO wait for node implementation
-        self.setToOtherProperties("locationX", x)
-        self.setToOtherProperties("locationY", y)
-
+        self.setToOtherProperties("location", location)
         pass
 
+
     def getLocation(self):
-        x = self.getFromOtherProperties("locationX")
-        y = self.getFromOtherProperties("locationY")
-        return (x, y)
+        try:
+            return self.getFromOtherProperties("location")
+        except:
+            raise NotFoundInTheWorld(f"agent {self.id} not found in the world.")
+
+
 
     def dig(self, goldResource):
         

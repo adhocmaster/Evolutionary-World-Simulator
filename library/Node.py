@@ -25,7 +25,8 @@ class Node(Object):
 
 
     def remove(self, object):
-        self.objects.remove(object)
+        if object in self.objects:
+            self.objects.remove(object)
         pass
 
 

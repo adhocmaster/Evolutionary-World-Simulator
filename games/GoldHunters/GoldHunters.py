@@ -3,27 +3,28 @@ from library.GridWorld import GridWorld
 from games.GoldHunters.localLib.GHAgentFactory import GHAgentFactory
 from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
 from games.GoldHunters.localLib.GoldResource import GoldResource
+from games.GoldHunters.localLib.NotFoundInTheWorld import NotFoundInTheWorld
 from random import randint
 class GoldHunters(Game):
     
-    def __init__(self):
+    def __init__(self, worldSize = (3, 3)):
 
         self.agents = None
         self.world = None
         self.resources = None
-        self.init()
+        self.init(worldSize)
 
         pass
 
 
-    def init(self):
+    def init(self, worldSize = (3, 3)):
 
         # 1. Create a gridworld
-        self.world = GridWorld()
+        self.world = GridWorld(size = worldSize)
         # 2. Create some agents
         self.createAgents()
         # 3. Put agents in the world (you will need to remove them from previous node, move the agent to the location and also add them to the corresponding node in the world)
-        self.putAgentsInWorld(self.agents)
+        self.putAgentsInWorld()
         # 4. Create some gold resources
         self.createGoldResources()
         # 5. Put gold resources in the world.
@@ -36,26 +37,43 @@ class GoldHunters(Game):
     def createAgents(self):
         factory = GHAgentFactory()
         self.agents = [factory.buildDigger(), factory.buildRobber()]
+        # self.agents = factory.buildDiggers(2)
         pass
 
-    def putAgentsInWorld(self, agents):
-        for agent in agents:
-            randomXLocation = randint(0,self.world.size[0])
-            randomYLocation = randint(0,self.world.size[1])
-            agent.moveTo(randomXLocation, randomYLocation)
+    def putAgentsInWorld(self):
+
+        for agent in self.agents:
+            randomXLocation = randint(0,self.world.size[0] - 1)
+            randomYLocation = randint(0,self.world.size[1] - 1)
+            self.moveAgent(agent, (randomXLocation, randomYLocation))
         pass
 
+
+    def moveAgent(self, agent, newLocation):
+
+        self.removeAgentFromOldLocation(agent, newLocation)
+
+        agent.updateAgentLocation(newLocation)
+
+        print(f"adding agent {agent} to location {newLocation}")
+        self.world.addToLocation(newLocation, agent)
+
+        pass
+
+    def removeAgentFromOldLocation(self, agent, newLocation):
+        
+        try:
+            oldLocation = agent.getLocation()
+            print(f"removing agent {agent} from location {oldLocation}")
+            self.world.removeFromLocation(oldLocation, agent)
+        except NotFoundInTheWorld as e:
+            pass
+        except Exception as e:
+            raise e
+        
+        pass
 
     def addAgent(self, agent, newLocation):
-        oldLocation = agent.getLocation()
-        oldNode = self.world.getNodeAt(oldLocation[0], oldLocation[1])
-        oldNode.remove(agent)
-
-        agent.moveTo(newLocation[0], newLocation[1])
-
-        newNode = self.world.getNodeAt(newLocation[0], newLocation[1])
-        newNode.add(agent)
-
         self.agents.append(agent)
 
 
@@ -70,8 +88,8 @@ class GoldHunters(Game):
 
     def putGoldResourcesInWorld(self):
         for resource in self.resources:
-            resource.setLocationX(randint(0, self.world(0)))
-            resource.setLocationY(randint(0, self.world(1)))
+            resource.setLocationX(randint(0, self.world.size[0]))
+            resource.setLocationY(randint(0, self.world.size[1]))
         pass
 
     def run(self, timesToRun = 1000):

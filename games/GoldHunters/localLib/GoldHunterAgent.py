@@ -2,6 +2,7 @@ import math
 
 from library.Agent import Agent
 from library.ResourceType import Resourcetype
+from library.GridWorld import GridWorld
 from games.GoldHunters.localLib.NotFoundInTheWorld import NotFoundInTheWorld
 
 
@@ -59,13 +60,35 @@ class GoldHunterAgent(Agent):
         self.setToOtherProperties("location", location)
         pass
 
-
+    
     def getLocation(self):
         try:
             return self.getFromOtherProperties("location")
         except:
             raise NotFoundInTheWorld(f"agent {self.id} not found in the world.")
+    
+    
+    def getPerceptionDistance(self):
+        return self.getFromOtherProperties('perceptionDistance')
 
+    
+    def setPerceptionDistance(self, perceptionDistance):
+        self.setToOtherProperties('perceptionDistance', perceptionDistance)
+
+
+    def percieveWorld(self, world):
+
+        location = self.getLocation()
+        perceptionDistance = self.getPerceptionDistance()
+        percievedWorldModel = GridWorld(size = perceptionDistance * 2) # Makes a new world with "radius" of perceptionDistance
+
+        for x in range(location[0], location[0] + 2 * perceptionDistance): # Spanning the entire diameter.
+            for y in range(location[1], location[1] + 2 * perceptionDistance):
+                currentLocation = [x, y]
+                objects = world.getObjectsAtLocation(currentLocation)
+                percievedWorldModel.addToLocation(currentLocation, objects)
+
+        return percievedWorldModel
 
 
     def dig(self, goldResource):

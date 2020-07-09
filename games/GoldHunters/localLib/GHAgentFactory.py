@@ -1,6 +1,7 @@
 from library.AgentFactory import AgentFactory
 from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
 import uuid
+import random
 
 GHAgentConfig = {
 
@@ -9,7 +10,9 @@ GHAgentConfig = {
     'diggerStrength': 5,
     'robberEfficiency': 0.2,
     'robberDiggingRate': 5,
-    'robberStrength': 10
+    'robberStrength': 10,
+    'minPerceptionDistance': 1,
+    'maxPerceptionDistance': 3
     
 }
 
@@ -20,25 +23,28 @@ class GHAgentFactory(AgentFactory):
         self.agentConfig = agentConfig
 
     
-    def create(self, type, id, efficiency, diggingRate, strength):
+    def create(self, type, id, efficiency, diggingRate, strength, perceptionDistance):
 
         agent = GoldHunterAgent(type = type, id = id)
 
         agent.setEfficiency(efficiency)
         agent.setDiggingRate(diggingRate)
         agent.setStrength(strength)
+        agent.setPerceptionDistance(perceptionDistance)
         
         return agent
 
 
     def buildDigger(self):
         id = hex(uuid.getnode())
-        return self.create('digger', id, self.agentConfig['diggerEfficiency'], self.agentConfig['diggerDiggingRate'], self.agentConfig['diggerStrength'])
+        perceptionDistance = random.randint(self.agentConfig['minPerceptionDistance'], self.agentConfig['maxPerceptionDistance'])
+        return self.create('digger', id, self.agentConfig['diggerEfficiency'], self.agentConfig['diggerDiggingRate'], self.agentConfig['diggerStrength'], perceptionDistance)
 
 
     def buildRobber(self):
         id = hex(uuid.getnode())
-        return self.create('robber', id, self.agentConfig['robberEfficiency'], self.agentConfig['robberDiggingRate'], self.agentConfig['robberStrength'])
+        perceptionDistance = random.randint(self.agentConfig['minPerceptionDistance'], self.agentConfig['maxPerceptionDistance'])
+        return self.create('robber', id, self.agentConfig['robberEfficiency'], self.agentConfig['robberDiggingRate'], self.agentConfig['robberStrength'], perceptionDistance)
 
 
     def buildDiggers(self, numberOfDiggers = 10):

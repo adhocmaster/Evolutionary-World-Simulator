@@ -45,7 +45,7 @@ All calculations for gains and losses are rounded up.
 
 **When to Trigger -** Multiple aggressive agents confront multiple passive agents
 
-- If the total strength of the agressive agents is over 2x that of the passive agents, all resources are stolen from the passive agents and distributed to the agressive agents based on their strength.
+- If the total strength of the agressive agents is over 2x that of the passive agents, all resources are stolen from the passive agents and distributed to the aggressive agents based on their strength.
 - Otherwise, the aggressive agents collectively suffer a fighting penalty = total passive agents' strength.
 
 ## Raid : Unorganized stealing of resources

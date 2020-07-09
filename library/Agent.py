@@ -10,10 +10,10 @@ class Agent(Object):
             health=1, 
             age=0, 
             populationContribution = 1, 
-            initialTraits ={}, 
-            inventory={}, 
-            rules={},
-            otherProperties = {}
+            initialTraits = None, 
+            inventory = None, 
+            rules = None,
+            otherProperties = None
         ):
 
         super().__init__(id, type)
@@ -23,15 +23,33 @@ class Agent(Object):
         self.health = health
         self.age =age
         self.populationContribution = populationContribution
-        self.traits = initialTraits
-        self.otherProperties = otherProperties
+
+        if initialTraits is None:
+            self.traits = {} 
+        else:
+            self.traits = initialTraits
+            
+        if otherProperties is None:
+            self.otherProperties = {} 
+        else:
+            self.otherProperties = otherProperties
+
+
 
         self.actions = []
         self.offensiveActions = []
         self.defensiveActions = []
 
-        self.inventory = inventory # a dictionary of inventory where keys are resource types and values are amount
-        self.rules = rules # keys are types of rules
+        if inventory is None:
+            self.inventory = {} 
+        else:
+            self.inventory = inventory
+
+        if rules is None:
+            self.rules = {} 
+        else:
+            self.rules = rules
+
         self.history = {}
         
         self.reloadTraits()

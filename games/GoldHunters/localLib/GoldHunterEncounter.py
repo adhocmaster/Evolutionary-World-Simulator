@@ -27,6 +27,24 @@ class GoldHunterEncounter(Encounter):
 
         return totalStrength
 
+    
+    def getAverageStrength(self, agents):
+
+        totalStrength = self.getTotalStrength(agents)
+        avgStrength = totalStrength / len(agents)
+        
+        return avgStrength
+
+    
+    def getTotalGoldOwned(self, agents):
+
+        totalGold = 0
+
+        for agent in agents:
+            totalGold += agent.getGold()
+        
+        return totalGold
+
 
     def keyToSortByGold(self, agent):
         return agent.getGold()
@@ -60,22 +78,12 @@ class GoldHunterEncounter(Encounter):
         return totalAmountCollected
 
 
-    def individualRobbing(self, robbingAgents, victimAgents):
-
-        pass
-
-
-    def groupRobbing(self, robbingAgents, victimAgents):
-
-        pass
-
-
     def collaboration(self, agents, goldResource):
         """All agents attempt to dig their max amount and distribute the gold evenly."""
         
         totalAmountCollected = self.collectiveDigging(agents, goldResource)
 
-        goldPerAgent = math.floor(totalAmountCollected / len(agents))
+        goldPerAgent = math.ceil(totalAmountCollected / len(agents))
 
         for agent in agents:
             agent.addGold(goldPerAgent)
@@ -119,27 +127,113 @@ class GoldHunterEncounter(Encounter):
         totalPassiveStrength = self.getTotalStrength(passiveAgents)
 
         if totalAggressiveStrength >= totalPassiveStrength * 2:
-            # stealing stuff
-            pass
+            
+            totalGoldStolen = 0
+
+            for agent in passiveAgents:
+
+                goldStolen = agent.getGold()
+                agent.removeGold(goldStolen)
+                totalGoldStolen += goldStolen
+
+            for agent in aggressiveAgents:
+
+                goldEarned = math.ceil( totalGoldStolen * (agent.getStrength() / totalAggressiveStrength) )
+                agent.addGold(goldEarned)
+
         else:
-            # get punished
-            pass
+            
+            penaltyPerAgent = math.ceil(totalPassiveStrength / len(aggressiveAgents))
+
+            for agent in aggressiveAgents:
+                agent.removeGold(penaltyPerAgent)
+
         pass
 
 
     def raid(self, aggressiveAgents, passiveAgents):
+        """Aggressive agents take turns stealing from passive agents"""
+
+        unrobbedAgents = passiveAgents
+
+        for robber in aggressiveAgents:
+
+            if len(unrobbedAgents) > 0:
+
+                victim = unrobbedAgents[0]
+                unrobbedAgents.remove(victim)
+
+                robber.rob(victim)
+
+            else:
+                break
 
         pass
 
 
     def heist(self, aggressiveAgents, passiveAgents):
+        """Aggressive agents work together to steal from passive agents"""
+
+        totalAggressiveStrength = self.getTotalStrength(aggressiveAgents)
+        totalPassiveStrength = self.getTotalStrength(passiveAgents)
+        totalGoldOwned = self.getTotalGoldOwned(passiveAgents)
+
+        totalGoldStolen = totalAggressiveStrength - totalPassiveStrength
+    
+        if totalGoldStolen > 0:
+
+            for agent in passiveAgents:
+
+                goldLost = math.ceil( totalGoldStolen * (agent.getGold() / totalGoldOwned) )
+                agent.removeGold(goldLost)
+            
+            for agent in aggressiveAgents:
+
+                goldStolen = math.ceil( totalGoldStolen * (agent.getStrength() / totalAggressiveStrength) )
+                agent.addGold(goldStolen)
+
+        for agent in aggressiveAgents:
+
+            robbingPenalty = math.ceil( (1 - (agent.getStrength() / totalAggressiveStrength)) * totalPassiveStrength )
+            agent.removeGold(robbingPenalty)
 
         pass
 
 
     def sabotage(self, agents):
+        """Agents attempt to rob each other"""
+
+        for i in range(len(agents)):
+
+            robbingAgent = agents[i]
+
+            victimAgent = agents[0]
+            if i < len(agents) - 1:
+                victimAgent = agents[i + 1]
+
+            robbingAgent.rob(victimAgent)
+            
         pass
 
 
     def combat(self, agents):
-        pass
+        """Agents fight each other to get gold, strongest agent gets half of everyone's gold"""
+
+        agents.sort(reverse = True, key = self.keyToSortByStrength)
+        strongestAgent = agents.pop(0)
+
+        goldPrize = 0
+
+        for agent in agents:
+
+            goldLost = math.ceil(agent.getGold() / 2)
+            fightingPenalty = math.ceil(strongestAgent.getStrength() / 2)
+
+            agent.removeGold(goldLost + fightingPenalty)
+            goldPrize += goldLost
+            
+        winnerFightingPenalty = math.ceil(self.getAverageStrength(agents) / 3)
+
+        strongestAgent.addGold(goldPrize)
+        strongestAgent.removeGold(winnerFightingPenalty)
+

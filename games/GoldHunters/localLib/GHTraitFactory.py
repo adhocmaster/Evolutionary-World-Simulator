@@ -1,4 +1,7 @@
 from library.TraitFactory import TraitFactory
+from library.Trait import Trait
+from library.ActionFactory import ActionFactory
+from random import randint
 
 class GHTraitFactory(TraitFactory):
 

@@ -12,4 +12,4 @@ class test_TraitFactory(unittest.TestCase):
 
         print(trait)
 
-        assert factory.defaultActions == [Action('MoveUp'), Action('MoveDown'), Action('MoveLeft'), Action('MoveRight')]
+        assert factory.defaultActions[0].name == 'MoveUp'

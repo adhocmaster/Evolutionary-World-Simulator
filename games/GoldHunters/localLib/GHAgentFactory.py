@@ -1,5 +1,6 @@
 from library.AgentFactory import AgentFactory
 from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
+from games.GoldHunters.localLib.GHTraitFactory import GHTraitFactory
 import uuid
 import random
 
@@ -19,8 +20,9 @@ GHAgentConfig = {
 class GHAgentFactory(AgentFactory):
 
 
-    def __init__(self, agentConfig = GHAgentConfig, traitFactory):
+    def __init__(self, agentConfig = GHAgentConfig):
         self.agentConfig = agentConfig
+        self.traitFactory = GHTraitFactory()
 
     
     def create(self, type, id, efficiency, diggingRate, strength, perceptionDistance):
@@ -36,15 +38,16 @@ class GHAgentFactory(AgentFactory):
 
 
     def buildDigger(self):
-
-        #TODO add traits after creating the base digger object
+        self.traitFactory.createRandom()
+        
         id = hex(uuid.getnode())
         perceptionDistance = random.randint(self.agentConfig['minPerceptionDistance'], self.agentConfig['maxPerceptionDistance'])
         return self.create('digger', id, self.agentConfig['diggerEfficiency'], self.agentConfig['diggerDiggingRate'], self.agentConfig['diggerStrength'], perceptionDistance)
 
 
     def buildRobber(self):
-        #TODO add traits after creating the base robber object
+        self.traitFactory.createRandom()
+
         id = hex(uuid.getnode())
         perceptionDistance = random.randint(self.agentConfig['minPerceptionDistance'], self.agentConfig['maxPerceptionDistance'])
         return self.create('robber', id, self.agentConfig['robberEfficiency'], self.agentConfig['robberDiggingRate'], self.agentConfig['robberStrength'], perceptionDistance)

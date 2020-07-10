@@ -1,7 +1,8 @@
 from library.TraitFactory import TraitFactory
 from library.Trait import Trait
 from library.ActionFactory import ActionFactory
-from random import randint
+from library.Action import Action
+import random
 
 class GHTraitFactory(TraitFactory):
 
@@ -24,7 +25,7 @@ class GHTraitFactory(TraitFactory):
         defensiveActions = []
 
         for _ in range(numberOfPowers):
-            power = ActionFactory.createRandomPower()
+            power = actionFactory.createRandomPower()
             if power.powerType.name.find('_DEF') != -1:
                 offensiveActions.append(power)
             else:

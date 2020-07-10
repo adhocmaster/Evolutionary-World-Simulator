@@ -19,7 +19,7 @@ GHAgentConfig = {
 class GHAgentFactory(AgentFactory):
 
 
-    def __init__(self, agentConfig = GHAgentConfig):
+    def __init__(self, agentConfig = GHAgentConfig, traitFactory):
         self.agentConfig = agentConfig
 
     
@@ -36,12 +36,15 @@ class GHAgentFactory(AgentFactory):
 
 
     def buildDigger(self):
+
+        #TODO add traits after creating the base digger object
         id = hex(uuid.getnode())
         perceptionDistance = random.randint(self.agentConfig['minPerceptionDistance'], self.agentConfig['maxPerceptionDistance'])
         return self.create('digger', id, self.agentConfig['diggerEfficiency'], self.agentConfig['diggerDiggingRate'], self.agentConfig['diggerStrength'], perceptionDistance)
 
 
     def buildRobber(self):
+        #TODO add traits after creating the base robber object
         id = hex(uuid.getnode())
         perceptionDistance = random.randint(self.agentConfig['minPerceptionDistance'], self.agentConfig['maxPerceptionDistance'])
         return self.create('robber', id, self.agentConfig['robberEfficiency'], self.agentConfig['robberDiggingRate'], self.agentConfig['robberStrength'], perceptionDistance)

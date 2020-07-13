@@ -109,8 +109,19 @@ class GoldHunters(Game):
         #if its move then call removeAgentFromOldLocation() and call moveAgentToNewLocation()
         #if agent digs, call agent.dig() 
         #if agent robs, call agent.rob()
+        pass
 
     def run(self, timesToRun = 1000):
         # run the loop for timesToRun times
 
+        for turn in timesToRun:
+
+            self.runGameLoop()
+
         pass
+
+
+    def runGameLoop(self):
+
+        for agent in self.agents:
+            agent.takeTurn(self.world);

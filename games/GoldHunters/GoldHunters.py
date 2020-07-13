@@ -107,8 +107,8 @@ class GoldHunters(Game):
         #for each agent:
         #check action
         #if its move then call removeAgentFromOldLocation() and call moveAgentToNewLocation()
-        #if agent digs, call agent.dig() 
-        #if agent robs, call agent.rob()
+        #if agent digs, use a dig encounter with the agent by itself
+        #if agent robs, use sabotage encounter?
 
     def run(self, timesToRun = 1000):
         # run the loop for timesToRun times

@@ -136,25 +136,37 @@ class GoldHunterAgent(Agent):
         self.removeGold(robbingPenalty)
 
 
-    def takeTurn(self, gridworld, extraParams):
+    def takeTurn(self, gridworld, encounterEngine):
 
         self.percieveWorld(gridworld)
 
-        self.updateStrategy()
+        self.updateStrategy(gridworld)
 
-        self.takeAction()
+        self.takeAction(gridworld, encounterEngine)
 
         pass
 
 
-    def updateStrategy(self):
+    def updateStrategy(self, gridworld):
         pass
 
     
-    def takeAction(self):
+    def takeAction(self, gridworld, encounterEngine):
 
-        
+
         # set nextAction based on strategy and payoff.
+
+        # iterate through the action set.
+
+        # predict encounter payoff
+        payoff = {}
+
+        # for each action
+            # if encounterEngine is True:
+            #     payoff[action] = encounterEngine. predictPossibleEncounter(self, action, gridworld)
+
+            # predict payoff if there is no encounter.
+
         pass
 
     

@@ -124,4 +124,4 @@ class GoldHunters(Game):
     def runGameLoop(self):
 
         for agent in self.agents:
-            agent.takeTurn(self.world);
+            agent.takeTurn(self.world); # it updates nextAction property in an agent.

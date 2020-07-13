@@ -146,6 +146,6 @@ class Agent(Object):
         pass
 
     
-    def takeTurn(self, state, extraParams):
+    def takeTurn(self, state):
         pass
 

@@ -293,4 +293,15 @@ class GoldHunterEncounter(Encounter):
 
         else:
             return None
+
+
+    def predictPossibleEncounter(self, agent, nextAction, gridworld):
+        # return true or false only
+        pass
+
+    def predictEncounterPayoff(self, agent, nextAction, gridworld):
+
+        # the agent wants to take the nextAction, gridworld represents the world before the turn actually happens. So, there might be some encounters. Predict the encounter and outcome of it.
+        
+        pass
         

@@ -1,5 +1,6 @@
 import math
 import random
+import copy
 
 from library.Encounter import Encounter
 from library.ResourceType import Resourcetype
@@ -94,7 +95,7 @@ class GoldHunterEncounter(Encounter):
     def philanthropy(self, agents, goldResource):
         """Agents with less gold dig from the resource first"""
 
-        agents.sort(reverse = False, key = self.keyToSortByGold)
+        agents = sorted(agents, reverse = False, key = self.keyToSortByGold)
 
         self.priorityDigging(agents, goldResource)
 
@@ -107,7 +108,7 @@ class GoldHunterEncounter(Encounter):
         totalAmountCollected = self.collectiveDigging(agents, goldResource)
 
         for agent in agents:
-            agent.addGold(self.getMaxGoldPerTurn() * totalAmountCollected / totalMaxGold)
+            agent.addGold(agent.getMaxGoldPerTurn() * totalAmountCollected / totalMaxGold)
 
         pass
 
@@ -115,7 +116,7 @@ class GoldHunterEncounter(Encounter):
     def monopoly(self, agents, goldResource):
         """Agents with more strength dig from the resource first"""
 
-        agents.sort(reverse = True, key = self.keyToSortByStrength)
+        agents = sorted(agents, reverse = True, key = self.keyToSortByStrength)
 
         self.priorityDigging(agents, goldResource)
 
@@ -219,7 +220,7 @@ class GoldHunterEncounter(Encounter):
     def combat(self, agents):
         """Agents fight each other to get gold, strongest agent gets half of everyone's gold"""
 
-        agents.sort(reverse = True, key = self.keyToSortByStrength)
+        agents = sorted(agents, reverse = True, key = self.keyToSortByStrength)
         strongestAgent = agents.pop(0)
 
         goldPrize = 0
@@ -237,3 +238,59 @@ class GoldHunterEncounter(Encounter):
         strongestAgent.addGold(goldPrize)
         strongestAgent.removeGold(winnerFightingPenalty)
 
+
+    def previewSingleTypeEncounter(self, agents, encounter):
+
+        testAgents = copy.deepcopy(agents)
+
+        encounter(testAgents)
+
+        changes = {}
+
+        for i in range(testAgents):
+
+            realAgent = agents[i]
+            testAgent = testAgents[i]
+
+            changes[realAgent] = testAgent
+
+        return changes
+
+
+    def previewDualTypeEncounter(self, passiveAgents, aggressiveAgents, encounter):
+
+        testPassiveAgents = copy.deepcopy(passiveAgents)
+        testAggressiveAgents = copy.deepcopy(aggressiveAgents)
+
+        encounter(passiveAgents, aggressiveAgents)
+
+        changes = {}
+
+        allRealAgents = passiveAgents + aggressiveAgents
+        allTestAgents = testPassiveAgents + testAggressiveAgents
+
+        for i in range(allTestAgents):
+
+            realAgent = allRealAgents[i]
+            testAgent = allTestAgents[i]
+
+            changes[realAgent] = testAgent
+
+        return changes
+
+
+    def previewEncounter(self, encounter, agents = None, passiveAgents = None, aggressiveAgents = None):
+        """Input agents parameter to do a single type encounter (only diggers or robbers).\n
+           Input passiveAgents and aggressiveAgents parameter to do a dual type encounter (diggers and robbers).\n
+           Returns a dictionary with original agents as its keys and changed agents as its value.
+        """
+        
+        if agents != None:
+            return self.previewSingleTypeEncounter(agents, encounter)
+        
+        elif passiveAgents != None and aggressiveAgents != None:
+            return self.previewDualTypeEncounter(passiveAgents, aggressiveAgents, encounter)
+
+        else:
+            return None
+        

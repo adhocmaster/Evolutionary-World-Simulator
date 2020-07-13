@@ -94,6 +94,22 @@ class GoldHunters(Game):
             resource.setLocationY(randint(0, self.world.size[1]))
         pass
 
+    def changeState(self):
+        allAgentActions = self.getAllAgentActions()
+        self.updateGame(allAgentActions)
+        pass
+
+    def getAllAgentActions(self, agents):
+        #map the return of payoff for agents in dictionary with key = agent and value = action
+        #return the dictionary
+
+    def updateGame(self, agentActions):
+        #for each agent:
+        #check action
+        #if its move then call removeAgentFromOldLocation() and call moveAgentToNewLocation()
+        #if agent digs, call agent.dig() 
+        #if agent robs, call agent.rob()
+
     def run(self, timesToRun = 1000):
         # run the loop for timesToRun times
 

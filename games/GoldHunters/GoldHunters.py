@@ -95,13 +95,14 @@ class GoldHunters(Game):
         pass
 
     def changeState(self):
-        allAgentActions = self.getAllAgentActions()
-        self.updateGame(allAgentActions)
+        # allAgentActions = self.getAllAgentActions()
+        # self.updateGame(allAgentActions)
         pass
 
     def getAllAgentActions(self, agents):
         #map the return of payoff for agents in dictionary with key = agent and value = action
         #return the dictionary
+        pass
 
     def updateGame(self, agentActions):
         #for each agent:
@@ -109,8 +110,19 @@ class GoldHunters(Game):
         #if its move then call removeAgentFromOldLocation() and call moveAgentToNewLocation()
         #if agent digs, use a dig encounter with the agent by itself
         #if agent robs, use sabotage encounter?
+        pass
 
     def run(self, timesToRun = 1000):
         # run the loop for timesToRun times
 
+        for turn in timesToRun:
+
+            self.runGameLoop()
+
         pass
+
+
+    def runGameLoop(self):
+
+        for agent in self.agents:
+            agent.takeTurn(self.world); # it updates nextAction property in an agent.

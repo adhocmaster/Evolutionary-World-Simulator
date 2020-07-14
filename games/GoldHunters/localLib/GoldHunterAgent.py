@@ -50,6 +50,22 @@ class GoldHunterAgent(Agent):
         self.setToOtherProperties('strength', strength)
 
 
+    def getPerceivedWorld(self):
+        return self.getFromOtherProperties('perceivedWorld')
+
+
+    def setPerceivedWorld(self, perceivedWorld):
+        self.setToOtherProperties('perceivedWorld', perceivedWorld)
+
+
+    def getNextAction(self):
+        return self.getFromOtherProperties('nextAction')
+
+
+    def setNextAction(self, nextAction):
+        self.setToOtherProperties('nextAction', nextAction)
+
+
     def getMaxGoldPerTurn(self):
         return math.ceil(self.getEfficiency * self.getDiggingRate)
 
@@ -92,7 +108,8 @@ class GoldHunterAgent(Agent):
                 objects = world.getObjectsAtLocation(currentLocation)
                 percievedWorldModel.addToLocation(currentLocation, objects)
 
-        return percievedWorldModel
+        self.setPerceivedWorld( percievedWorldModel )
+
 
 
     def dig(self, goldResource):
@@ -118,3 +135,38 @@ class GoldHunterAgent(Agent):
         
         self.removeGold(robbingPenalty)
 
+
+    def takeTurn(self, gridworld, encounterEngine):
+
+        self.percieveWorld(gridworld)
+
+        self.updateStrategy(gridworld)
+
+        self.takeAction(gridworld, encounterEngine)
+
+        pass
+
+
+    def updateStrategy(self, gridworld):
+        pass
+
+    
+    def takeAction(self, gridworld, encounterEngine):
+
+
+        # set nextAction based on strategy and payoff.
+
+        # iterate through the action set.
+
+        # predict encounter payoff
+        payoff = {}
+
+        # for each action
+            # if encounterEngine is True:
+            #     payoff[action] = encounterEngine. predictPossibleEncounter(self, action, gridworld)
+
+            # predict payoff if there is no encounter.
+
+        pass
+
+    

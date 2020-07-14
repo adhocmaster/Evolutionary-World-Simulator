@@ -145,5 +145,7 @@ class Agent(Object):
             raise Exception(f'No such item in otherProperties with key {key}')
         pass
 
-
+    
+    def takeTurn(self, state):
+        pass
 

@@ -34,9 +34,7 @@ class GHAgentFactory(AgentFactory):
         agent.setStrength(strength)
         agent.setPerceptionDistance(perceptionDistance)
         agent.addTrait(trait)
-
-        # Add digging trait
-        
+       
         
         return agent
 

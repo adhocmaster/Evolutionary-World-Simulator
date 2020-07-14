@@ -52,12 +52,12 @@ class Agent(Object):
 
         self.history = {}
         
-        self.reloadTraits()
+        self.reloadActionsFromTraits()
 
         pass
 
     
-    def reloadTraits(self):
+    def reloadActionsFromTraits(self):
         self.populateActions()
         self.populatePowerActions()
 
@@ -117,19 +117,19 @@ class Agent(Object):
 
     def addTrait(self, trait):
         self.traits[trait.name] = trait
-        self.reloadTraits()
+        self.reloadActionsFromTraits()
         pass
 
 
     def removeTrait(self, trait):
         self.traits.pop(trait.name)
-        self.reloadTraits()
+        self.reloadActionsFromTraits()
         pass
 
 
     def removeTraitByName(self, name):
         self.traits.pop(name)
-        self.reloadTraits()
+        self.reloadActionsFromTraits()
         pass
 
     

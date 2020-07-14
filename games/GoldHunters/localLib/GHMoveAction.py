@@ -1,18 +1,20 @@
 from library.PowerType import PowerType
+from library.Action import Action
 
-class GHMoveAction(ABC):
+class GHMoveAction(Action):
 
-    def __init__(self, name, direction, powerType:PowerType=None, power:int=0):
+    def __init__(self, name, direction):
         
-        self.name = name
+        super().__init__(name)
         self.direction = direction
-        self.powerType = powerType
-        self.power = power  
-
         pass
 
 
     def __str__(self):
 
-        return f"[name: {self.name}, direction: {self.direction}, powerType: {self.powerType}, power: {self.power}]"
-
+        baseStr = super().__str__()
+        return(
+            f"{baseStr}\n"
+            f"direction: {self.direction}"
+        )
+        

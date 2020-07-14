@@ -1,5 +1,7 @@
 from library.TraitFactory import TraitFactory
 from library.Trait import Trait
+from library.Action import Action
+from games.GoldHunters.localLib.GHActionType import GHActionType
 from library.ActionFactory import ActionFactory
 # from library.Action import Action
 from games.GoldHunters.localLib.GHMoveAction import GHMoveAction
@@ -11,14 +13,16 @@ class GHTraitFactory(TraitFactory):
         self.randomTraitLastId = 0
 
         self.defaultActions = [
-            GHMoveAction('MoveUp', (0, 1)), 
+            GHMoveAction(GHActionType.MoveUp, (0, 1)), 
             GHMoveAction('MoveDown', (0, -1)), 
             GHMoveAction('MoveLeft', (-1, 0)), 
             GHMoveAction('MoveRight', (1, 0)), 
             GHMoveAction('MoveUpLeft', (-1, 1)),
             GHMoveAction('MoveUpRight', (1, 1)), 
             GHMoveAction('MoveDownLeft', (-1, -1)), 
-            GHMoveAction('MoveDownRight', (1, -1))
+            GHMoveAction('MoveDownRight', (1, -1)),
+            Action("dig"),
+            Action("rob")
         ]
 
     def createRandom(self):

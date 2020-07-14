@@ -1,7 +1,6 @@
-from abc import ABC, abstractmethod
 from library.PowerType import PowerType
 
-class Action(ABC):
+class Action():
 
     def __init__(self, name, powerType:PowerType=None, power:int=0):
         

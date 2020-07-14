@@ -95,9 +95,8 @@ class GoldHunters(Game):
         pass
 
     def changeState(self):
-        # allAgentActions = self.getAllAgentActions()
-        # self.updateGame(allAgentActions)
-        pass
+        allAgentActions = self.getAllAgentActions()
+        self.updateGame(allAgentActions)
 
     def getAllAgentActions(self, agents):
         #map the return of payoff for agents in dictionary with key = agent and value = action

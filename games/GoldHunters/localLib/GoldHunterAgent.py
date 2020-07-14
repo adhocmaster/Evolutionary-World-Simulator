@@ -66,6 +66,14 @@ class GoldHunterAgent(Agent):
         self.setToOtherProperties('nextAction', nextAction)
 
 
+    def getTrait(self):
+        return self.getFromOtherProperties('trait')
+
+
+    def setTrait(self, trait):
+        self.setToOtherProperties('trait', trait)
+
+
     def getMaxGoldPerTurn(self):
         return math.ceil(self.getEfficiency * self.getDiggingRate)
 
@@ -158,15 +166,26 @@ class GoldHunterAgent(Agent):
 
         # iterate through the action set.
 
+        trait = self.getTrait()
+        percievedWorld = self.getPerceivedWorld()
+
         # predict encounter payoff
         payoff = {}
 
-        # for each action
-            # if encounterEngine is True:
-            #     payoff[action] = encounterEngine. predictPossibleEncounter(self, action, gridworld)
+        for action in trait.actions:
+            if encounterEngine.predictPossibleEncounter(self, action, gridworld):
+                payoff[action] = encounterEngine.predictEncounterPayoff(self, action, gridworld)
+            else:
+                newLocation = self.newLocation(action.direction)
+                objectAtLocation = gridworld.getObjectsAtLocation(newLocation)
+                payoff[action] = objectAtLocation.value
 
-            # predict payoff if there is no encounter.
+        return max(payoff, key=payoff.get) # Action with max value.
 
-        pass
+
+    def newLocation(self, direction):
+
+        currentLocation = self.getLocation()
+        return (currentLocation[0] + direction[0], currentLocation[1] + direction[1])
 
     

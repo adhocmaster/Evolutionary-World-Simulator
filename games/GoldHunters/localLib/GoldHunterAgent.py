@@ -158,15 +158,26 @@ class GoldHunterAgent(Agent):
 
         # iterate through the action set.
 
+        percievedWorld = self.getPerceivedWorld()
+
         # predict encounter payoff
         payoff = {}
 
-        # for each action
-            # if encounterEngine is True:
-            #     payoff[action] = encounterEngine. predictPossibleEncounter(self, action, gridworld)
+        for action in self.actions:
+            if encounterEngine.predictPossibleEncounter(self, action, gridworld):
+                payoff[action] = encounterEngine.predictEncounterPayoff(self, action, gridworld)
+            else:
+                newLocation = self.newLocation(action.direction)
+                objectAtLocation = gridworld.getObjectsAtLocation(newLocation)
+                payoff[action] = objectAtLocation.value
 
-            # predict payoff if there is no encounter.
+        bestAction = max(payoff, key=payoff.get) # Action with max value.
+        self.setNextAction(bestAction)
 
-        pass
+
+    def newLocation(self, direction):
+
+        currentLocation = self.getLocation()
+        return (currentLocation[0] + direction[0], currentLocation[1] + direction[1])
 
     

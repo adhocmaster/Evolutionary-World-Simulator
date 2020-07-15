@@ -7,11 +7,12 @@ from games.GoldHunters.localLib.NotFoundInTheWorld import NotFoundInTheWorld
 from random import randint
 class GoldHunters(Game):
     
-    def __init__(self, worldSize = (3, 3)):
+    def __init__(self, worldSize = (3, 3), encounterEngine = None):
 
         self.agents = None
         self.world = None
         self.resources = None
+        self.encounterEngine = encounterEngine
         self.init(worldSize)
 
         pass
@@ -95,20 +96,21 @@ class GoldHunters(Game):
         pass
 
     def changeState(self):
-        allAgentActions = self.getAllAgentActions()
-        self.updateGame(allAgentActions)
-        pass
+        self.updateGame()
 
-    def getAllAgentActions(self, agents):
-        #map the return of payoff for agents in dictionary with key = agent and value = action
-        #return the dictionary
 
-    def updateGame(self, agentActions):
+
+    def updateGame(self):
         #for each agent:
-        #check action
+        #check next action
         #if its move then call removeAgentFromOldLocation() and call moveAgentToNewLocation()
-        #if agent digs, call agent.dig() 
-        #if agent robs, call agent.rob()
+        #if agent digs, use a dig encounter with the agent by itself
+        #if agent robs, use sabotage encounter?
+
+        for agent in self.agents:
+            action = agent.getNextAction()
+            # TODO do whatever you want to do.
+
         pass
 
     def run(self, timesToRun = 1000):
@@ -116,12 +118,14 @@ class GoldHunters(Game):
 
         for turn in timesToRun:
 
-            self.runGameLoop()
+            self.runGameLoop(turn)
 
         pass
 
 
-    def runGameLoop(self):
+    def runGameLoop(self, turn):
 
         for agent in self.agents:
-            agent.takeTurn(self.world); # it updates nextAction property in an agent.
+            agent.takeTurn(self.world, self.encounterEngine); # it updates nextAction property in an agent.
+
+

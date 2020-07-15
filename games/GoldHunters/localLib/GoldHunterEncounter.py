@@ -4,6 +4,7 @@ import copy
 
 from library.Encounter import Encounter
 from library.ResourceType import Resourcetype
+from games.GoldHunters.localLib.GHActionType import GHActionType
 
 
 class GoldHunterEncounter(Encounter):
@@ -323,7 +324,13 @@ class GoldHunterEncounter(Encounter):
 
 
     def predictPossibleEncounter(self, agent, nextAction, gridworld):
-        # return true or false only
+        # return true or false only. We are predicting that all other agents are gonna move to the cell that this agent would end up in.
+
+        currentLocation = agent.getLocation()
+
+        if nextAction.name == GHActionType.MoveUp:
+            # TODO
+
         pass
 
     def predictEncounterPayoff(self, agent, nextAction, gridworld):

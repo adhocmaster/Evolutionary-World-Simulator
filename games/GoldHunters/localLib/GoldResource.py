@@ -47,7 +47,7 @@ class GoldResource(Resource):
 
         if self.quantity < 0:
            
-            amountDug -= self.quantity
+            amountDug += self.quantity
             self.quantity = 0
             
         return amountDug

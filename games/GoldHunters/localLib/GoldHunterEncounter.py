@@ -14,7 +14,7 @@ class GoldHunterEncounter(Encounter):
         totalMaxGold = 0
 
         for agent in agents:
-            totalMaxGold = agent.getMaxGoldPerTurn()
+            totalMaxGold += agent.getMaxGoldPerTurn()
         
         return totalMaxGold
 
@@ -58,12 +58,15 @@ class GoldHunterEncounter(Encounter):
     def priorityDigging(self, agents, goldResource):
         """Diggers dig once in a set order."""
 
+        totalAmountCollected = 0
+
         for agent in agents:
             
             amountCollected = agent.dig(goldResource)
             agent.addGold(amountCollected)
+            totalAmountCollected += amountCollected
         
-        pass
+        return totalAmountCollected
 
 
     def collectiveDigging(self, agents, goldResource):
@@ -78,6 +81,7 @@ class GoldHunterEncounter(Encounter):
         
         return totalAmountCollected
 
+    # ENCOUNTERS START HERE #
 
     def collaboration(self, agents, goldResource):
         """All agents attempt to dig their max amount and distribute the gold evenly."""
@@ -239,7 +243,26 @@ class GoldHunterEncounter(Encounter):
         strongestAgent.removeGold(winnerFightingPenalty)
 
 
-    def previewSingleTypeEncounter(self, agents, encounter):
+    def playPassiveEncounter(self, agents, goldResource, encounter):
+
+        testAgents = copy.deepcopy(agents)
+        testGoldResource = copy.deepcopy(goldResource)
+
+        encounter(testAgents, testGoldResource)
+
+        changes = {goldResource : testGoldResource}
+
+        for i in range(testAgents):
+
+            realAgent = agents[i]
+            testAgent = testAgents[i]
+
+            changes[realAgent] = testAgent
+
+        return changes
+
+    
+    def playAggressiveEncounter(self, agents, encounter):
 
         testAgents = copy.deepcopy(agents)
 
@@ -257,7 +280,7 @@ class GoldHunterEncounter(Encounter):
         return changes
 
 
-    def previewDualTypeEncounter(self, passiveAgents, aggressiveAgents, encounter):
+    def playDualTypeEncounter(self, passiveAgents, aggressiveAgents, encounter):
 
         testPassiveAgents = copy.deepcopy(passiveAgents)
         testAggressiveAgents = copy.deepcopy(aggressiveAgents)
@@ -279,18 +302,22 @@ class GoldHunterEncounter(Encounter):
         return changes
 
 
-    def previewEncounter(self, encounter, agents = None, passiveAgents = None, aggressiveAgents = None):
-        """Input agents parameter to do a single type encounter (only diggers or robbers).\n
-           Input passiveAgents and aggressiveAgents parameter to do a dual type encounter (diggers and robbers).\n
+    def playEncounter(self, encounter, passiveAgents = None, aggressiveAgents = None, goldResource = None):
+        """Input passiveAgents and goldResource parameter to indicate passive agent only encounter (diggers).\n
+           Input aggressiveAgents parameter to indicate aggresive agent only encounter (robbers).\n
+           Input both parameters to indicate dual type encounters (robberies)
            Returns a dictionary with original agents as its keys and changed agents as its value.
         """
         
-        if agents != None:
-            return self.previewSingleTypeEncounter(agents, encounter)
+        if passiveAgents != None and aggressiveAgents != None:
+            return self.playDualTypeEncounter(passiveAgents, aggressiveAgents, encounter)
         
-        elif passiveAgents != None and aggressiveAgents != None:
-            return self.previewDualTypeEncounter(passiveAgents, aggressiveAgents, encounter)
+        elif passiveAgents != None and goldResource != None:
+            return self.playPassiveEncounter(passiveAgents, goldResource, encounter)
 
+        elif aggressiveAgents != None:
+            return self.playAggressiveEncounter(aggressiveAgents, encounter)
+        
         else:
             return None
 

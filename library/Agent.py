@@ -108,8 +108,9 @@ class Agent(Object):
         if key in self.inventory:
             return self.inventory[key]
         else:
-            raise Exception(f'No such item in inventory with key {key}')
-
+            self.updateInventory(key, 0)
+            return 0
+            
     
     def deleteKeyFromInventory(self, key):
         self.inventory.pop(self)

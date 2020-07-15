@@ -67,7 +67,7 @@ class GoldHunterAgent(Agent):
 
 
     def getMaxGoldPerTurn(self):
-        return math.ceil(self.getEfficiency * self.getDiggingRate)
+        return math.ceil(self.getEfficiency() * self.getDiggingRate())
 
 
     def getNodeId(self):

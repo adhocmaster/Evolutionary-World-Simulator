@@ -57,7 +57,10 @@ class test_GoldHunters(unittest.TestCase):
 
         
 
-        
+    def testRun(self):
+        game = GoldHunters()
+        # game.run()
+
 
         
 

@@ -30,8 +30,8 @@ class GoldHunters(Game):
         self.createGoldResources()
         # 5. Put gold resources in the world.
         self.putGoldResourcesInWorld()
-        # 6. Run the game loop.
-        self.run()
+        # 6. do not Run the game loop.
+        # self.run()
 
         pass
 
@@ -111,12 +111,22 @@ class GoldHunters(Game):
             action = agent.getNextAction()
             # TODO do whatever you want to do.
 
+        self.doEncounters()
+
         pass
 
-    def run(self, timesToRun = 1000):
+
+    def doEncounters(self):
+
+        # iterate through all the nodes in the world. If any node has more than one agent, 
+        # call playEncounter(self, agents, goldResource = None)
+        pass
+    
+
+    def run(self, timesToRun = 1):
         # run the loop for timesToRun times
 
-        for turn in timesToRun:
+        for turn in range(timesToRun):
 
             self.runGameLoop(turn)
 
@@ -127,5 +137,6 @@ class GoldHunters(Game):
 
         for agent in self.agents:
             agent.takeTurn(self.world, self.encounterEngine); # it updates nextAction property in an agent.
+        self.updateGame()
 
 

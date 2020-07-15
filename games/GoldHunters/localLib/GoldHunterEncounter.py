@@ -343,9 +343,10 @@ class GoldHunterEncounter(Encounter):
         return changes
 
 
-    def playEncounter(self, encounter, agents, passiveAgents = None, aggressiveAgents = None, goldResource = None):
+    def playEncounter(self, agents, goldResource = None):
         """Simulates the encounter, returning a dictionary with original agents as its keys and changed agents as its value."""
 
+        ecounter = None # TODO Davin
         passiveAgents = []
         aggressiveAgents = []
 
@@ -424,6 +425,8 @@ class GoldHunterEncounter(Encounter):
 
         else:
             return 0
+
+        return random.randint(1, 10)
 
         pass
         

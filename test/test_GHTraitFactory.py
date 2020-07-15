@@ -1,6 +1,7 @@
 import unittest
 from games.GoldHunters.localLib.GHTraitFactory import GHTraitFactory
 from library.Action import Action
+from games.GoldHunters.localLib.GHActionType import GHActionType
 
 class test_TraitFactory(unittest.TestCase):
 
@@ -13,5 +14,8 @@ class test_TraitFactory(unittest.TestCase):
         print(trait)
         print(len(factory.defaultActions))
 
-        assert factory.defaultActions[0].name == 'MoveUp'
-        assert factory.defaultActions[7].name == 'MoveDownRight'
+        print(factory.defaultActions[0].name)
+        print(factory.defaultActions[7].name)
+
+        assert factory.defaultActions[0].name == GHActionType.MoveUp
+        

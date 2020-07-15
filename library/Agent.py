@@ -65,17 +65,17 @@ class Agent(Object):
     def populateActions(self):
 
         self.actions = []
-        for trait in self.traits:
-            self.actions.extend(trait.actions)
+        for traitName in self.traits:
+            self.actions.extend(self.traits[traitName].actions)
 
 
     def populatePowerActions(self):
 
         self.offensiveActions = []
         self.defensiveActions = []
-        for trait in self.traits:
-            self.offensiveActions.extend( trait.offensiveActions )
-            self.defensiveActions.extend( trait.defensiveActions )
+        for traitName in self.traits:
+            self.offensiveActions.extend( self.traits[traitName].offensiveActions )
+            self.defensiveActions.extend( self.traits[traitName].defensiveActions )
         
 
         pass

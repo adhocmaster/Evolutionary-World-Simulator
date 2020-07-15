@@ -24,10 +24,11 @@ class GHAgentFactory(AgentFactory):
 
         agent = GoldHunterAgent(type = type, id = id, productionHistoryLength = 5, goldQuota = 1)
 
-        agent.setEfficiency(type['efficiency'])
-        agent.setDiggingRate(type['diggingRate'])
-        agent.setStrength(type['strength'])
+        agent.setEfficiency(type.value['efficiency'])
+        agent.setDiggingRate(type.value['diggingRate'])
+        agent.setStrength(type.value['strength'])
         agent.setPerceptionDistance(perceptionDistance)
+        
         agent.addTrait(trait)
        
         return agent

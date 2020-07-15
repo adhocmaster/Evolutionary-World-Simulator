@@ -1,13 +1,46 @@
 import math
 import random
 import copy
+import numpy
 
 from library.Encounter import Encounter
 from library.ResourceType import Resourcetype
 from games.GoldHunters.localLib.GHActionType import GHActionType
+from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
+from games.GoldHunters.localLib.GHAgentType import GHAgentType
 
 
 class GoldHunterEncounter(Encounter):
+
+
+    def __init__(self):
+
+        self.passiveEncounters = [
+
+            self.collaboration, 
+            self.philanthropy, 
+            self.competition, 
+            self.monopoly, 
+            
+        ]
+
+        self.robbingEncounters = [
+
+            self.intimidation, 
+            self.heist, 
+            self.raid
+
+        ]
+
+        self.aggressiveEncounters = [
+
+            self.sabotage, 
+            self.combat
+
+        ]
+
+    def getAllEncounters(self):
+        return self.passiveEncounters + self.robbingEncounters + self.aggressiveEncounters
 
 
     def getTotalMaxGoldPerTurn(self, agents):
@@ -54,6 +87,13 @@ class GoldHunterEncounter(Encounter):
     
     def keyToSortByStrength(self, agent):
         return agent.getStrength()
+
+
+    def getStrongestAgent(self, agents):
+
+        agents = sorted(agents, reverse = True, key = self.keyToSortByStrength)
+
+        return agents[0]
 
 
     def priorityDigging(self, agents, goldResource):
@@ -225,8 +265,8 @@ class GoldHunterEncounter(Encounter):
     def combat(self, agents):
         """Agents fight each other to get gold, strongest agent gets half of everyone's gold"""
 
-        agents = sorted(agents, reverse = True, key = self.keyToSortByStrength)
-        strongestAgent = agents.pop(0)
+        strongestAgent = self.getStrongestAgent(agents)
+        agents.remove(strongestAgent)
 
         goldPrize = 0
 
@@ -281,7 +321,7 @@ class GoldHunterEncounter(Encounter):
         return changes
 
 
-    def playDualTypeEncounter(self, passiveAgents, aggressiveAgents, encounter):
+    def playRobbingEncounter(self, passiveAgents, aggressiveAgents, encounter):
 
         testPassiveAgents = copy.deepcopy(passiveAgents)
         testAggressiveAgents = copy.deepcopy(aggressiveAgents)
@@ -303,39 +343,87 @@ class GoldHunterEncounter(Encounter):
         return changes
 
 
-    def playEncounter(self, encounter, passiveAgents = None, aggressiveAgents = None, goldResource = None):
-        """Input passiveAgents and goldResource parameter to indicate passive agent only encounter (diggers).\n
-           Input aggressiveAgents parameter to indicate aggresive agent only encounter (robbers).\n
-           Input both parameters to indicate dual type encounters (robberies)
-           Returns a dictionary with original agents as its keys and changed agents as its value.
-        """
+    def playEncounter(self, encounter, agents, passiveAgents = None, aggressiveAgents = None, goldResource = None):
+        """Simulates the encounter, returning a dictionary with original agents as its keys and changed agents as its value."""
+
+        passiveAgents = []
+        aggressiveAgents = []
+
+        for agent in agents:
+
+            if agent.type == GHAgentType.DIGGER:
+                passiveAgents.append(agent)
+
+            elif agent.type == GHAgentType.ROBBER:
+                aggressiveAgents.append(agent)
+
+        strongestAgent = self.getStrongestAgent(agents)
+
+
+        if len(passiveAgents) > 0 and len(aggressiveAgents) > 0:
+            return self.playRobbingEncounter(passiveAgents, aggressiveAgents, encounter)
         
-        if passiveAgents != None and aggressiveAgents != None:
-            return self.playDualTypeEncounter(passiveAgents, aggressiveAgents, encounter)
-        
-        elif passiveAgents != None and goldResource != None:
+        elif len(passiveAgents) > 0 and goldResource != None:
             return self.playPassiveEncounter(passiveAgents, goldResource, encounter)
 
-        elif aggressiveAgents != None:
+        elif len(aggressiveAgents) > 0:
             return self.playAggressiveEncounter(aggressiveAgents, encounter)
         
         else:
             return None
 
 
-    def predictPossibleEncounter(self, agent, nextAction, gridworld):
-        # return true or false only. We are predicting that all other agents are gonna move to the cell that this agent would end up in.
+    def addTuples(self, tuple1, tuple2):
+        return tuple(numpy.add(tuple1, tuple2))
 
-        currentLocation = agent.getLocation()
 
-        if nextAction.name == GHActionType.MoveUp:
-            # TODO
-
+    def chooseEncounter(self, decidingAgent, allAgents):
+        #TODO
         pass
 
-    def predictEncounterPayoff(self, agent, nextAction, gridworld):
 
-        # the agent wants to take the nextAction, gridworld represents the world before the turn actually happens. So, there might be some encounters. Predict the encounter and outcome of it.
+    def getPotentialEncounterParticipants(self, locationOfEncounter, gridWorld):
+        """Returns potential agents that could be involved in an encounter at any location."""
+
+        potentialAgents = []
+
+        for xd in range(-1, 2):
+
+            for yd in range(-1, 2):
+
+                inspectingLocation = self.addTuples(locationOfEncounter, (xd, yd))
+
+                potentialAgents.append( gridWorld.getObjectsAtLocation(inspectingLocation) )
+
+        return potentialAgents
+
+
+    def predictPossibleEncounter(self, agent, nextAction, gridWorld):
+        """Return whether an agent's action could result in an encounter."""
+
+        targetLocation = agent.newLocation(agent, nextAction.direction)
+        potentialParticipants = self.getPotentialEncounterParticipants(targetLocation, gridWorld)
+
+        return len(potentialParticipants) > 1
+
+
+    def predictEncounterPayoff(self, agent, nextAction, gridWorld):
+
+        # the agent wants to take the nextAction, gridWorld represents the world before the turn actually happens. So, there might be some encounters. Predict the encounter and outcome of it.
         
+        if self.predictPossibleEncounter(agent, nextAction, gridWorld):
+
+            targetLocation = agent.newLocation(agent, nextAction.direction)
+            potentialAgents = self.getPotentialEncounterParticipants(targetLocation, gridWorld)
+            
+            strongestAgent = self.getStrongestAgent(potentialAgents)
+
+            self.chooseEncounter(strongestAgent, potentialAgents)
+
+
+
+        else:
+            return 0
+
         pass
         

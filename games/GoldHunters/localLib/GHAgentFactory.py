@@ -1,17 +1,12 @@
 from library.AgentFactory import AgentFactory
 from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
 from games.GoldHunters.localLib.GHTraitFactory import GHTraitFactory
+from games.GoldHunters.localLib.GHAgentType import GHAgentType
 import uuid
 import random
 
 GHAgentConfig = {
 
-    'diggerEfficiency': 0.8,
-    'diggerDiggingRate': 10,
-    'diggerStrength': 5,
-    'robberEfficiency': 0.2,
-    'robberDiggingRate': 5,
-    'robberStrength': 10,
     'minPerceptionDistance': 1,
     'maxPerceptionDistance': 3
     
@@ -25,17 +20,16 @@ class GHAgentFactory(AgentFactory):
         self.traitFactory = GHTraitFactory()
 
     
-    def create(self, type, id, trait, efficiency, diggingRate, strength, perceptionDistance):
+    def create(self, type, id, trait, perceptionDistance):
 
-        agent = GoldHunterAgent(type = type, id = id)
+        agent = GoldHunterAgent(type = type, id = id, productionHistoryLength = 5, goldQuota = 1)
 
-        agent.setEfficiency(efficiency)
-        agent.setDiggingRate(diggingRate)
-        agent.setStrength(strength)
+        agent.setEfficiency(type['efficiency'])
+        agent.setDiggingRate(type['diggingRate'])
+        agent.setStrength(type['strength'])
         agent.setPerceptionDistance(perceptionDistance)
         agent.addTrait(trait)
        
-        
         return agent
 
 
@@ -44,7 +38,7 @@ class GHAgentFactory(AgentFactory):
         
         id = hex(uuid.getnode())
         perceptionDistance = random.randint(self.agentConfig['minPerceptionDistance'], self.agentConfig['maxPerceptionDistance'])
-        return self.create('digger', id, trait, self.agentConfig['diggerEfficiency'], self.agentConfig['diggerDiggingRate'], self.agentConfig['diggerStrength'], perceptionDistance)
+        return self.create(GHAgentType.DIGGER, id, trait, perceptionDistance)
 
 
     def buildRobber(self):
@@ -52,7 +46,7 @@ class GHAgentFactory(AgentFactory):
 
         id = hex(uuid.getnode())
         perceptionDistance = random.randint(self.agentConfig['minPerceptionDistance'], self.agentConfig['maxPerceptionDistance'])
-        return self.create('robber', id, trait, self.agentConfig['robberEfficiency'], self.agentConfig['robberDiggingRate'], self.agentConfig['robberStrength'], perceptionDistance)
+        return self.create(GHAgentType.ROBBER, id, trait, perceptionDistance)
 
 
     def buildDiggers(self, numberOfDiggers = 10):

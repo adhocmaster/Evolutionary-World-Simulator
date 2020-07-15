@@ -3,6 +3,7 @@ import math
 from library.Agent import Agent
 from library.ResourceType import Resourcetype
 from library.GridWorld import GridWorld
+from games.GoldHunters.localLib.GHAgentType import GHAgentType
 from games.GoldHunters.localLib.NotFoundInTheWorld import NotFoundInTheWorld
 
 
@@ -12,6 +13,15 @@ class GoldHunterAgent(Agent):
     # 1. diggingRate: maximum amount an agent can dig from the resource
     # 2. efficiency : .8 means it can get a maximum of 80% of the gold collected, discard the other 20%
     # 3. max amount of gold per turn: efficiency * diggingRate.
+
+
+    def __init__(self, type, id, productionHistoryLength, goldQuota):
+
+        super().__init__(type = type, id = id)
+
+        self.previousGoldOwned = []
+        self.productionHistoryLength = productionHistoryLength
+        self.goldQuota = goldQuota
 
 
     def addGold(self, amount):
@@ -138,16 +148,46 @@ class GoldHunterAgent(Agent):
 
     def takeTurn(self, gridworld, encounterEngine):
 
+        self.previousGoldOwned.append(self.getGold())
+
+        if len(self.previousGoldOwned) > self.productionHistoryLength:
+            self.previousGoldOwned.pop(0)
+
         self.percieveWorld(gridworld)
 
-        self.updateStrategy(gridworld)
+        self.updateStrategy()
 
         self.takeAction(gridworld, encounterEngine)
 
         pass
 
+    
+    def updateProperties(self):
 
-    def updateStrategy(self, gridworld):
+        self.setEfficiency(self.type['efficiency'])
+        self.setDiggingRate(self.type['diggingRate'])
+        self.setStrength(self.type['strength'])
+
+
+    def changeStrategy(self):
+        
+        if self.type == GHAgentType.DIGGER:
+            self.type == GHAgentType.ROBBER
+        else:
+            self.type == GHAgentType.DIGGER
+
+        self.updateProperties()
+
+
+    def updateStrategy(self):
+
+        if len(self.previousGoldOwned) == self.productionHistoryLength:
+
+            goldGained = self.previousGoldOwned[4] - self.previousGoldOwned[0]
+
+            if goldGained < self.goldQuota:
+                self.changeStrategy()
+
         pass
 
     
@@ -164,9 +204,12 @@ class GoldHunterAgent(Agent):
         payoff = {}
 
         for action in self.actions:
+
             if encounterEngine.predictPossibleEncounter(self, action, gridworld):
                 payoff[action] = encounterEngine.predictEncounterPayoff(self, action, gridworld)
+
             else:
+
                 newLocation = self.newLocation(action.direction)
                 objectAtLocation = gridworld.getObjectsAtLocation(newLocation)
                 payoff[action] = objectAtLocation.value

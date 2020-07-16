@@ -19,8 +19,13 @@ class GoldHunterAgent(Agent):
 
         super().__init__(type = type, id = id)
 
+        # Every turn we record the amount of gold the agent accumulated.
         self.previousGoldOwned = []
+
+        # TODO explain how this property is used
         self.productionHistoryLength = productionHistoryLength
+
+        # TODO explain how this property is used
         self.goldQuota = goldQuota
 
 
@@ -162,32 +167,18 @@ class GoldHunterAgent(Agent):
         pass
 
     
-    def updateProperties(self):
+    def updateStrategyProperties(self):
 
         self.setEfficiency(self.type['efficiency'])
         self.setDiggingRate(self.type['diggingRate'])
         self.setStrength(self.type['strength'])
+        pass
 
-
-    def changeStrategy(self):
-        
-        if self.type == GHAgentType.DIGGER:
-            self.type == GHAgentType.ROBBER
-        else:
-            self.type == GHAgentType.DIGGER
-
-        self.updateProperties()
 
 
     def updateStrategy(self):
 
-        if len(self.previousGoldOwned) == self.productionHistoryLength:
-
-            goldGained = self.previousGoldOwned[4] - self.previousGoldOwned[0]
-
-            if goldGained < self.goldQuota:
-                self.changeStrategy()
-
+        self.strategy.update(self)
         pass
 
     
@@ -210,15 +201,17 @@ class GoldHunterAgent(Agent):
 
             else:
 
-                newLocation = self.newLocation(action.direction)
-                objectAtLocation = gridworld.getObjectsAtLocation(newLocation)
-                payoff[action] = objectAtLocation.value
+                newLocation = self.aLocationNearby(action.direction)
+                resources = gridworld.getResourcesAtLocation(newLocation) 
+                # How do we define value of a location?
+                payoff[action] = resources.value # this needs to be updated.
 
         bestAction = max(payoff, key=payoff.get) # Action with max value.
         self.setNextAction(bestAction)
 
 
-    def newLocation(self, direction):
+    # TODO the name is confusing. 
+    def aLocationNearby(self, direction):
 
         currentLocation = self.getLocation()
         return (currentLocation[0] + direction[0], currentLocation[1] + direction[1])

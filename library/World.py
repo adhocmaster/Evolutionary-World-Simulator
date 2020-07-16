@@ -43,26 +43,43 @@ class World(ABC):
         return self.nodes
 
 
-    def getObjectsAt(self, id):
-        if id in self.nodes:
-            return self.nodes[id].objects
-        else:
-            raise Exception(f"Node node in the world with id {id}")
-        pass
+    # def getObjectsAt(self, id):
+    #     if id in self.nodes:
+    #         return self.nodes[id].objects
+    #     else:
+    #         raise Exception(f"Node node in the world with id {id}")
+    #     pass
         
     
-    def addToNode(self, id, object):
+    def addAgentToNode(self, id, agent):
 
         if id in self.nodes:
-            self.nodes[id].add(object)
+            self.nodes[id].addAgent(agent)
         else:
             raise Exception(f"Node node in the world with id {id}")
         pass
 
 
-    def removeFromNode(self, id, object):
+    def removeAgentFromNode(self, id, agent):
         if id in self.nodes:
-            self.nodes[id].remove(object)
+            self.nodes[id].removeAgent(agent)
+        else:
+            raise Exception(f"Node node in the world with id {id}")
+        pass
+
+    
+    def addResourceToNode(self, id, resource):
+
+        if id in self.nodes:
+            self.nodes[id].add(resource)
+        else:
+            raise Exception(f"Node node in the world with id {id}")
+        pass
+
+
+    def removeResourceFromNode(self, id, resource):
+        if id in self.nodes:
+            self.nodes[id].remove(resource)
         else:
             raise Exception(f"Node node in the world with id {id}")
         pass

@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from library.Object import Object
+from collections import deque
 
 class Agent(Object):
 
@@ -13,7 +14,8 @@ class Agent(Object):
             initialTraits = None, 
             inventory = None, 
             rules = None,
-            otherProperties = None
+            otherProperties = None, 
+            strategy = None
         ):
 
         super().__init__(id, type)
@@ -50,7 +52,10 @@ class Agent(Object):
         else:
             self.rules = rules
 
-        self.history = {}
+        self.history = deque(maxlen=100) # TODO should be read from environment settings
+
+        self.strategy = strategy
+
         
         self.reloadActionsFromTraits()
 
@@ -145,6 +150,12 @@ class Agent(Object):
         else:
             raise Exception(f'No such item in otherProperties with key {key}')
         pass
+
+
+    def logToHistory(self, tag,  message):
+
+        self.history.append( tag + ': ' + message)
+       
 
     
     def takeTurn(self, state):

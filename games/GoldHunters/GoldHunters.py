@@ -59,7 +59,7 @@ class GoldHunters(Game):
         agent.updateAgentLocation(newLocation)
 
         print(f"adding agent {agent} to location {newLocation}")
-        self.world.addToLocation(newLocation, agent)
+        self.world.addAgentToLocation(newLocation, agent)
 
         pass
 
@@ -68,7 +68,7 @@ class GoldHunters(Game):
         try:
             oldLocation = agent.getLocation()
             print(f"removing agent {agent} from location {oldLocation}")
-            self.world.removeFromLocation(oldLocation, agent)
+            self.world.removeAgentFromLocation(oldLocation, agent)
         except NotFoundInTheWorld as e:
             pass
         except Exception as e:

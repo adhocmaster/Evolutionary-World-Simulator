@@ -6,7 +6,8 @@ class Node(Object):
         super().__init__(id, name)
         
         self.position = position
-        self.objects = []
+        self.agents = []
+        self.resources = []
         pass
 
 
@@ -15,18 +16,30 @@ class Node(Object):
             f"id: {self.id} \n"
             f"name: {self.name} \n"
             f"position: {self.position} \n"
-            f"objects: {self.objects} \n"
+            f"objects: {self.agents} \n"
+            f"objects: {self.resources} \n"
         )
         
 
-    def add(self, object):
-        self.objects.append(object)
+    def addAgent(self, agent):
+        self.agents.append(agent)
         pass
 
 
-    def remove(self, object):
-        if object in self.objects:
-            self.objects.remove(object)
+    def removeAgent(self, agent):
+        if agent in self.agents:
+            self.agents.remove(agent)
+        pass
+
+
+    def addResource(self, resource):
+        self.resources.append(resource)
+        pass
+
+
+    def removeResource(self, resource):
+        if resource in self.resources:
+            self.resources.remove(resource)
         pass
 
 

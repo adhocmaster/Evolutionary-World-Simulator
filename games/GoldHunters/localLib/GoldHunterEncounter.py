@@ -9,6 +9,7 @@ from games.GoldHunters.localLib.GHActionType import GHActionType
 from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
 from games.GoldHunters.localLib.GHAgentType import GHAgentType
 
+# state-less
 
 class GoldHunterEncounter(Encounter):
 
@@ -178,7 +179,7 @@ class GoldHunterEncounter(Encounter):
 
                 inspectingLocation = self.addTuples(locationOfEncounter, (xd, yd))
 
-                potentialAgents.append( gridWorld.getObjectsAtLocation(inspectingLocation) )
+                potentialAgents.append( gridWorld.getAgentsAtLocation(inspectingLocation) )
 
         return potentialAgents
 
@@ -202,7 +203,7 @@ class GoldHunterEncounter(Encounter):
     def predictPossibleEncounter(self, agent, nextAction, gridWorld):
         """Return whether an agent's action could result in an encounter."""
 
-        targetLocation = agent.newLocation(agent, nextAction.direction)
+        targetLocation = agent.aLocationNearby(agent, nextAction.direction)
         potentialParticipants = self.getPotentialEncounterParticipants(targetLocation, gridWorld)
 
         return len(potentialParticipants) > 1

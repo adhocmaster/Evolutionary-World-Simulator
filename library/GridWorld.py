@@ -1,4 +1,6 @@
 from library.World import World
+from library.Agent import Agent
+from library.Resource import Resource
 
 class GridWorld(World):
 
@@ -39,20 +41,42 @@ class GridWorld(World):
         """
         return self.getNode(self.getIdFromLocation(location))
 
-    def addToLocation(self, location, obj):
+    def addAgentToLocation(self, location, agent):
         id = self.getIdFromLocation(location)
-        super().addToNode(id, obj)
+        super().addAgentToNode(id, agent)
         pass
 
 
-    def removeFromLocation(self, location, obj):
+    def removeAgentFromLocation(self, location, agent):
         id = self.getIdFromLocation(location)
-        super().removeFromNode(id, obj)
+        super().removeAgentFromNode(id, agent)
         pass
 
-    def getObjectsAtLocation(self, location):
+    def addResourceToLocation(self, location, resource):
         id = self.getIdFromLocation(location)
-        return self.getNode(id).objects
+        super().addResourceToNode(id, resource)
+        pass
+
+
+    def removeResourceFromLocation(self, location, resource):
+        id = self.getIdFromLocation(location)
+        super().removeResourceFromNode(id, resource)
+        pass
+
+    def getAgentsAtLocation(self, location):
+        # TODO the client should cache the results per turn
+
+        id = self.getIdFromLocation(location)
+        return self.getNode(id).agents
+
+
+    def getResourcesAtLocation(self, location):
+        # TODO the client should cache the results per turn
+
+        id = self.getIdFromLocation(location)
+        return self.getNode(id).resources
+
+
 
 
 

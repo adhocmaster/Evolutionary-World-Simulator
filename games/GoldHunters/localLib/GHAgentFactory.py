@@ -2,6 +2,7 @@ from library.AgentFactory import AgentFactory
 from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
 from games.GoldHunters.localLib.GHTraitFactory import GHTraitFactory
 from games.GoldHunters.localLib.GHAgentType import GHAgentType
+from games.GoldHunters.strategies.TurnThreshholdStrategy import TurnThreshholdStrategy
 import uuid
 import random
 
@@ -15,9 +16,12 @@ GHAgentConfig = {
 class GHAgentFactory(AgentFactory):
 
 
-    def __init__(self, agentConfig = GHAgentConfig):
+    def __init__(self, agentConfig = GHAgentConfig, strategy = None):
         self.agentConfig = agentConfig
         self.traitFactory = GHTraitFactory()
+        self.strategy = strategy
+        self.defaultStrategy = TurnThreshholdStrategy()
+        pass
 
     
     def create(self, type, id, trait, perceptionDistance):
@@ -30,6 +34,11 @@ class GHAgentFactory(AgentFactory):
         agent.setPerceptionDistance(perceptionDistance)
         
         agent.addTrait(trait)
+
+        if self.strategy is None:
+            agent.strategy = self.defaultStrategy
+        else:
+            agent.strategy = self.strategy
        
         return agent
 

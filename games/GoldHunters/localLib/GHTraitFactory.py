@@ -21,8 +21,8 @@ class GHTraitFactory(TraitFactory):
             GHMoveAction(GHActionType.MoveUpRight, (1, 1)), 
             GHMoveAction(GHActionType.MoveDownLeft, (-1, -1)), 
             GHMoveAction(GHActionType.MoveDownRight, (1, -1)),
-            Action("dig"),
-            Action("rob")
+            Action(GHActionType.Dig),
+            Action(GHActionType.Rob)
         ]
 
     def createRandom(self):

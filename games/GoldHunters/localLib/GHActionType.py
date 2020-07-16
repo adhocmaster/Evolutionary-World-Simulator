@@ -3,7 +3,14 @@ from enum import Enum
 class GHActionType(Enum):
     # TODO
     MoveUp = 'MoveUp',
-    MoveDown = 'MoveDown', 
+    MoveDown = 'MoveDown',
+    MoveLeft = 'MoveLeft',
+    MoveRight = 'MoveRight', 
+    MoveUpLeft = 'MoveUpLeft',
+    MoveUpRight = 'MoveUpRight',
+    MoveDownLeft = 'MoveDownLeft',
+    MoveDownRight = 'MoveDownRight'
+
     # GHMoveAction('MoveLeft', (-1, 0)), 
     # GHMoveAction('MoveRight', (1, 0)), 
     # GHMoveAction('MoveUpLeft', (-1, 1)),

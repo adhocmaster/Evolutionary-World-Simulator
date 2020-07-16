@@ -14,13 +14,13 @@ class GHTraitFactory(TraitFactory):
 
         self.defaultActions = [
             GHMoveAction(GHActionType.MoveUp, (0, 1)), 
-            GHMoveAction('MoveDown', (0, -1)), 
-            GHMoveAction('MoveLeft', (-1, 0)), 
-            GHMoveAction('MoveRight', (1, 0)), 
-            GHMoveAction('MoveUpLeft', (-1, 1)),
-            GHMoveAction('MoveUpRight', (1, 1)), 
-            GHMoveAction('MoveDownLeft', (-1, -1)), 
-            GHMoveAction('MoveDownRight', (1, -1)),
+            GHMoveAction(GHActionType.MoveDown, (0, -1)), 
+            GHMoveAction(GHActionType.MoveLeft, (-1, 0)), 
+            GHMoveAction(GHActionType.MoveRight, (1, 0)), 
+            GHMoveAction(GHActionType.MoveUpLeft, (-1, 1)),
+            GHMoveAction(GHActionType.MoveUpRight, (1, 1)), 
+            GHMoveAction(GHActionType.MoveDownLeft, (-1, -1)), 
+            GHMoveAction(GHActionType.MoveDownRight, (1, -1)),
             Action("dig"),
             Action("rob")
         ]

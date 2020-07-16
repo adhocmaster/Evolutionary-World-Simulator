@@ -39,88 +39,190 @@ class GoldHunterEncounter(Encounter):
 
         ]
 
-    def getAllEncounters(self):
-        return self.passiveEncounters + self.robbingEncounters + self.aggressiveEncounters
+    # TODO combine similarities in the simulate functions
+    def simulateAllPassiveEncounters(self, agents, goldResource):
 
+        allChanges = []
 
-    def getTotalMaxGoldPerTurn(self, agents):
+        for encounter in self.passiveEncounters:
 
-        totalMaxGold = 0
+            testAgents = copy.deepcopy(agents)
+            testGoldResource = copy.deepcopy(goldResource)
 
-        for agent in agents:
-            totalMaxGold += agent.getMaxGoldPerTurn()
-        
-        return totalMaxGold
-
-    
-    def getTotalStrength(self, agents):
-
-        totalStrength = 0
-
-        for agent in agents:
-            totalStrength += agent.getStrength()
-
-        return totalStrength
-
-    
-    def getAverageStrength(self, agents):
-
-        totalStrength = self.getTotalStrength(agents)
-        avgStrength = totalStrength / len(agents)
-        
-        return avgStrength
-
-    
-    def getTotalGoldOwned(self, agents):
-
-        totalGold = 0
-
-        for agent in agents:
-            totalGold += agent.getGold()
-        
-        return totalGold
-
-
-    def keyToSortByGold(self, agent):
-        return agent.getGold()
-
-    
-    def keyToSortByStrength(self, agent):
-        return agent.getStrength()
-
-
-    def getStrongestAgent(self, agents):
-
-        agents = sorted(agents, reverse = True, key = self.keyToSortByStrength)
-
-        return agents[0]
-
-
-    def priorityDigging(self, agents, goldResource):
-        """Diggers dig once in a set order."""
-
-        totalAmountCollected = 0
-
-        for agent in agents:
             
-            amountCollected = agent.dig(goldResource)
-            agent.addGold(amountCollected)
-            totalAmountCollected += amountCollected
-        
-        return totalAmountCollected
+            encounter(testAgents, testGoldResource)
+
+            changes = {goldResource : testGoldResource}
+
+            for i in range(testAgents):
+
+                realAgent = agents[i]
+                testAgent = testAgents[i]
+
+                changes[realAgent] = testAgent
+            
+            allChanges.append(changes)
+
+        return allChanges
+
+    
+    def simulateAllAggressiveEncounters(self, agents):
+
+        allChanges = []
+
+        for encounter in self.aggressiveEncounters:
+
+            testAgents = copy.deepcopy(agents)
+
+            encounter(testAgents)
+
+            changes = {}
+
+            for i in range(testAgents):
+
+                realAgent = agents[i]
+                testAgent = testAgents[i]
+
+                changes[realAgent] = testAgent
+
+            allChanges.append(changes)
+
+        return allChanges
 
 
-    def collectiveDigging(self, agents, goldResource):
-        """All diggers pool their collections for future distribution."""
+    def simulateAllRobbingEncounters(self, passiveAgents, aggressiveAgents):
 
-        totalAmountCollected = 0
+        allChanges = []
+
+        for encounter in self.robbingEncounters:
+
+            testPassiveAgents = copy.deepcopy(passiveAgents)
+            testAggressiveAgents = copy.deepcopy(aggressiveAgents)
+
+            encounter(passiveAgents, aggressiveAgents)
+
+            changes = {}
+
+            allRealAgents = passiveAgents + aggressiveAgents
+            allTestAgents = testPassiveAgents + testAggressiveAgents
+
+            for i in range(allTestAgents):
+
+                realAgent = allRealAgents[i]
+                testAgent = allTestAgents[i]
+
+                changes[realAgent] = testAgent
+
+            allChanges.append(changes)
+
+        return allChanges
+
+
+    def getEncounterResults(self, agents, goldResource = None):
+        """
+        Simulates the event in which these agents meet.
+        Returns the encounter results as a dictionary with original agents as its keys and changed agents as its value.
+        """
+
+        passiveAgents = []
+        aggressiveAgents = []
 
         for agent in agents:
 
-            amountCollected = agent.dig(goldResource)
-            totalAmountCollected += amountCollected
+            if agent.type == GHAgentType.DIGGER:
+                passiveAgents.append(agent)
+
+            elif agent.type == GHAgentType.ROBBER:
+                aggressiveAgents.append(agent)
+
+        allEncounterResults = []
+
+        if len(passiveAgents) > 0 and len(aggressiveAgents) > 0:
+            allEncounterResults = self.simulateAllRobbingEncounters(passiveAgents, aggressiveAgents)
         
-        return totalAmountCollected
+        elif len(passiveAgents) > 0 and goldResource != None:
+            allEncounterResults = self.simulateAllPassiveEncounters(passiveAgents, goldResource)
+
+        elif len(aggressiveAgents) > 0:
+            allEncounterResults = self.simulateAllAggressiveEncounters(aggressiveAgents)
+
+        strongestAgent = self.getStrongestAgent(agents)
+        
+        return self.getHighestPayoffEncounter(strongestAgent, allEncounterResults)
+
+
+    def predictEncounterPayoff(self, agent, nextAction, gridWorld):
+        '''Predicts the agent's payoff if the agent takes a certain action'''
+
+        if self.predictPossibleEncounter(agent, nextAction, gridWorld):
+
+            targetLocation = agent.newLocation(agent, nextAction.direction)
+            potentialAgents = self.getPotentialEncounterParticipants(targetLocation, gridWorld)
+            goldResource = self.getGoldResourceAtLocation(targetLocation, gridWorld)
+            
+            encounterResults = self.getEncounterResults(potentialAgents, goldResource)
+
+            return self.getPayoffFromEncounterResults(agent, encounterResults)
+
+        return 0
+
+
+    def getPotentialEncounterParticipants(self, locationOfEncounter, gridWorld):
+        """Returns potential agents that could be involved in an encounter at any location."""
+
+        potentialAgents = []
+
+        for xd in range(-1, 2):
+
+            for yd in range(-1, 2):
+
+                inspectingLocation = self.addTuples(locationOfEncounter, (xd, yd))
+
+                potentialAgents.append( gridWorld.getObjectsAtLocation(inspectingLocation) )
+
+        return potentialAgents
+
+
+    def getHighestPayoffEncounter(self, decidingAgent, allEncounterResults):
+        
+        bestChanges = {}
+        highestGoldDifference = -1 * math.inf
+        for encounterResults in allEncounterResults:
+
+            goldDifference = self.getPayoffFromEncounterResults(decidingAgent, encounterResults)
+
+            if goldDifference > highestGoldDifference:
+
+                bestChanges = encounterResults
+                highestGoldDifference = goldDifference
+
+        return bestChanges
+
+
+    def predictPossibleEncounter(self, agent, nextAction, gridWorld):
+        """Return whether an agent's action could result in an encounter."""
+
+        targetLocation = agent.newLocation(agent, nextAction.direction)
+        potentialParticipants = self.getPotentialEncounterParticipants(targetLocation, gridWorld)
+
+        return len(potentialParticipants) > 1
+
+
+    def getGoldResourceAtLocation(self, location, gridWorld):
+
+        resourceList = gridWorld.getObjectsAtLocation(location)
+
+        if len(resourceList > 0):
+            return resourceList[0]
+
+        else:
+            return None
+
+    
+    def getPayoffFromEncounterResults(self, agent, encounterResults):
+
+        newGold = encounterResults[agent].getGold()
+        return newGold - agent.getGold()
 
     # ENCOUNTERS START HERE #
 
@@ -283,150 +385,90 @@ class GoldHunterEncounter(Encounter):
         strongestAgent.addGold(goldPrize)
         strongestAgent.removeGold(winnerFightingPenalty)
 
+    # ENCOUNTERS END HERE #
 
-    def playPassiveEncounter(self, agents, goldResource, encounter):
+    def priorityDigging(self, agents, goldResource):
+        """Diggers dig once in a set order."""
 
-        testAgents = copy.deepcopy(agents)
-        testGoldResource = copy.deepcopy(goldResource)
+        totalAmountCollected = 0
 
-        encounter(testAgents, testGoldResource)
-
-        changes = {goldResource : testGoldResource}
-
-        for i in range(testAgents):
-
-            realAgent = agents[i]
-            testAgent = testAgents[i]
-
-            changes[realAgent] = testAgent
-
-        return changes
-
-    
-    def playAggressiveEncounter(self, agents, encounter):
-
-        testAgents = copy.deepcopy(agents)
-
-        encounter(testAgents)
-
-        changes = {}
-
-        for i in range(testAgents):
-
-            realAgent = agents[i]
-            testAgent = testAgents[i]
-
-            changes[realAgent] = testAgent
-
-        return changes
+        for agent in agents:
+            
+            amountCollected = agent.dig(goldResource)
+            agent.addGold(amountCollected)
+            totalAmountCollected += amountCollected
+        
+        return totalAmountCollected
 
 
-    def playRobbingEncounter(self, passiveAgents, aggressiveAgents, encounter):
+    def collectiveDigging(self, agents, goldResource):
+        """All diggers pool their collections for future distribution."""
 
-        testPassiveAgents = copy.deepcopy(passiveAgents)
-        testAggressiveAgents = copy.deepcopy(aggressiveAgents)
-
-        encounter(passiveAgents, aggressiveAgents)
-
-        changes = {}
-
-        allRealAgents = passiveAgents + aggressiveAgents
-        allTestAgents = testPassiveAgents + testAggressiveAgents
-
-        for i in range(allTestAgents):
-
-            realAgent = allRealAgents[i]
-            testAgent = allTestAgents[i]
-
-            changes[realAgent] = testAgent
-
-        return changes
-
-
-    def playEncounter(self, agents, goldResource = None):
-        """Simulates the encounter, returning a dictionary with original agents as its keys and changed agents as its value."""
-
-        ecounter = None # TODO Davin
-        passiveAgents = []
-        aggressiveAgents = []
+        totalAmountCollected = 0
 
         for agent in agents:
 
-            if agent.type == GHAgentType.DIGGER:
-                passiveAgents.append(agent)
-
-            elif agent.type == GHAgentType.ROBBER:
-                aggressiveAgents.append(agent)
-
-        strongestAgent = self.getStrongestAgent(agents)
-
-
-        if len(passiveAgents) > 0 and len(aggressiveAgents) > 0:
-            return self.playRobbingEncounter(passiveAgents, aggressiveAgents, encounter)
+            amountCollected = agent.dig(goldResource)
+            totalAmountCollected += amountCollected
         
-        elif len(passiveAgents) > 0 and goldResource != None:
-            return self.playPassiveEncounter(passiveAgents, goldResource, encounter)
+        return totalAmountCollected
 
-        elif len(aggressiveAgents) > 0:
-            return self.playAggressiveEncounter(aggressiveAgents, encounter)
+
+    def getTotalMaxGoldPerTurn(self, agents):
+
+        totalMaxGold = 0
+
+        for agent in agents:
+            totalMaxGold += agent.getMaxGoldPerTurn()
         
-        else:
-            return None
+        return totalMaxGold
+
+    
+    def getTotalStrength(self, agents):
+
+        totalStrength = 0
+
+        for agent in agents:
+            totalStrength += agent.getStrength()
+
+        return totalStrength
+
+    
+    def getAverageStrength(self, agents):
+
+        totalStrength = self.getTotalStrength(agents)
+        avgStrength = totalStrength / len(agents)
+        
+        return avgStrength
+
+    
+    def getTotalGoldOwned(self, agents):
+
+        totalGold = 0
+
+        for agent in agents:
+            totalGold += agent.getGold()
+        
+        return totalGold
+
+
+    def keyToSortByGold(self, agent):
+        return agent.getGold()
+
+    
+    def keyToSortByStrength(self, agent):
+        return agent.getStrength()
+
+
+    def getStrongestAgent(self, agents):
+
+        agents = sorted(agents, reverse = True, key = self.keyToSortByStrength)
+        return agents[0]
 
 
     def addTuples(self, tuple1, tuple2):
         return tuple(numpy.add(tuple1, tuple2))
 
 
-    def chooseEncounter(self, decidingAgent, allAgents):
-        #TODO
-        pass
-
-
-    def getPotentialEncounterParticipants(self, locationOfEncounter, gridWorld):
-        """Returns potential agents that could be involved in an encounter at any location."""
-
-        potentialAgents = []
-
-        for xd in range(-1, 2):
-
-            for yd in range(-1, 2):
-
-                inspectingLocation = self.addTuples(locationOfEncounter, (xd, yd))
-
-                potentialAgents.append( gridWorld.getObjectsAtLocation(inspectingLocation) )
-
-        return potentialAgents
-
-
-    def predictPossibleEncounter(self, agent, nextAction, gridWorld):
-        """Return whether an agent's action could result in an encounter."""
-
-        targetLocation = agent.newLocation(agent, nextAction.direction)
-        potentialParticipants = self.getPotentialEncounterParticipants(targetLocation, gridWorld)
-
-        return len(potentialParticipants) > 1
-
-
-    def predictEncounterPayoff(self, agent, nextAction, gridWorld):
-
-        # the agent wants to take the nextAction, gridWorld represents the world before the turn actually happens. So, there might be some encounters. Predict the encounter and outcome of it.
-        
-        if self.predictPossibleEncounter(agent, nextAction, gridWorld):
-
-            targetLocation = agent.newLocation(agent, nextAction.direction)
-            potentialAgents = self.getPotentialEncounterParticipants(targetLocation, gridWorld)
-            
-            strongestAgent = self.getStrongestAgent(potentialAgents)
-
-            self.chooseEncounter(strongestAgent, potentialAgents)
-
-
-
-        else:
-            return 0
-
-        return random.randint(1, 10)
-
-        pass
-        
+    def getAllEncounters(self):
+        return self.passiveEncounters + self.robbingEncounters + self.aggressiveEncounters

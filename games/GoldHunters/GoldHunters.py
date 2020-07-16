@@ -119,7 +119,7 @@ class GoldHunters(Game):
     def doEncounters(self):
 
         # iterate through all the nodes in the world. If any node has more than one agent, 
-        # call playEncounter(self, agents, goldResource = None)
+        # call getEncounterResults(self, agents, goldResource = None)
         pass
     
 
@@ -136,7 +136,7 @@ class GoldHunters(Game):
     def runGameLoop(self, turn):
 
         for agent in self.agents:
-            agent.takeTurn(self.world, self.encounterEngine); # it updates nextAction property in an agent.
+            agent.takeTurn(self.world, self.encounterEngine) # it updates nextAction property in an agent.
         self.updateGame()
 
 

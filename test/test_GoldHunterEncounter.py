@@ -146,6 +146,47 @@ class test_GoldHunterEncounter(unittest.TestCase):
         for digger in diggers:
             totalDiggingPower += digger.getDiggingRate()
 
-        encounter.collaboration(diggers, goldResource)
+        encounter.collaboration(passiveAgents = diggers, goldResource = goldResource)
 
-        assert goldResource.getQuantity() == 1000 - totalDiggingPower 
+        assert goldResource.getQuantity() == 1000 - totalDiggingPower
+
+    
+    def test_getAllEncounters(self):
+
+        encounterEngine = GoldHunterEncounter()
+
+        encounters = encounterEngine.getAllEncounters()
+
+        actualEncounters = encounterEngine.passiveEncounters + encounterEngine.robbingEncounters + encounterEngine.aggressiveEncounters
+
+        assert encounters == actualEncounters
+
+    
+    def test_addTuples(self):
+
+        encounterEngine = GoldHunterEncounter()
+
+        tuple1 = (5, 7)
+        tuple2 = (8, 1)
+
+        addedTuple = encounterEngine.addTuples(tuple1, tuple2)
+        actualAddedTuple = (13, 8)
+
+        assert addedTuple == actualAddedTuple
+
+    
+    def test_getStrongestAgent(self):
+
+        agentFactory = GHAgentFactory()
+        encounterEngine = GoldHunterEncounter()
+
+        agents = agentFactory.buildRobbers(10)
+        agents[0].setStrength(1000000)
+
+        strongestAgent = encounterEngine.getStrongestAgent(agents)
+        actualStrongestAgent = agents[0]
+
+        assert actualStrongestAgent == strongestAgent
+
+    
+    

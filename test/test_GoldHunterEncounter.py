@@ -134,23 +134,6 @@ class test_GoldHunterEncounter(unittest.TestCase):
         assert goldResource.getQuantity() == 0
 
     
-    def test_collaboration(self):
-
-        agentFactory = GHAgentFactory()
-        encounter = GoldHunterEncounter()
-
-        goldResource = GoldResource(1000)
-        diggers = agentFactory.buildDiggers(10)
-
-        totalDiggingPower = 0
-        for digger in diggers:
-            totalDiggingPower += digger.getDiggingRate()
-
-        encounter.collaboration(passiveAgents = diggers, goldResource = goldResource)
-
-        assert goldResource.getQuantity() == 1000 - totalDiggingPower
-
-    
     def test_getAllEncounters(self):
 
         encounterEngine = GoldHunterEncounter()
@@ -189,4 +172,117 @@ class test_GoldHunterEncounter(unittest.TestCase):
         assert actualStrongestAgent == strongestAgent
 
     
+    def test_collaboration(self):
+
+        agentFactory = GHAgentFactory()
+        encounter = GoldHunterEncounter()
+
+        goldResource = GoldResource(1000)
+        diggers = agentFactory.buildDiggers(10)
+
+        totalDiggingPower = 0
+        for digger in diggers:
+            totalDiggingPower += digger.getDiggingRate()
+
+        encounter.collaboration(passiveAgents = diggers, goldResource = goldResource)
+
+        assert goldResource.getQuantity() == 1000 - totalDiggingPower
+
+
+    def test_philanthropy(self):
+
+        agentFactory = GHAgentFactory()
+        encounter = GoldHunterEncounter()
+
+        goldResource = GoldResource(1000)
+        diggers = agentFactory.buildDiggers()
+
+        totalDiggingPower = 0
+
+        for digger in diggers:
+            totalDiggingPower += digger.getDiggingRate()
+
+        encounter.philanthropy(passiveAgents = diggers, goldResource = goldResource)
+
+        assert goldResource.getQuantity() == 1000 - totalDiggingPower
+
+    
+    def test_competition(self):
+
+        agentFactory = GHAgentFactory()
+        encounter = GoldHunterEncounter()
+
+        goldResource = GoldResource(1000)
+        diggers = agentFactory.buildDiggers()
+
+        totalDiggingPower = 0
+        for digger in diggers:
+            totalDiggingPower += digger.getDiggingRate()
+
+        encounter.competition(passiveAgents = diggers, goldResource = goldResource)
+
+        assert goldResource.getQuantity() == 1000 - totalDiggingPower
+        
+
+        goldResource = GoldResource(100)
+
+        oldGoldValues = {}
+        for digger in diggers:
+            oldGoldValues[digger] = digger.getGold()
+
+        encounter.competition(passiveAgents = diggers, goldResource = goldResource)
+
+        for digger in oldGoldValues.keys():
+            oldGoldValue = oldGoldValues[digger]
+            assert digger.getGold() - oldGoldValue <= digger.getMaxGoldPerTurn()
+
+    
+    def test_monopoly(self):
+
+        agentFactory = GHAgentFactory()
+        encounter = GoldHunterEncounter()
+
+        goldResource = GoldResource(1000)
+        diggers = agentFactory.buildDiggers()
+
+        totalDiggingPower = 0
+
+        for digger in diggers:
+            totalDiggingPower += digger.getDiggingRate()
+
+        encounter.monopoly(passiveAgents = diggers, goldResource = goldResource)
+
+        assert goldResource.getQuantity() == 1000 - totalDiggingPower
+        # TODO test if strongest agents get gold first in a low gold resource scenario
+
+    
+    def test_intimidation(self):
+
+        agentFactory = GHAgentFactory()
+        encounter = GoldHunterEncounter()
+
+        diggers = agentFactory.buildDiggers(5)
+        robbers = agentFactory.buildRobbers(5)
+
+        totalDiggerStrength = encounter.getTotalStrength(diggers)
+        totalRobberStrength = encounter.getTotalStrength(robbers)
+
+        oldRobberGold = {}
+        for robber in robbers:
+            robber.addGold(100)
+            oldRobberGold[robber] = robber.getGold()
+
+        oldDiggerGold = {}
+        for digger in diggers:
+            digger.addGold(100)
+            oldDiggerGold[digger] = digger.getGold()
+
+        encounter.intimidation(aggressiveAgents = robbers, passiveAgents = diggers)
+
+        if totalRobberStrength >= 2 * totalDiggerStrength:
+            pass
+        # TODO continue making the test
+
+        pass
+
     

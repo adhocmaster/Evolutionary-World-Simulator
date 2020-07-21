@@ -47,7 +47,7 @@ class GoldResource(Resource):
         return self.quantity
 
     
-    def dig(self, attemptedAmount):
+    def deplete(self, attemptedAmount):
 
         self.quantity = self.quantity - self.amountPerDig(attemptedAmount)
         

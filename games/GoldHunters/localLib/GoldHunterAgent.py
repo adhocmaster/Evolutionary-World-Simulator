@@ -132,10 +132,10 @@ class GoldHunterAgent(Agent):
     def dig(self, resource):
         
         amountDug = resource.amountPerDig(self.getDiggingRate())
-        resource.dig(amountDug)
+        resource.deplete(amountDug)
         collectableAmount = math.ceil(amountDug * self.getEfficiency())
         return collectableAmount
-        
+
 
     def getMaxCollectableFromResource(self, goldResource):
         

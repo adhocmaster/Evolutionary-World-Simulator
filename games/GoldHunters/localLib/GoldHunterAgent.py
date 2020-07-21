@@ -16,7 +16,7 @@ class GoldHunterAgent(Agent):
     # 3. max amount of gold per turn: efficiency * diggingRate.
 
 
-    def __init__(self, type, id, productionHistoryLength, goldQuota):
+    def __init__(self, type, id, productionHistoryLength, goldQuota, actionsHandler):
 
         super().__init__(type = type, id = id)
 
@@ -28,6 +28,10 @@ class GoldHunterAgent(Agent):
 
         # TODO explain how this property is used
         self.goldQuota = goldQuota
+
+        self.actionsHandler = actionsHandler
+
+
 
 
     def addGold(self, amount):
@@ -128,37 +132,6 @@ class GoldHunterAgent(Agent):
 
         self.setPerceivedWorld( percievedWorldModel )
 
-
-    def dig(self, resource):
-        
-        amountDug = resource.amountPerDig(self.getDiggingRate())
-        resource.deplete(amountDug)
-        collectableAmount = math.ceil(amountDug * self.getEfficiency())
-        return collectableAmount
-
-
-    def getMaxCollectableFromResource(self, goldResource):
-        
-        amountDug = goldResource.amountPerDig(self.getDiggingRate())
-        collectableAmount = math.ceil(amountDug * self.getEfficiency())
-        return collectableAmount
-
-    
-    def getMaxCollectableFromResources(self, resources):
-
-        amount = 0
-        maxAmount = self.getDiggingRate() * self.getEfficiency()
-
-        for resource in resources:
-            if isinstance(resource, GoldResource):
-                amountFromThisResource = resource.amountPerDig(self.getDiggingRate())
-                if amount + amountFromThisResource <= maxAmount:
-                    amount = amount + amountFromThisResource
-
-        return amount
-
-
-    
     
     def rob(self, otherAgent):
             
@@ -227,7 +200,7 @@ class GoldHunterAgent(Agent):
                 newLocation = self.aLocationNearby(action.direction)
                 resources = gridworld.getResourcesAtLocation(newLocation) 
                 # How do we define value of a location?
-                payoff[action] = self.getMaxCollectableFromResources(resources) # the amount of resources the agent can accumulate in 1 turn.
+                payoff[action] = self.actionsHandler.getMaxCollectableFromResources(resources) # the amount of resources the agent can accumulate in 1 turn.
 
         bestAction = max(payoff, key=payoff.get) # Action with max value.
         self.setNextAction(bestAction)

@@ -180,13 +180,16 @@ class test_GoldHunterEncounter(unittest.TestCase):
         encounter = GoldHunterEncounter()
 
         goldResource = GoldResource(1000)
-        diggers = [GHSimulatedAgent(d) for d in agentFactory.buildDiggers(9)]
+        diggers = [d for d in agentFactory.buildDiggers(9)]
 
         totalDiggingPower = 0
         for digger in diggers:
             totalDiggingPower += digger.getDiggingRate()
 
         encounter.collaboration(passiveAgents = diggers, goldResource = goldResource)
+
+        print(f"current in resource: {goldResource.getQuantity()}")
+        print(f"total lost: {totalDiggingPower}")
 
         assert goldResource.getQuantity() == 1000 - totalDiggingPower
 

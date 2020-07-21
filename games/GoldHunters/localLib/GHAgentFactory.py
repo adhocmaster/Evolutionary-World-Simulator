@@ -3,6 +3,7 @@ from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
 from games.GoldHunters.localLib.GHTraitFactory import GHTraitFactory
 from games.GoldHunters.localLib.GHAgentType import GHAgentType
 from games.GoldHunters.strategies.TurnThreshholdStrategy import TurnThreshholdStrategy
+from games.GoldHunters.localLib.GHAgentActions import GHAgentActions
 import uuid
 import random
 
@@ -16,17 +17,24 @@ GHAgentConfig = {
 class GHAgentFactory(AgentFactory):
 
 
-    def __init__(self, agentConfig = GHAgentConfig, strategy = None):
+    def __init__(self, actionsHandler = None, agentConfig = GHAgentConfig, strategy = None):
         self.agentConfig = agentConfig
         self.traitFactory = GHTraitFactory()
         self.strategy = strategy
         self.defaultStrategy = TurnThreshholdStrategy()
+
+        if actionsHandler is None:
+            print("Warning: creating the default actionsHandler")
+            # raise Exception("GHAgentFactory needs an actionsHandler.")
+            self.actionsHandler = GHAgentActions()
+        else:
+            self.actionsHandler = actionsHandler
         pass
 
     
     def create(self, type, id, trait, perceptionDistance):
 
-        agent = GoldHunterAgent(type = type, id = id, productionHistoryLength = 5, goldQuota = 1)
+        agent = GoldHunterAgent(type = type, id = id, productionHistoryLength = 5, goldQuota = 1, actionsHandler = self.actionsHandler)
 
         agent.setEfficiency(type.value['efficiency'])
         agent.setDiggingRate(type.value['diggingRate'])

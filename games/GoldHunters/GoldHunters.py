@@ -4,6 +4,8 @@ from games.GoldHunters.localLib.GHAgentFactory import GHAgentFactory
 from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
 from games.GoldHunters.localLib.GoldResource import GoldResource
 from games.GoldHunters.localLib.NotFoundInTheWorld import NotFoundInTheWorld
+
+from games.GoldHunters.localLib.GHAgentActions import GHAgentActions
 from random import randint
 class GoldHunters(Game):
     
@@ -13,6 +15,7 @@ class GoldHunters(Game):
         self.world = None
         self.resources = None
         self.encounterEngine = encounterEngine
+        self.actionsHandler = GHAgentActions()
         self.init(worldSize)
 
         pass
@@ -36,7 +39,7 @@ class GoldHunters(Game):
         pass
 
     def createAgents(self):
-        factory = GHAgentFactory()
+        factory = GHAgentFactory(self.actionsHandler)
         self.agents = [factory.buildDigger(), factory.buildRobber()]
         # self.agents = factory.buildDiggers(2)
         pass

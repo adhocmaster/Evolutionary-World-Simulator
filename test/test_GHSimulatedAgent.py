@@ -1,12 +1,13 @@
 import unittest
 from games.GoldHunters.localLib.GHSimulatedAgent import GHSimulatedAgent
 from games.GoldHunters.localLib.GHAgentFactory import GHAgentFactory
+from games.GoldHunters.localLib.GHAgentActions import GHAgentActions
 
 
 class test_GHSimulatedAgent(unittest.TestCase):
     
     def test_init(self):
-        agentFactory = GHAgentFactory()
+        agentFactory = GHAgentFactory(GHAgentActions())
         originalAgent = agentFactory.buildDigger()
 
         simAgent = GHSimulatedAgent(originalAgent)

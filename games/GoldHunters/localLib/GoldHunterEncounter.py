@@ -9,14 +9,21 @@ from games.GoldHunters.localLib.GHActionType import GHActionType
 from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
 from games.GoldHunters.localLib.GHSimulatedAgent import GHSimulatedAgent
 from games.GoldHunters.localLib.GHAgentType import GHAgentType
+from games.GoldHunters.localLib.GHAgentActions import GHAgentActions
 
 # state-less
 
 class GoldHunterEncounter(Encounter):
 
 
-    def __init__(self):
+    def __init__(self, actionsHandler = None):
 
+        if actionsHandler is None:
+            print("Warning: creating the default actionsHandler")
+            # raise Exception("GHAgentFactory needs an actionsHandler.")
+            self.actionsHandler = GHAgentActions()
+        else:
+            self.actionsHandler = actionsHandler
         self.passiveEncounters = [
 
             self.collaboration, 
@@ -407,16 +414,14 @@ class GoldHunterEncounter(Encounter):
         for agent in agents:
 
             amountCollected = self.triggerDigInteraction(agent, goldResource)
-            totalAmountCollected += amountCollected
+            totalAmountCollected = totalAmountCollected + amountCollected
         
         return totalAmountCollected
 
     
     def triggerDigInteraction(self, diggingAgent, goldResource):
         
-        amountDug = goldResource.attemptToDig(diggingAgent.getDiggingRate())
-        collectableAmount = math.ceil(amountDug * diggingAgent.getEfficiency())
-        return collectableAmount
+        return self.actionsHandler.dig(diggingAgent, goldResource)
 
 
 

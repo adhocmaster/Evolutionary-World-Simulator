@@ -123,6 +123,9 @@ class GoldHunterEncounter(Encounter):
         """
         Simulates the event in which these agents meet.
         Returns the encounter results as a dictionary with original agents as its keys and changed agents as its value.
+        return:
+            {orignalAgent: copiedAgentWithChanges,
+            .....}
         """
 
         passiveAgents = []
@@ -185,10 +188,14 @@ class GoldHunterEncounter(Encounter):
 
 
     def getHighestPayoffEncounter(self, decidingAgent, allEncounterResults):
+
+        """
+        returns {originalAgent: copiedAgentWithChanges, }
+        """
         
         bestChanges = {}
         highestGoldDifference = -1 * math.inf
-        for encounterResults in allEncounterResults:
+        for encounterResults in allEncounterResults: # 
 
             goldDifference = self.getPayoffFromEncounterResults(decidingAgent, encounterResults)
 
@@ -197,7 +204,7 @@ class GoldHunterEncounter(Encounter):
                 bestChanges = encounterResults
                 highestGoldDifference = goldDifference
 
-        return bestChanges
+        return bestChanges 
 
 
     def predictPossibleEncounter(self, agent, nextAction, gridWorld):
@@ -410,7 +417,7 @@ class GoldHunterEncounter(Encounter):
         for agent in agents:
 
             amountCollected = agent.dig(goldResource)
-            totalAmountCollected += amountCollected
+            totalAmountCollected = totalAmountCollected + amountCollected
         
         return totalAmountCollected
 

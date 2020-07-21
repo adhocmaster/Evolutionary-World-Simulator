@@ -39,18 +39,18 @@ class GoldResource(Resource):
         self.locationY = newLocationY
         pass
     
-    def attemptToDig(self, attemptedAmount):
+    def amountPerDig(self, attemptedAmount):
 
-        amountDug = attemptedAmount
+        if self.quantity > attemptedAmount:
+            return attemptedAmount
+        
+        return self.quantity
 
-        self.quantity -= attemptedAmount
+    
+    def dig(self, attemptedAmount):
 
-        if self.quantity < 0:
-           
-            amountDug += self.quantity
-            self.quantity = 0
-            
-        return amountDug
+        self.quantity = self.quantity - self.amountPerDig(attemptedAmount)
+        
         
     def use(self):
         pass

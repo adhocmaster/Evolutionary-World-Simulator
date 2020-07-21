@@ -5,6 +5,7 @@ from library.ResourceType import Resourcetype
 from library.GridWorld import GridWorld
 from games.GoldHunters.localLib.GHAgentType import GHAgentType
 from games.GoldHunters.localLib.NotFoundInTheWorld import NotFoundInTheWorld
+from games.GoldHunters.localLib.GoldResource import GoldResource
 
 
 class GoldHunterAgent(Agent):
@@ -120,18 +121,43 @@ class GoldHunterAgent(Agent):
         for x in range(location[0], location[0] + 2 * perceptionDistance): # Spanning the entire diameter.
             for y in range(location[1], location[1] + 2 * perceptionDistance):
                 currentLocation = [x, y]
-                objects = world.getObjectsAtLocation(currentLocation)
-                percievedWorldModel.addToLocation(currentLocation, objects)
+                agents = world.getAgentsAtLocation(currentLocation)
+                percievedWorldModel.addAgentToLocation(currentLocation, agents)
+                resources = world.getResourcesAtLocation(currentLocation)
+                percievedWorldModel.addResourceToLocation(currentLocation, resources)
 
         self.setPerceivedWorld( percievedWorldModel )
 
 
-
-    def dig(self, goldResource):
+    def dig(self, resource):
         
-        amountDug = goldResource.attemptToDig(self.getDiggingRate())
+        amountDug = resource.amountPerDig(self.getDiggingRate())
+        resource.dig(amountDug)
         collectableAmount = math.ceil(amountDug * self.getEfficiency())
         return collectableAmount
+        
+
+    def getMaxCollectableFromResource(self, goldResource):
+        
+        amountDug = goldResource.amountPerDig(self.getDiggingRate())
+        collectableAmount = math.ceil(amountDug * self.getEfficiency())
+        return collectableAmount
+
+    
+    def getMaxCollectableFromResources(self, resources):
+
+        amount = 0
+        maxAmount = self.getDiggingRate() * self.getEfficiency()
+
+        for resource in resources:
+            if isinstance(resource, GoldResource):
+                amountFromThisResource = resource.amountPerDig(self.getDiggingRate())
+                if amount + amountFromThisResource <= maxAmount:
+                    amount = amount + amountFromThisResource
+
+        return amount
+
+
     
     
     def rob(self, otherAgent):
@@ -188,9 +214,6 @@ class GoldHunterAgent(Agent):
         # set nextAction based on strategy and payoff.
 
         # iterate through the action set.
-
-        percievedWorld = self.getPerceivedWorld()
-
         # predict encounter payoff
         payoff = {}
 
@@ -204,7 +227,7 @@ class GoldHunterAgent(Agent):
                 newLocation = self.aLocationNearby(action.direction)
                 resources = gridworld.getResourcesAtLocation(newLocation) 
                 # How do we define value of a location?
-                payoff[action] = resources.value # this needs to be updated.
+                payoff[action] = self.getMaxCollectableFromResources(resources) # the amount of resources the agent can accumulate in 1 turn.
 
         bestAction = max(payoff, key=payoff.get) # Action with max value.
         self.setNextAction(bestAction)

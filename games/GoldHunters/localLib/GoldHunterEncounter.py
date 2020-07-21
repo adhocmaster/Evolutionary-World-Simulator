@@ -7,6 +7,7 @@ from library.Encounter import Encounter
 from library.ResourceType import Resourcetype
 from games.GoldHunters.localLib.GHActionType import GHActionType
 from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
+from games.GoldHunters.localLib.GHSimulatedAgent import GHSimulatedAgent
 from games.GoldHunters.localLib.GHAgentType import GHAgentType
 
 # state-less
@@ -40,86 +41,19 @@ class GoldHunterEncounter(Encounter):
 
         ]
 
-    # TODO combine similarities in the simulate functions
+
     def simulateAllPassiveEncounters(self, agents, goldResource):
-
-        allChanges = []
-
-        for encounter in self.passiveEncounters:
-
-            testAgents = copy.deepcopy(agents)
-            testGoldResource = copy.deepcopy(goldResource)
-
-            
-            encounter(testAgents, testGoldResource)
-
-            changes = {goldResource : testGoldResource}
-
-            for i in range(testAgents):
-
-                realAgent = agents[i]
-                testAgent = testAgents[i]
-
-                changes[realAgent] = testAgent
-            
-            allChanges.append(changes)
-
-        return allChanges
+        return self.simulateMultipleEncounters(self.passiveEncounters, passiveAgents = agents, goldResource = goldResource)
 
     
     def simulateAllAggressiveEncounters(self, agents):
-
-        allChanges = []
-
-        for encounter in self.aggressiveEncounters:
-
-            testAgents = copy.deepcopy(agents)
-
-            encounter(testAgents)
-
-            changes = {}
-
-            for i in range(testAgents):
-
-                realAgent = agents[i]
-                testAgent = testAgents[i]
-
-                changes[realAgent] = testAgent
-
-            allChanges.append(changes)
-
-        return allChanges
+        return self.simulateMultipleEncounters(self.aggressiveEncounters, aggressiveAgents = agents)
 
 
     def simulateAllRobbingEncounters(self, passiveAgents, aggressiveAgents):
-
-        allChanges = []
-
-        for encounter in self.robbingEncounters:
-
-            testPassiveAgents = copy.deepcopy(passiveAgents)
-            testAggressiveAgents = copy.deepcopy(aggressiveAgents)
-
-            encounter(passiveAgents, aggressiveAgents)
-
-            changes = {}
-
-            allRealAgents = passiveAgents + aggressiveAgents
-            allTestAgents = testPassiveAgents + testAggressiveAgents
-
-            for i in range(allTestAgents):
-
-                realAgent = allRealAgents[i]
-                testAgent = allTestAgents[i]
-
-                changes[realAgent] = testAgent
-
-            allChanges.append(changes)
-
-        return allChanges
+        return self.simulateMultipleEncounters(self.robbingEncounters, passiveAgents = passiveAgents, aggressiveAgents = aggressiveAgents)
 
 
-    #TODO
     def simulateMultipleEncounters(self, encounters, **kwargs):
         '''
         kwargs: passiveAgents, aggressiveAgents, goldResource
@@ -130,17 +64,17 @@ class GoldHunterEncounter(Encounter):
         for encounter in encounters:
             
             realAgents = []
-            testAgents = []
+            simulatedAgents = []
 
             kwargsForEncounter = {}
-            for keyword, value in kwargs:
+            for agentType, agent in kwargs:
 
-                realAgents.append(value)
+                realAgents.append(agent)
                 
-                testAgent = copy.deepcopy(value)
+                simulatedAgent = GHSimulatedAgent(agent)
 
-                kwargsForEncounter[keyword] = testAgent
-                testAgents.append(testAgent)
+                kwargsForEncounter[agentType] = simulatedAgent
+                simulatedAgents.append(simulatedAgent)
 
             changes = {}
 
@@ -149,16 +83,13 @@ class GoldHunterEncounter(Encounter):
             for i in range(len(realAgents)):
 
                 realAgent = realAgents[i]
-                testAgent = testAgents[i]
+                simulatedAgent = simulatedAgents[i]
 
-                changes[realAgent] = testAgent
+                changes[realAgent] = simulatedAgent
 
             allChanges.append(changes)
 
         
-
-
-
 
     def getEncounterResults(self, agents, goldResource = None):
         """
@@ -209,6 +140,15 @@ class GoldHunterEncounter(Encounter):
         return 0
 
 
+    def predictPossibleEncounter(self, agent, nextAction, gridWorld):
+        """Return whether an agent's action could result in an encounter."""
+
+        targetLocation = agent.aLocationNearby(agent, nextAction.direction)
+        potentialParticipants = self.getPotentialEncounterParticipants(targetLocation, gridWorld)
+
+        return len(potentialParticipants) > 1
+
+
     def getPotentialEncounterParticipants(self, locationOfEncounter, gridWorld):
         """Returns potential agents that could be involved in an encounter at any location."""
 
@@ -225,6 +165,17 @@ class GoldHunterEncounter(Encounter):
         return potentialAgents
 
 
+    def getGoldResourceAtLocation(self, location, gridWorld):
+
+        resourceList = gridWorld.getObjectsAtLocation(location)
+
+        if len(resourceList > 0):
+            return resourceList[0]
+
+        else:
+            return None
+
+
     def getHighestPayoffEncounter(self, decidingAgent, allEncounterResults):
         
         bestChanges = {}
@@ -239,26 +190,6 @@ class GoldHunterEncounter(Encounter):
                 highestGoldDifference = goldDifference
 
         return bestChanges
-
-
-    def predictPossibleEncounter(self, agent, nextAction, gridWorld):
-        """Return whether an agent's action could result in an encounter."""
-
-        targetLocation = agent.aLocationNearby(agent, nextAction.direction)
-        potentialParticipants = self.getPotentialEncounterParticipants(targetLocation, gridWorld)
-
-        return len(potentialParticipants) > 1
-
-
-    def getGoldResourceAtLocation(self, location, gridWorld):
-
-        resourceList = gridWorld.getObjectsAtLocation(location)
-
-        if len(resourceList > 0):
-            return resourceList[0]
-
-        else:
-            return None
 
     
     def getPayoffFromEncounterResults(self, agent, encounterResults):
@@ -306,7 +237,7 @@ class GoldHunterEncounter(Encounter):
         totalAmountCollected = self.collectiveDigging(agents, goldResource)
 
         for agent in agents:
-            agent.addGold(agent.getMaxGoldPerTurn() * totalAmountCollected / totalMaxGold)
+            agent.addGold(math.ceil(agent.getMaxGoldPerTurn() * totalAmountCollected / totalMaxGold))
 
         pass
 
@@ -461,7 +392,7 @@ class GoldHunterEncounter(Encounter):
 
         for agent in agents:
             
-            amountCollected = agent.dig(goldResource)
+            amountCollected = self.triggerDigInteraction(agent, goldResource)
             agent.addGold(amountCollected)
             totalAmountCollected += amountCollected
         
@@ -475,10 +406,18 @@ class GoldHunterEncounter(Encounter):
 
         for agent in agents:
 
-            amountCollected = agent.dig(goldResource)
+            amountCollected = self.triggerDigInteraction(agent, goldResource)
             totalAmountCollected += amountCollected
         
         return totalAmountCollected
+
+    
+    def triggerDigInteraction(self, diggingAgent, goldResource):
+        
+        amountDug = goldResource.attemptToDig(diggingAgent.getDiggingRate())
+        collectableAmount = math.ceil(amountDug * diggingAgent.getEfficiency())
+        return collectableAmount
+
 
 
     def getTotalMaxGoldPerTurn(self, agents):

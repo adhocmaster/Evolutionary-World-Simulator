@@ -2,6 +2,8 @@ import unittest
 from games.GoldHunters.localLib.GoldHunterEncounter import GoldHunterEncounter
 from games.GoldHunters.localLib.GHAgentFactory import GHAgentFactory
 from games.GoldHunters.localLib.GoldResource import GoldResource
+from games.GoldHunters.localLib.GHSimulatedAgent import GHSimulatedAgent
+
 
 class test_GoldHunterEncounter(unittest.TestCase):
 
@@ -11,7 +13,7 @@ class test_GoldHunterEncounter(unittest.TestCase):
         agentFactory = GHAgentFactory()
         encounter = GoldHunterEncounter()
 
-        diggers = agentFactory.buildDiggers()
+        diggers = [GHSimulatedAgent(d) for d in agentFactory.buildDiggers()]
         actualMaxGold = 0
 
         for digger in diggers:
@@ -27,7 +29,7 @@ class test_GoldHunterEncounter(unittest.TestCase):
         agentFactory = GHAgentFactory()
         encounter = GoldHunterEncounter()
 
-        diggers = agentFactory.buildDiggers()
+        diggers = [GHSimulatedAgent(d) for d in agentFactory.buildDiggers()]
         actualTotalStrength = 0
 
         for digger in diggers:
@@ -43,7 +45,7 @@ class test_GoldHunterEncounter(unittest.TestCase):
         agentFactory = GHAgentFactory()
         encounter = GoldHunterEncounter()
 
-        diggers = agentFactory.buildDiggers()
+        diggers = [GHSimulatedAgent(d) for d in agentFactory.buildDiggers()]
         actualAvgStrength = 0
 
         for digger in diggers:
@@ -61,7 +63,7 @@ class test_GoldHunterEncounter(unittest.TestCase):
         agentFactory = GHAgentFactory()
         encounter = GoldHunterEncounter()
 
-        diggers = agentFactory.buildDiggers(10)
+        diggers = [GHSimulatedAgent(d) for d in agentFactory.buildDiggers(10)]
         actualTotalGold = 100
 
         for digger in diggers:
@@ -78,7 +80,7 @@ class test_GoldHunterEncounter(unittest.TestCase):
         encounter = GoldHunterEncounter()
 
         goldResource = GoldResource(1000)
-        diggers = agentFactory.buildDiggers(10)
+        diggers = [GHSimulatedAgent(d) for d in agentFactory.buildDiggers(10)]
 
         totalDiggingPower = 0
         for digger in diggers:
@@ -91,7 +93,7 @@ class test_GoldHunterEncounter(unittest.TestCase):
 
 
         goldResource = GoldResource(1)
-        diggers = agentFactory.buildDiggers(100)
+        diggers = [GHSimulatedAgent(d) for d in agentFactory.buildDiggers(100)]
         lastAgent = diggers[len(diggers) - 1]
         originalLastAgentGold = lastAgent.getGold()
 
@@ -111,7 +113,7 @@ class test_GoldHunterEncounter(unittest.TestCase):
         encounter = GoldHunterEncounter()
 
         goldResource = GoldResource(1000)
-        diggers = agentFactory.buildDiggers(10)
+        diggers = [GHSimulatedAgent(d) for d in agentFactory.buildDiggers(10)]
 
         totalDiggingPower = 0
         for digger in diggers:
@@ -123,7 +125,7 @@ class test_GoldHunterEncounter(unittest.TestCase):
 
 
         goldResource = GoldResource(1)
-        diggers = agentFactory.buildDiggers(100)
+        diggers = [GHSimulatedAgent(d) for d in agentFactory.buildDiggers(100)]
 
         encounter.priorityDigging(diggers, goldResource)
 
@@ -163,8 +165,8 @@ class test_GoldHunterEncounter(unittest.TestCase):
         agentFactory = GHAgentFactory()
         encounterEngine = GoldHunterEncounter()
 
-        agents = agentFactory.buildRobbers(10)
-        agents[0].setStrength(1000000)
+        agents = [GHSimulatedAgent(r) for r in agentFactory.buildRobbers(10)]
+        agents[0].strength = 1000000
 
         strongestAgent = encounterEngine.getStrongestAgent(agents)
         actualStrongestAgent = agents[0]
@@ -178,7 +180,7 @@ class test_GoldHunterEncounter(unittest.TestCase):
         encounter = GoldHunterEncounter()
 
         goldResource = GoldResource(1000)
-        diggers = agentFactory.buildDiggers(10)
+        diggers = [GHSimulatedAgent(d) for d in agentFactory.buildDiggers(9)]
 
         totalDiggingPower = 0
         for digger in diggers:
@@ -195,7 +197,7 @@ class test_GoldHunterEncounter(unittest.TestCase):
         encounter = GoldHunterEncounter()
 
         goldResource = GoldResource(1000)
-        diggers = agentFactory.buildDiggers()
+        diggers = [GHSimulatedAgent(d) for d in agentFactory.buildDiggers(9)]
 
         totalDiggingPower = 0
 
@@ -213,7 +215,7 @@ class test_GoldHunterEncounter(unittest.TestCase):
         encounter = GoldHunterEncounter()
 
         goldResource = GoldResource(1000)
-        diggers = agentFactory.buildDiggers()
+        diggers = [GHSimulatedAgent(d) for d in agentFactory.buildDiggers(9)]
 
         totalDiggingPower = 0
         for digger in diggers:
@@ -243,7 +245,7 @@ class test_GoldHunterEncounter(unittest.TestCase):
         encounter = GoldHunterEncounter()
 
         goldResource = GoldResource(1000)
-        diggers = agentFactory.buildDiggers()
+        diggers = [GHSimulatedAgent(d) for d in agentFactory.buildDiggers(9)]
 
         totalDiggingPower = 0
 
@@ -253,7 +255,18 @@ class test_GoldHunterEncounter(unittest.TestCase):
         encounter.monopoly(passiveAgents = diggers, goldResource = goldResource)
 
         assert goldResource.getQuantity() == 1000 - totalDiggingPower
-        # TODO test if strongest agents get gold first in a low gold resource scenario
+
+
+        goldResource = GoldResource(1)
+
+        for digger in diggers:
+            digger.setGold(0)
+
+        diggers[0].strength = 10000000
+
+        encounter.monopoly(passiveAgents = diggers, goldResource = goldResource)
+
+        self.assertEqual(1, diggers[0].getGold())
 
     
     def test_intimidation(self):
@@ -261,8 +274,8 @@ class test_GoldHunterEncounter(unittest.TestCase):
         agentFactory = GHAgentFactory()
         encounter = GoldHunterEncounter()
 
-        diggers = agentFactory.buildDiggers(5)
-        robbers = agentFactory.buildRobbers(5)
+        diggers = [GHSimulatedAgent(d) for d in agentFactory.buildDiggers(4)]
+        robbers = [GHSimulatedAgent(r) for r in agentFactory.buildRobbers(4)]
 
         totalDiggerStrength = encounter.getTotalStrength(diggers)
         totalRobberStrength = encounter.getTotalStrength(robbers)

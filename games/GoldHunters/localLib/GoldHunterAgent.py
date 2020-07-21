@@ -126,14 +126,6 @@ class GoldHunterAgent(Agent):
         self.setPerceivedWorld( percievedWorldModel )
 
 
-
-    def dig(self, goldResource):
-        
-        amountDug = goldResource.attemptToDig(self.getDiggingRate())
-        collectableAmount = math.ceil(amountDug * self.getEfficiency())
-        return collectableAmount
-    
-    
     def rob(self, otherAgent):
             
         otherAgentGold = otherAgent.getFromInventory(Resourcetype.GOLD)

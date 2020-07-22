@@ -13,16 +13,16 @@ class GHTraitFactory(TraitFactory):
         self.randomTraitLastId = 0
 
         self.defaultActions = [
-            GHMoveAction(GHActionType.MoveUp, (0, 1)), 
-            GHMoveAction(GHActionType.MoveDown, (0, -1)), 
-            GHMoveAction(GHActionType.MoveLeft, (-1, 0)), 
-            GHMoveAction(GHActionType.MoveRight, (1, 0)), 
-            GHMoveAction(GHActionType.MoveUpLeft, (-1, 1)),
-            GHMoveAction(GHActionType.MoveUpRight, (1, 1)), 
-            GHMoveAction(GHActionType.MoveDownLeft, (-1, -1)), 
-            GHMoveAction(GHActionType.MoveDownRight, (1, -1)),
-            Action(GHActionType.Dig),
-            Action(GHActionType.Rob)
+            GHMoveAction(GHActionType.MoveUp), 
+            GHMoveAction(GHActionType.MoveDown), 
+            GHMoveAction(GHActionType.MoveLeft), 
+            GHMoveAction(GHActionType.MoveRight), 
+            GHMoveAction(GHActionType.MoveUpLeft),
+            GHMoveAction(GHActionType.MoveUpRight), 
+            GHMoveAction(GHActionType.MoveDownLeft), 
+            GHMoveAction(GHActionType.MoveDownRight),
+            Action(GHActionType.Dig.name),
+            Action(GHActionType.Rob.name)
         ]
 
     def createRandom(self):

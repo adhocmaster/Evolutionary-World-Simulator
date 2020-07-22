@@ -52,11 +52,11 @@ class World(ABC):
         
     
     def addAgentToNode(self, id, agent):
-
+        # print(id)
         if id in self.nodes:
             self.nodes[id].addAgent(agent)
         else:
-            raise Exception(f"Node node in the world with id {id}")
+            raise Exception(f"No node in the world with id {id}.")
         pass
 
 
@@ -71,7 +71,7 @@ class World(ABC):
     def addResourceToNode(self, id, resource):
 
         if id in self.nodes:
-            self.nodes[id].add(resource)
+            self.nodes[id].addResource(resource)
         else:
             raise Exception(f"Node node in the world with id {id}")
         pass
@@ -79,7 +79,7 @@ class World(ABC):
 
     def removeResourceFromNode(self, id, resource):
         if id in self.nodes:
-            self.nodes[id].remove(resource)
+            self.nodes[id].removeResource(resource)
         else:
             raise Exception(f"Node node in the world with id {id}")
         pass

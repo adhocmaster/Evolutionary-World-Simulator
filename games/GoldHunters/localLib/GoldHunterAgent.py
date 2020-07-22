@@ -64,6 +64,7 @@ class GoldHunterAgent(Agent):
 
     def getStrength(self):
         return self.getFromOtherProperties('strength')
+    
 
 
     def setStrength(self, strength):
@@ -120,15 +121,20 @@ class GoldHunterAgent(Agent):
 
         location = self.getLocation()
         perceptionDistance = self.getPerceptionDistance()
-        percievedWorldModel = GridWorld(size = perceptionDistance * 2) # Makes a new world with "radius" of perceptionDistance
+        percievedWorldModel = GridWorld(size = perceptionDistance * (1, 1)) # Makes a new world with "radius" of perceptionDistance
 
-        for x in range(location[0], location[0] + 2 * perceptionDistance): # Spanning the entire diameter.
-            for y in range(location[1], location[1] + 2 * perceptionDistance):
-                currentLocation = [x, y]
-                agents = world.getAgentsAtLocation(currentLocation)
-                percievedWorldModel.addAgentToLocation(currentLocation, agents)
-                resources = world.getResourcesAtLocation(currentLocation)
-                percievedWorldModel.addResourceToLocation(currentLocation, resources)
+        print(f"size of the perceived world: {percievedWorldModel.size}")
+
+        for x in range(location[0], location[0] + perceptionDistance + 1): # Spanning the entire diameter.
+            for y in range(location[1], location[1] + perceptionDistance + 1):
+                locationInWorld = (x, y)
+                locationInPerceivedWorld = (x - location[0], y - location[1])
+
+                if world.hasLocation(locationInWorld):
+                    agents = world.getAgentsAtLocation(locationInWorld)
+                    percievedWorldModel.addAgentToLocation(locationInPerceivedWorld, agents)
+                    resources = world.getResourcesAtLocation(locationInWorld)
+                    percievedWorldModel.addResourceToLocation(locationInPerceivedWorld, resources)
 
         self.setPerceivedWorld( percievedWorldModel )
 
@@ -197,7 +203,7 @@ class GoldHunterAgent(Agent):
 
             else:
 
-                newLocation = self.aLocationNearby(action.direction)
+                newLocation = self.actionsHandler.aLocationNearby(action.direction)
                 resources = gridworld.getResourcesAtLocation(newLocation) 
                 # How do we define value of a location?
                 payoff[action] = self.actionsHandler.getMaxCollectableFromResources(resources) # the amount of resources the agent can accumulate in 1 turn.
@@ -206,10 +212,5 @@ class GoldHunterAgent(Agent):
         self.setNextAction(bestAction)
 
 
-    # TODO the name is confusing. 
-    def aLocationNearby(self, direction):
-
-        currentLocation = self.getLocation()
-        return (currentLocation[0] + direction[0], currentLocation[1] + direction[1])
 
     

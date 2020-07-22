@@ -11,11 +11,10 @@ class test_TraitFactory(unittest.TestCase):
 
         trait = factory.createRandom()
 
-        print(trait)
-        print(len(factory.defaultActions))
+        # print(trait)
+        # print(len(factory.defaultActions))
 
-        print(factory.defaultActions[0].name)
-        print(factory.defaultActions[7].name)
-
-        assert factory.defaultActions[0].name == GHActionType.MoveUp
+        print(factory.defaultActions[0])
+        # print(GHActionType.MoveUp)
+        assert factory.defaultActions[0].name == GHActionType.MoveUp.name
         

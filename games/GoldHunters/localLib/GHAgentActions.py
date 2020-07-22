@@ -33,3 +33,7 @@ class GHAgentActions:
 
 
     
+    def aLocationNearby(self, agent, direction):
+
+        currentLocation = agent.getLocation()
+        return (currentLocation[0] + direction[0], currentLocation[1] + direction[1])

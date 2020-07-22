@@ -4,6 +4,8 @@ from games.GoldHunters.localLib.GHAgentFactory import GHAgentFactory
 from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
 from games.GoldHunters.localLib.GoldResource import GoldResource
 from games.GoldHunters.localLib.NotFoundInTheWorld import NotFoundInTheWorld
+from games.GoldHunters.localLib.GHMoveAction import GHMoveAction
+from games.GoldHunters.localLib.GoldHunterEncounter import GoldHunterEncounter
 
 from games.GoldHunters.localLib.GHAgentActions import GHAgentActions
 from random import randint
@@ -15,6 +17,10 @@ class GoldHunters(Game):
         self.world = None
         self.resources = None
         self.encounterEngine = encounterEngine
+        if self.encounterEngine is None:
+            print("Warning: creating the default encounter engine as none is supplied")
+            self.encounterEngine = GoldHunterEncounter()
+
         self.actionsHandler = GHAgentActions()
         self.init(worldSize)
 
@@ -114,6 +120,12 @@ class GoldHunters(Game):
             action = agent.getNextAction()
             # TODO do whatever you want to do.
 
+            # 1 if the action is a move event.
+            if isinstance(action, GHMoveAction):
+                newLocation  = self.actionsHandler.aLocationNearby(agent, action.direction)
+                self.moveAgent(agent, newLocation)
+
+
         self.doEncounters()
 
         pass
@@ -121,8 +133,19 @@ class GoldHunters(Game):
 
     def doEncounters(self):
 
-        # iterate through all the nodes in the world. If any node has more than one agent, 
-        # call getEncounterResults(self, agents, goldResource = None)
+        encounterResults = []
+        for location in self.world.locations():
+            agents = self.world.getAgentsAtLocation(location)
+            resources = self.world.getResourcesAtLocation(location)
+
+
+            if len(resources) == 0:
+                encounterResults.append(self.encounterEngine.getEncounterResults(agents))
+
+            else:
+                encounterResults.append(self.encounterEngine.getEncounterResults(agents, resources[0])) # TODO encounter method does not handle more than one resource.
+
+        print(encounterResults)
         pass
     
 
@@ -141,5 +164,9 @@ class GoldHunters(Game):
         for agent in self.agents:
             agent.takeTurn(self.world, self.encounterEngine) # it updates nextAction property in an agent.
         self.updateGame()
+
+
+
+
 
 

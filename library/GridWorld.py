@@ -23,7 +23,7 @@ class GridWorld(World):
 
 
     def createNodes(self):
-
+        print(self.size)
         for x in range(self.size[0]):
             for y in range(self.size[1]):
                 id = self.getIdFromLocation((x, y))
@@ -77,10 +77,18 @@ class GridWorld(World):
         return self.getNode(id).resources
 
 
+    def locations(self):
+        for x in self.size[0]:
+            for y in self.size[1]:
+                yield (x, y)
 
 
+    def hasLocation(self, location):
 
-
+        if location[0] >= self.size[0] or location[1] >= self.size[1] or location[0] < 1 or location[1] < 0:
+            return False
+            
+        return True
 
     
 

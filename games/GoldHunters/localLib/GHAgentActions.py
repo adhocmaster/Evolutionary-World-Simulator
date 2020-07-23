@@ -1,5 +1,7 @@
 import math
 from games.GoldHunters.localLib.GoldResource import GoldResource
+from games.GoldHunters.localLib.GridWorld import GridWorld
+from library.ResourceType import ResourceType
 
 class GHAgentActions:
 
@@ -62,7 +64,7 @@ class GHAgentActions:
     
     def rob(self, agent, otherAgent):
             
-        otherAgentGold = otherAgent.getFromInventory(Resourcetype.GOLD)
+        otherAgentGold = otherAgent.getFromInventory(ResourceType.GOLD)
         quantityToRob = agent.getStrength() - otherAgent.getStrength()
         robbingPenalty = otherAgent.getStrength()       # the more the victim struggles, the more costly the robbery
 
@@ -86,9 +88,9 @@ class GHAgentActions:
 
         agent.percieveWorld(gridworld)
 
-        agent.updateStrategy()
+        self.updateStrategy(agent)
 
-        agent.takeAction(gridworld, encounterEngine)
+        self.takeAction(agent, gridworld, encounterEngine)
 
         pass
 

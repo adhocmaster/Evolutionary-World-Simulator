@@ -117,99 +117,99 @@ class GoldHunterAgent(Agent):
         self.setToOtherProperties('perceptionDistance', perceptionDistance)
 
 
-    def percieveWorld(self, world):
+    # def percieveWorld(self, world):
 
-        location = self.getLocation()
-        perceptionDistance = self.getPerceptionDistance()
-        percievedWorldModel = GridWorld(size = perceptionDistance * (1, 1)) # Makes a new world with "radius" of perceptionDistance
+    #     location = self.getLocation()
+    #     perceptionDistance = self.getPerceptionDistance()
+    #     percievedWorldModel = GridWorld(size = perceptionDistance * (1, 1)) # Makes a new world with "radius" of perceptionDistance
 
-        print(f"size of the perceived world: {percievedWorldModel.size}")
+    #     print(f"size of the perceived world: {percievedWorldModel.size}")
 
-        for x in range(location[0], location[0] + perceptionDistance + 1): # Spanning the entire diameter.
-            for y in range(location[1], location[1] + perceptionDistance + 1):
-                locationInWorld = (x, y)
-                locationInPerceivedWorld = (x - location[0], y - location[1])
+    #     for x in range(location[0], location[0] + perceptionDistance + 1): # Spanning the entire diameter.
+    #         for y in range(location[1], location[1] + perceptionDistance + 1):
+    #             locationInWorld = (x, y)
+    #             locationInPerceivedWorld = (x - location[0], y - location[1])
 
-                if world.hasLocation(locationInWorld):
-                    agents = world.getAgentsAtLocation(locationInWorld)
-                    percievedWorldModel.addAgentToLocation(locationInPerceivedWorld, agents)
-                    resources = world.getResourcesAtLocation(locationInWorld)
-                    percievedWorldModel.addResourceToLocation(locationInPerceivedWorld, resources)
+    #             if world.hasLocation(locationInWorld):
+    #                 agents = world.getAgentsAtLocation(locationInWorld)
+    #                 percievedWorldModel.addAgentToLocation(locationInPerceivedWorld, agents)
+    #                 resources = world.getResourcesAtLocation(locationInWorld)
+    #                 percievedWorldModel.addResourceToLocation(locationInPerceivedWorld, resources)
 
-        self.setPerceivedWorld( percievedWorldModel )
+    #     self.setPerceivedWorld( percievedWorldModel )
 
     
-    def rob(self, otherAgent):
+    # def rob(self, otherAgent):
             
-        otherAgentGold = otherAgent.getFromInventory(Resourcetype.GOLD)
-        quantityToRob = self.getStrength() - otherAgent.getStrength()
-        robbingPenalty = otherAgent.getStrength()       # the more the victim struggles, the more costly the robbery
+    #     otherAgentGold = otherAgent.getFromInventory(Resourcetype.GOLD)
+    #     quantityToRob = self.getStrength() - otherAgent.getStrength()
+    #     robbingPenalty = otherAgent.getStrength()       # the more the victim struggles, the more costly the robbery
 
-        if (quantityToRob > 0):   # cant rob negative amount of gold
+    #     if (quantityToRob > 0):   # cant rob negative amount of gold
 
-            if quantityToRob > otherAgentGold:
-                quantityToRob = otherAgentGold
+    #         if quantityToRob > otherAgentGold:
+    #             quantityToRob = otherAgentGold
             
-            self.addGold(quantityToRob)
-            otherAgent.removeGold(quantityToRob)
+    #         self.addGold(quantityToRob)
+    #         otherAgent.removeGold(quantityToRob)
         
-        self.removeGold(robbingPenalty)
+    #     self.removeGold(robbingPenalty)
 
 
-    def takeTurn(self, gridworld, encounterEngine):
+    # def takeTurn(self, gridworld, encounterEngine):
 
-        self.previousGoldOwned.append(self.getGold())
+    #     self.previousGoldOwned.append(self.getGold())
 
-        if len(self.previousGoldOwned) > self.productionHistoryLength:
-            self.previousGoldOwned.pop(0)
+    #     if len(self.previousGoldOwned) > self.productionHistoryLength:
+    #         self.previousGoldOwned.pop(0)
 
-        self.percieveWorld(gridworld)
+    #     self.percieveWorld(gridworld)
 
-        self.updateStrategy()
+    #     self.updateStrategy()
 
-        self.takeAction(gridworld, encounterEngine)
+    #     self.takeAction(gridworld, encounterEngine)
 
-        pass
-
-    
-    def updateStrategyProperties(self):
-
-        self.setEfficiency(self.type['efficiency'])
-        self.setDiggingRate(self.type['diggingRate'])
-        self.setStrength(self.type['strength'])
-        pass
-
-
-
-    def updateStrategy(self):
-
-        self.strategy.update(self)
-        pass
+    #     pass
 
     
-    def takeAction(self, gridworld, encounterEngine):
+    # def updateStrategyProperties(self):
+
+    #     self.setEfficiency(self.type['efficiency'])
+    #     self.setDiggingRate(self.type['diggingRate'])
+    #     self.setStrength(self.type['strength'])
+    #     pass
 
 
-        # set nextAction based on strategy and payoff.
 
-        # iterate through the action set.
-        # predict encounter payoff
-        payoff = {}
+    # def updateStrategy(self):
 
-        for action in self.actions:
+    #     self.strategy.update(self)
+    #     pass
 
-            if encounterEngine.predictPossibleEncounter(self, action, gridworld):
-                payoff[action] = encounterEngine.predictEncounterPayoff(self, action, gridworld)
+    
+    # def takeAction(self, gridworld, encounterEngine):
 
-            else:
 
-                newLocation = self.actionsHandler.aLocationNearby(action.direction)
-                resources = gridworld.getResourcesAtLocation(newLocation) 
-                # How do we define value of a location?
-                payoff[action] = self.actionsHandler.getMaxCollectableFromResources(resources) # the amount of resources the agent can accumulate in 1 turn.
+    #     # set nextAction based on strategy and payoff.
 
-        bestAction = max(payoff, key=payoff.get) # Action with max value.
-        self.setNextAction(bestAction)
+    #     # iterate through the action set.
+    #     # predict encounter payoff
+    #     payoff = {}
+
+    #     for action in self.actions:
+
+    #         if encounterEngine.predictPossibleEncounter(self, action, gridworld):
+    #             payoff[action] = encounterEngine.predictEncounterPayoff(self, action, gridworld)
+
+    #         else:
+
+    #             newLocation = self.actionsHandler.aLocationNearby(action.direction)
+    #             resources = gridworld.getResourcesAtLocation(newLocation) 
+    #             # How do we define value of a location?
+    #             payoff[action] = self.actionsHandler.getMaxCollectableFromResources(resources) # the amount of resources the agent can accumulate in 1 turn.
+
+    #     bestAction = max(payoff, key=payoff.get) # Action with max value.
+    #     self.setNextAction(bestAction)
 
 
 

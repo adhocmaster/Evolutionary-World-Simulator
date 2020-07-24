@@ -67,6 +67,9 @@ class GHAgentActions:
                     percievedWorldModel.addAgentToLocation(locationInPerceivedWorld, agents)
                     resources = world.getResourcesAtLocation(locationInWorld)
                     percievedWorldModel.addResourceToLocation(locationInPerceivedWorld, resources)
+                else:
+                    # TODO, we need to shrink the world? We should have done that earlier when we created the gridworld.
+                    pass
 
         agent.setPerceivedWorld( percievedWorldModel )
 

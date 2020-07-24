@@ -97,7 +97,6 @@ class GoldHunterAgent(Agent):
 
     
     def updateAgentLocation(self, location):
-        #TODO wait for node implementation
         self.setToOtherProperties("location", location)
         pass
 

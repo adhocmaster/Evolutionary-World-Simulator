@@ -1,7 +1,7 @@
 import math
 from games.GoldHunters.localLib.GoldResource import GoldResource
-from games.GoldHunters.localLib.GridWorld import GridWorld
-from library.ResourceType import ResourceType
+from library.GridWorld import GridWorld
+from library.ResourceType import Resourcetype
 
 class GHAgentActions:
 
@@ -40,11 +40,20 @@ class GHAgentActions:
         currentLocation = agent.getLocation()
         return (currentLocation[0] + direction[0], currentLocation[1] + direction[1])
 
+
+    def locationByAction(self, agent, nextAction):
+        """If `nextAction` is a move action, then return the new location. Otherwise, return the original location."""
+
+        if hasattr(nextAction, "direction"):
+            return self.aLocationNearby(agent, nextAction.direction)
+        return agent.getLocation()
+
+
     def percieveWorld(self, agent, world):
 
         location = agent.getLocation()
         perceptionDistance = agent.getPerceptionDistance()
-        percievedWorldModel = GridWorld(size = perceptionDistance * (1, 1)) # Makes a new world with "radius" of perceptionDistance
+        percievedWorldModel = GridWorld(size = (2 * perceptionDistance + 1) * (1, 1)) # Makes a new world with "radius" of perceptionDistance
 
         print(f"size of the perceived world: {percievedWorldModel.size}")
 
@@ -97,9 +106,9 @@ class GHAgentActions:
     
     def updateStrategyProperties(self, agent):
 
-        agent.setEfficiency(agent.type['efficiency'])
-        agent.setDiggingRate(agent.type['diggingRate'])
-        agent.setStrength(agent.type['strength'])
+        agent.setEfficiency(agent.type.value['efficiency'])
+        agent.setDiggingRate(agent.type.value['diggingRate'])
+        agent.setStrength(agent.type.value['strength'])
         pass
 
 
@@ -126,10 +135,10 @@ class GHAgentActions:
 
             else:
 
-                newLocation = agent.actionsHandler.aLocationNearby(action.direction)
+                newLocation = agent.actionsHandler.locationByAction(agent, action)
                 resources = gridworld.getResourcesAtLocation(newLocation) 
                 # How do we define value of a location?
-                payoff[action] = agent.actionsHandler.getMaxCollectableFromResources(resources) # the amount of resources the agent can accumulate in 1 turn.
+                payoff[action] = agent.actionsHandler.getMaxCollectableFromResources(agent, resources) # the amount of resources the agent can accumulate in 1 turn.
 
         bestAction = max(payoff, key=payoff.get) # Action with max value.
         agent.setNextAction(bestAction)

@@ -135,8 +135,10 @@ class GoldHunterEncounter(Encounter):
         '''Predicts the agent's payoff if the agent takes a certain action'''
 
         if self.predictPossibleEncounter(agent, nextAction, gridWorld):
-
-            targetLocation = agent.newLocation(agent, nextAction.direction)
+            
+            currentLocation = agent.getLocation()
+            targetLocation = agent.actionsHandler.locationByAction(agent, nextAction)
+            
             potentialAgents = self.getPotentialEncounterParticipants(targetLocation, gridWorld)
             goldResource = self.getGoldResourceAtLocation(targetLocation, gridWorld)
             
@@ -150,7 +152,8 @@ class GoldHunterEncounter(Encounter):
     def predictPossibleEncounter(self, agent, nextAction, gridWorld):
         """Return whether an agent's action could result in an encounter."""
 
-        targetLocation = agent.aLocationNearby(agent, nextAction.direction)
+        targetLocation = agent.actionsHandler.locationByAction(agent, nextAction)
+
         potentialParticipants = self.getPotentialEncounterParticipants(targetLocation, gridWorld)
 
         return len(potentialParticipants) > 1
@@ -167,16 +170,16 @@ class GoldHunterEncounter(Encounter):
 
                 inspectingLocation = self.addTuples(locationOfEncounter, (xd, yd))
 
-                potentialAgents.append( gridWorld.getAgentsAtLocation(inspectingLocation) )
+                potentialAgents.extend( gridWorld.getAgentsAtLocation(inspectingLocation) )
 
         return potentialAgents
 
 
     def getGoldResourceAtLocation(self, location, gridWorld):
 
-        resourceList = gridWorld.getObjectsAtLocation(location)
+        resourceList = gridWorld.getResourcesAtLocation(location)
 
-        if len(resourceList > 0):
+        if len(resourceList) > 0:
             return resourceList[0]
 
         else:

@@ -37,6 +37,7 @@ class test_GHAgentActions(unittest.TestCase):
         assert agent.getDiggingRate() == diggerType.value['diggingRate']
         assert agent.getStrength() == diggerType.value['strength']
 
+
     def test_aLocationNearby(self):
 
         actionsHandler = GHAgentActions()
@@ -47,3 +48,20 @@ class test_GHAgentActions(unittest.TestCase):
 
         assert actionsHandler.aLocationNearby(agent, (1, 1)) == (1, 1)
         assert actionsHandler.aLocationNearby(agent, (-1, -1)) == (-1, -1)
+    
+
+    def test_percieveWorld(self):
+
+        actionsHandler = GHAgentActions()
+        agentFactory = GHAgentFactory(actionsHandler=actionsHandler)
+        agent = agentFactory.buildDigger()
+
+        world = GridWorld(size=(10, 10))
+        world.addAgentToLocation((5, 5), agent)
+        agent.updateAgentLocation((5, 5))
+
+        agent.setPerceptionDistance(2)
+
+        actionsHandler.percieveWorld(agent, world)
+
+        print(agent.getPerceivedWorld())

@@ -53,14 +53,14 @@ class GHAgentActions:
 
         location = agent.getLocation()
         perceptionDistance = agent.getPerceptionDistance()
-        percievedWorldModel = GridWorld(size = (2 * perceptionDistance + 1) * (1, 1)) # Makes a new world with "radius" of perceptionDistance
+        percievedWorldModel = GridWorld(size = (2*perceptionDistance + 1,  2*perceptionDistance + 1)) # Makes a new world with "radius" of perceptionDistance
 
         print(f"size of the perceived world: {percievedWorldModel.size}")
 
-        for x in range(location[0], location[0] + perceptionDistance + 1): # Spanning the entire diameter.
-            for y in range(location[1], location[1] + perceptionDistance + 1):
+        for x in range(location[0] - perceptionDistance, location[0] + perceptionDistance + 1): # Spanning the entire diameter.
+            for y in range(location[1] - perceptionDistance, location[1] + perceptionDistance + 1):
                 locationInWorld = (x, y)
-                locationInPerceivedWorld = (x - location[0], y - location[1])
+                locationInPerceivedWorld = (x - location[0] + perceptionDistance, y - location[1] + perceptionDistance)
 
                 if world.hasLocation(locationInWorld):
                     agents = world.getAgentsAtLocation(locationInWorld)

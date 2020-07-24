@@ -1,6 +1,6 @@
 import math
 from games.GoldHunters.localLib.GoldResource import GoldResource
-from games.GoldHunters.localLib.GridWorld import GridWorld
+from library.GridWorld import GridWorld
 from library.ResourceType import ResourceType
 
 class GHAgentActions:

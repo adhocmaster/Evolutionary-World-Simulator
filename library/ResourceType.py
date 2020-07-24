@@ -1,6 +1,6 @@
 from enum import Enum
 
-class Resourcetype(Enum):
+class ResourceType(Enum):
     GENERIC = 0,
     VEG = 1,
     MEAT = 2,

@@ -1,5 +1,5 @@
 from library.Resource import Resource
-from library.ResourceType import Resourcetype
+from library.ResourceType import ResourceType
 
 class GoldResource(Resource):
 

@@ -4,7 +4,7 @@ import copy
 import numpy
 
 from library.Encounter import Encounter
-from library.ResourceType import Resourcetype
+from library.ResourceType import ResourceType
 from games.GoldHunters.localLib.GHActionType import GHActionType
 from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
 from games.GoldHunters.localLib.GHSimulatedAgent import GHSimulatedAgent

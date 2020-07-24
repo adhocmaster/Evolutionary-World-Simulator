@@ -1,7 +1,7 @@
 import math
 
 from library.Agent import Agent
-from library.ResourceType import Resourcetype
+from library.ResourceType import ResourceType
 from library.GridWorld import GridWorld
 from games.GoldHunters.localLib.GHAgentType import GHAgentType
 from games.GoldHunters.localLib.NotFoundInTheWorld import NotFoundInTheWorld
@@ -115,102 +115,6 @@ class GoldHunterAgent(Agent):
     
     def setPerceptionDistance(self, perceptionDistance):
         self.setToOtherProperties('perceptionDistance', perceptionDistance)
-
-
-    # def percieveWorld(self, world):
-
-    #     location = self.getLocation()
-    #     perceptionDistance = self.getPerceptionDistance()
-    #     percievedWorldModel = GridWorld(size = perceptionDistance * (1, 1)) # Makes a new world with "radius" of perceptionDistance
-
-    #     print(f"size of the perceived world: {percievedWorldModel.size}")
-
-    #     for x in range(location[0], location[0] + perceptionDistance + 1): # Spanning the entire diameter.
-    #         for y in range(location[1], location[1] + perceptionDistance + 1):
-    #             locationInWorld = (x, y)
-    #             locationInPerceivedWorld = (x - location[0], y - location[1])
-
-    #             if world.hasLocation(locationInWorld):
-    #                 agents = world.getAgentsAtLocation(locationInWorld)
-    #                 percievedWorldModel.addAgentToLocation(locationInPerceivedWorld, agents)
-    #                 resources = world.getResourcesAtLocation(locationInWorld)
-    #                 percievedWorldModel.addResourceToLocation(locationInPerceivedWorld, resources)
-
-    #     self.setPerceivedWorld( percievedWorldModel )
-
-    
-    # def rob(self, otherAgent):
-            
-    #     otherAgentGold = otherAgent.getFromInventory(Resourcetype.GOLD)
-    #     quantityToRob = self.getStrength() - otherAgent.getStrength()
-    #     robbingPenalty = otherAgent.getStrength()       # the more the victim struggles, the more costly the robbery
-
-    #     if (quantityToRob > 0):   # cant rob negative amount of gold
-
-    #         if quantityToRob > otherAgentGold:
-    #             quantityToRob = otherAgentGold
-            
-    #         self.addGold(quantityToRob)
-    #         otherAgent.removeGold(quantityToRob)
-        
-    #     self.removeGold(robbingPenalty)
-
-
-    # def takeTurn(self, gridworld, encounterEngine):
-
-    #     self.previousGoldOwned.append(self.getGold())
-
-    #     if len(self.previousGoldOwned) > self.productionHistoryLength:
-    #         self.previousGoldOwned.pop(0)
-
-    #     self.percieveWorld(gridworld)
-
-    #     self.updateStrategy()
-
-    #     self.takeAction(gridworld, encounterEngine)
-
-    #     pass
-
-    
-    # def updateStrategyProperties(self):
-
-    #     self.setEfficiency(self.type['efficiency'])
-    #     self.setDiggingRate(self.type['diggingRate'])
-    #     self.setStrength(self.type['strength'])
-    #     pass
-
-
-
-    # def updateStrategy(self):
-
-    #     self.strategy.update(self)
-    #     pass
-
-    
-    # def takeAction(self, gridworld, encounterEngine):
-
-
-    #     # set nextAction based on strategy and payoff.
-
-    #     # iterate through the action set.
-    #     # predict encounter payoff
-    #     payoff = {}
-
-    #     for action in self.actions:
-
-    #         if encounterEngine.predictPossibleEncounter(self, action, gridworld):
-    #             payoff[action] = encounterEngine.predictEncounterPayoff(self, action, gridworld)
-
-    #         else:
-
-    #             newLocation = self.actionsHandler.aLocationNearby(action.direction)
-    #             resources = gridworld.getResourcesAtLocation(newLocation) 
-    #             # How do we define value of a location?
-    #             payoff[action] = self.actionsHandler.getMaxCollectableFromResources(resources) # the amount of resources the agent can accumulate in 1 turn.
-
-    #     bestAction = max(payoff, key=payoff.get) # Action with max value.
-    #     self.setNextAction(bestAction)
-
 
 
     

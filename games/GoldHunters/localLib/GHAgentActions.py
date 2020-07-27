@@ -48,25 +48,41 @@ class GHAgentActions:
             return self.aLocationNearby(agent, nextAction.direction)
         return agent.getLocation()
 
+    
+    def calculateBounds(self, location, world, perceptionDistance):
+
+        leftBound = max(0, location[0] - perceptionDistance)
+        rightBound = min(world.size[0], location[0] + perceptionDistance + 1)
+        topBound = max(0, location[1] - perceptionDistance)
+        bottomBound = min(world.size[1], location[1] + perceptionDistance + 1)
+
+        return (leftBound, rightBound, topBound, bottomBound)
+
 
     def percieveWorld(self, agent, world):
 
         location = agent.getLocation()
         perceptionDistance = agent.getPerceptionDistance()
-        percievedWorldModel = GridWorld(size = (2*perceptionDistance + 1,  2*perceptionDistance + 1)) # Makes a new world with "radius" of perceptionDistance
+
+        bounds = self.calculateBounds(location, world, perceptionDistance)
+
+        percievedWorldModel = GridWorld(size = (bounds[1]-bounds[0],  bounds[3]-bounds[2])) # Makes a new world with "radius" of perceptionDistance
 
         print(f"size of the perceived world: {percievedWorldModel.size}")
 
-        for x in range(location[0] - perceptionDistance, location[0] + perceptionDistance + 1): # Spanning the entire diameter.
-            for y in range(location[1] - perceptionDistance, location[1] + perceptionDistance + 1):
+        for x in range(bounds[0], bounds[1]): # Spanning the entire diameter.
+            for y in range(bounds[2], bounds[3]):
                 locationInWorld = (x, y)
-                locationInPerceivedWorld = (x - location[0] + perceptionDistance, y - location[1] + perceptionDistance)
+                locationInPerceivedWorld = (x - bounds[0], y - bounds[2])
 
                 if world.hasLocation(locationInWorld):
                     agents = world.getAgentsAtLocation(locationInWorld)
-                    percievedWorldModel.addAgentToLocation(locationInPerceivedWorld, agents)
+                    for agent in agents:
+                        percievedWorldModel.addAgentToLocation(locationInPerceivedWorld, agent)
+
                     resources = world.getResourcesAtLocation(locationInWorld)
-                    percievedWorldModel.addResourceToLocation(locationInPerceivedWorld, resources)
+                    for resource in resources:
+                        percievedWorldModel.addResourceToLocation(locationInPerceivedWorld, resource)
                 else:
                     # TODO, we need to shrink the world? We should have done that earlier when we created the gridworld.
                     pass

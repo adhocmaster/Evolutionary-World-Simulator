@@ -85,7 +85,7 @@ class GridWorld(World):
 
     def hasLocation(self, location):
 
-        if location[0] >= self.size[0] or location[1] >= self.size[1] or location[0] < 1 or location[1] < 0:
+        if location[0] >= self.size[0] or location[1] >= self.size[1] or location[0] < 0 or location[1] < 0:
             return False
             
         return True

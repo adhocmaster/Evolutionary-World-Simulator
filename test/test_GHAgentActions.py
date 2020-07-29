@@ -135,3 +135,24 @@ class test_GHAgentActions(unittest.TestCase):
         actionsHandler.dig(agent, resource)
 
         assert oldResourceValue != resource
+
+    def test_getMaxCollectableFromResource(self):
+        game = test_GHAgentActions.game
+        actionsHandler = test_GHAgentActions.actionsHandler
+        goldResource = game.resources[0]
+        agent = game.agents[0]
+
+        collectableAmount = actionsHandler.getMaxCollectableFromResource(agent, goldResource) 
+
+        assert collectableAmount < goldResource.amountPerDig(agent.getDiggingRate())
+
+    def test_getMaxCollectableFromResources(self):
+        game = test_GHAgentActions.game
+        actionsHandler = test_GHAgentActions.actionsHandler
+        resources = game.resources
+        agent = game.agents[0]
+
+        actionsHandler.getMaxCollectableFromResources(agent, resources)
+
+    
+

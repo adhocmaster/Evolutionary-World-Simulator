@@ -1,7 +1,10 @@
-import math
+import math, logging
+logging.basicConfig(level=logging.DEBUG)
+
 from games.GoldHunters.localLib.GoldResource import GoldResource
 from library.GridWorld import GridWorld
 from library.ResourceType import ResourceType
+from games.GoldHunters.localLib.GHMoveAction import GHMoveAction
 
 class GHAgentActions:
 
@@ -34,19 +37,25 @@ class GHAgentActions:
         return amount
 
 
-    
-    def aLocationNearby(self, agent, direction):
+    def aLocationNearby(self, agent, direction, world):
 
         currentLocation = agent.getLocation()
-        return (currentLocation[0] + direction[0], currentLocation[1] + direction[1])
+        newLocation = (currentLocation[0] + direction[0], currentLocation[1] + direction[1])
+
+        if world.hasLocation(newLocation):
+            return newLocation
+        
+        raise Exception(f"world does not contain {newLocation}")
 
 
-    def locationByAction(self, agent, nextAction):
-        """If `nextAction` is a move action, then return the new location. Otherwise, return the original location."""
+    def locationByAction(self, agent, nextAction, world):
+        """If `nextAction` is a move action, then return the new location. Otherwise, return the original location.
+        raises error if the location is invalid"""
 
-        if hasattr(nextAction, "direction"):
-            return self.aLocationNearby(agent, nextAction.direction)
+        if isinstance(nextAction, GHMoveAction):
+            return self.aLocationNearby(agent, nextAction.direction, world)
         return agent.getLocation()
+
 
     
     def calculateBounds(self, center, world, perceptionDistance):
@@ -114,7 +123,7 @@ class GHAgentActions:
         if len(agent.previousGoldOwned) > agent.productionHistoryLength:
             agent.previousGoldOwned.pop(0)
 
-        agent.percieveWorld(gridworld)
+        self.percieveWorld(agent, gridworld)
 
         self.updateStrategy(agent)
 
@@ -137,7 +146,20 @@ class GHAgentActions:
         agent.strategy.update(agent)
         pass
 
-    
+    def isActionValid(self, agent, action, world):
+        """Invalid conditions:
+        1. if location changes, the location must be valid
+        2. .... any other conditions goes here
+        """
+
+        try:
+            _ = self.locationByAction(agent, action, world)
+            return True
+        except:
+            return False
+
+
+
     def takeAction(self, agent, gridworld, encounterEngine):
 
 
@@ -149,12 +171,19 @@ class GHAgentActions:
 
         for action in agent.actions:
 
+            logging.debug(agent.getLocation())
+            logging.debug(action)
+
+            if self.isActionValid(agent, action, gridworld) is False:
+                logging.warning(f"invalid action")
+                continue
+
             if encounterEngine.predictPossibleEncounter(agent, action, gridworld):
                 payoff[action] = encounterEngine.predictEncounterPayoff(agent, action, gridworld)
 
             else:
 
-                newLocation = agent.actionsHandler.locationByAction(agent, action)
+                newLocation = agent.actionsHandler.locationByAction(agent, action, gridworld)
                 resources = gridworld.getResourcesAtLocation(newLocation) 
                 # How do we define value of a location?
                 payoff[action] = agent.actionsHandler.getMaxCollectableFromResources(agent, resources) # the amount of resources the agent can accumulate in 1 turn.

@@ -3,6 +3,8 @@ import random
 import copy
 import numpy
 
+import logging
+
 from library.Encounter import Encounter
 from library.ResourceType import ResourceType
 from games.GoldHunters.localLib.GHActionType import GHActionType
@@ -74,7 +76,7 @@ class GoldHunterEncounter(Encounter):
             simulatedAgents = []
 
             kwargsForEncounter = {}
-            for agentType, agent in kwargs:
+            for agentType, agent in kwargs.items():
 
                 realAgents.append(agent)
                 
@@ -136,8 +138,8 @@ class GoldHunterEncounter(Encounter):
 
         if self.predictPossibleEncounter(agent, nextAction, gridWorld):
             
-            currentLocation = agent.getLocation()
-            targetLocation = agent.actionsHandler.locationByAction(agent, nextAction)
+            # currentLocation = agent.getLocation()
+            targetLocation = agent.actionsHandler.locationByAction(agent, nextAction, gridWorld)
             
             potentialAgents = self.getPotentialEncounterParticipants(targetLocation, gridWorld)
             goldResource = self.getGoldResourceAtLocation(targetLocation, gridWorld)
@@ -152,7 +154,7 @@ class GoldHunterEncounter(Encounter):
     def predictPossibleEncounter(self, agent, nextAction, gridWorld):
         """Return whether an agent's action could result in an encounter."""
 
-        targetLocation = agent.actionsHandler.locationByAction(agent, nextAction)
+        targetLocation = agent.actionsHandler.locationByAction(agent, nextAction, gridWorld)
 
         potentialParticipants = self.getPotentialEncounterParticipants(targetLocation, gridWorld)
 
@@ -169,6 +171,8 @@ class GoldHunterEncounter(Encounter):
             for yd in range(-1, 2):
 
                 inspectingLocation = self.addTuples(locationOfEncounter, (xd, yd))
+
+                logging.debug(f"inspectingLocation: {inspectingLocation}")
 
                 potentialAgents.extend( gridWorld.getAgentsAtLocation(inspectingLocation) )
 

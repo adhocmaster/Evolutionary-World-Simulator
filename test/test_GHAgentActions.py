@@ -154,5 +154,22 @@ class test_GHAgentActions(unittest.TestCase):
 
         actionsHandler.getMaxCollectableFromResources(agent, resources)
 
+    def test_calculateBounds(self):
+        actionsHandler = test_GHAgentActions.actionsHandler
+        world = GridWorld()
+
+        perceptonDistance = 2
+        location = (5,5)
+
+        bounds = actionsHandler.calculateBounds(location, world, perceptonDistance)
+
+        assert bounds[0] == 3
+        assert bounds[1] == 8
+        assert bounds[2] == 3
+        assert bounds[3] == 8
+
+        ## add boundary cases where bounds is determined by gridWorld size instead of perception distance
+
+
     
 

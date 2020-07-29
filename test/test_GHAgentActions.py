@@ -34,7 +34,7 @@ class test_GHAgentActions(unittest.TestCase):
 
         actionsHandler = test_GHAgentActions.actionsHandler
         agentFactory = test_GHAgentActions.agentFactory
-        world = GridWorld()
+        world = GridWorld(size = (10, 10))
         agent = agentFactory.buildDigger()
         encounterEngine = GoldHunterEncounter(actionsHandler)
 
@@ -71,20 +71,6 @@ class test_GHAgentActions(unittest.TestCase):
         assert actionsHandler.aLocationNearby(agent, (1, 1)) == (1, 1)
         assert actionsHandler.aLocationNearby(agent, (-1, -1)) == (-1, -1)
     
-
-    def checkItemsInPerceivedWorld(self, world, perceivedWorld, bounds):
-        # bounds = (left, right, top, bottom)
-        for x in range(bounds[0], bounds[1]):
-            for y in range(bounds[2], bounds[3]):
-                location = (x, y)
-                perceivedLocation = (x-bounds[0], y-bounds[2])
-
-
-                print(world.getAgentsAtLocation(location))
-                print(perceivedWorld.getAgentsAtLocation(perceivedLocation))
-
-                assert len(world.getAgentsAtLocation(location)) == len(perceivedWorld.getAgentsAtLocation(perceivedLocation))
-                assert len(world.getResourcesAtLocation(location)) == len(perceivedWorld.getResourcesAtLocation(perceivedLocation))
 
     def test_percieveWorld(self):
 
@@ -124,3 +110,19 @@ class test_GHAgentActions(unittest.TestCase):
         assert perceivedWorld.size == (3,5)
 
         self.checkItemsInPerceivedWorld(game.world, perceivedWorld, (0, 3, 3, 8))
+
+
+    def checkItemsInPerceivedWorld(self, world, perceivedWorld, bounds):
+        # bounds = (left, right, top, bottom) 
+        # right and bottom is not included.
+        for x in range(bounds[0], bounds[1]):
+            for y in range(bounds[2], bounds[3]):
+                location = (x, y)
+                perceivedLocation = (x-bounds[0], y-bounds[2])
+
+
+                print(world.getAgentsAtLocation(location))
+                print(perceivedWorld.getAgentsAtLocation(perceivedLocation))
+
+                assert len(world.getAgentsAtLocation(location)) == len(perceivedWorld.getAgentsAtLocation(perceivedLocation))
+                assert len(world.getResourcesAtLocation(location)) == len(perceivedWorld.getResourcesAtLocation(perceivedLocation))

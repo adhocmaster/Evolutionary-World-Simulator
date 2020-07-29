@@ -49,12 +49,12 @@ class GHAgentActions:
         return agent.getLocation()
 
     
-    def calculateBounds(self, location, world, perceptionDistance):
+    def calculateBounds(self, center, world, perceptionDistance):
 
-        leftBound = max(0, location[0] - perceptionDistance)
-        rightBound = min(world.size[0], location[0] + perceptionDistance + 1)
-        topBound = max(0, location[1] - perceptionDistance)
-        bottomBound = min(world.size[1], location[1] + perceptionDistance + 1)
+        leftBound = max(0, center[0] - perceptionDistance)
+        rightBound = min(world.size[0], center[0] + perceptionDistance + 1)
+        topBound = max(0, center[1] - perceptionDistance)
+        bottomBound = min(world.size[1], center[1] + perceptionDistance + 1)
 
         return (leftBound, rightBound, topBound, bottomBound)
 

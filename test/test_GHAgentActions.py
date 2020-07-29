@@ -126,3 +126,51 @@ class test_GHAgentActions(unittest.TestCase):
 
                 assert len(world.getAgentsAtLocation(location)) == len(perceivedWorld.getAgentsAtLocation(perceivedLocation))
                 assert len(world.getResourcesAtLocation(location)) == len(perceivedWorld.getResourcesAtLocation(perceivedLocation))
+    def test_dig(self):
+        game = test_GHAgentActions.game
+        actionsHandler = test_GHAgentActions.actionsHandler
+        agent = game.agents[0]
+        resource = game.resources[0]
+        oldResourceValue = resource
+
+        actionsHandler.dig(agent, resource)
+
+        assert oldResourceValue != resource
+
+    def test_getMaxCollectableFromResource(self):
+        game = test_GHAgentActions.game
+        actionsHandler = test_GHAgentActions.actionsHandler
+        goldResource = game.resources[0]
+        agent = game.agents[0]
+
+        collectableAmount = actionsHandler.getMaxCollectableFromResource(agent, goldResource) 
+
+        assert collectableAmount < goldResource.amountPerDig(agent.getDiggingRate())
+
+    def test_getMaxCollectableFromResources(self):
+        game = test_GHAgentActions.game
+        actionsHandler = test_GHAgentActions.actionsHandler
+        resources = game.resources
+        agent = game.agents[0]
+
+        actionsHandler.getMaxCollectableFromResources(agent, resources)
+
+    def test_calculateBounds(self):
+        actionsHandler = test_GHAgentActions.actionsHandler
+        world = GridWorld()
+
+        perceptonDistance = 2
+        location = (5,5)
+
+        bounds = actionsHandler.calculateBounds(location, world, perceptonDistance)
+
+        assert bounds[0] == 3
+        assert bounds[1] == 8
+        assert bounds[2] == 3
+        assert bounds[3] == 8
+
+        ## add boundary cases where bounds is determined by gridWorld size instead of perception distance
+
+
+    
+

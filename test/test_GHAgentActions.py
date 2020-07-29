@@ -124,3 +124,14 @@ class test_GHAgentActions(unittest.TestCase):
         assert perceivedWorld.size == (3,5)
 
         self.checkItemsInPerceivedWorld(game.world, perceivedWorld, (0, 3, 3, 8))
+
+    def test_dig(self):
+        game = test_GHAgentActions.game
+        actionsHandler = test_GHAgentActions.actionsHandler
+        agent = game.agents[0]
+        resource = game.resources[0]
+        oldResourceValue = resource
+
+        actionsHandler.dig(agent, resource)
+
+        assert oldResourceValue != resource

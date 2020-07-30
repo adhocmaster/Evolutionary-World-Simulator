@@ -85,3 +85,20 @@ class GHAgentFactory(AgentFactory):
             robbersMade.append(self.buildRobber())
 
         return robbersMade
+
+
+    def copy(self, agent):
+
+        newAgent = GoldHunterAgent(agent.type, 
+                                    None, 
+                                    productionHistoryLength = agent.productionHistoryLength, 
+                                    goldQuota= agent.goldQuota, 
+                                    actionsHandler= agent.actionsHandler)
+
+        newAgent.diggingRate = agent.getDiggingRate()
+        newAgent.efficiency = agent.getEfficiency()
+        newAgent.strength = agent.getStrength()
+
+        newAgent.gold = agent.getGold()
+
+        return newAgent

@@ -8,6 +8,9 @@ class GridWorld(World):
         
         super().__init__(name, initialState)
 
+        if isinstance(size, tuple) is False or len(size) != 2:
+            raise Exception(f"gridworld is strictly 2D, size must be defined in a tuple")
+
         self.size = size
 
         self.createNodes()
@@ -78,8 +81,8 @@ class GridWorld(World):
 
 
     def locations(self):
-        for x in self.size[0]:
-            for y in self.size[1]:
+        for x in range(self.size[0]):
+            for y in range(self.size[1]):
                 yield (x, y)
 
 

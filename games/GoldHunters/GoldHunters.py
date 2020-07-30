@@ -1,3 +1,6 @@
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 from library.Game import Game
 from library.GridWorld import GridWorld
 from games.GoldHunters.localLib.GHAgentFactory import GHAgentFactory
@@ -122,7 +125,7 @@ class GoldHunters(Game):
 
             # 1 if the action is a move event.
             if isinstance(action, GHMoveAction):
-                newLocation  = self.actionsHandler.aLocationNearby(agent, action.direction)
+                newLocation  = self.actionsHandler.aLocationNearby(agent, action.direction, self.world)
                 self.moveAgent(agent, newLocation)
 
 
@@ -135,19 +138,29 @@ class GoldHunters(Game):
 
         encounterResults = []
         for location in self.world.locations():
-            agents = self.world.getAgentsAtLocation(location)
-            resources = self.world.getResourcesAtLocation(location)
+            result = self.doEncounterAtLocation(location)
+            if result is not None:
+                encounterResults.append(result)
 
-
-            if len(resources) == 0:
-                encounterResults.append(self.encounterEngine.getEncounterResults(agents))
-
-            else:
-                encounterResults.append(self.encounterEngine.getEncounterResults(agents, resources[0])) # TODO encounter method does not handle more than one resource.
-
-        print(encounterResults)
+        logging.debug(encounterResults)
         pass
     
+
+    def doEncounterAtLocation(self, location):
+
+            agents = self.world.getAgentsAtLocation(location)
+            if len(agents) < 2:
+                return None # no encounter
+
+            resources = self.world.getResourcesAtLocation(location)
+
+            if len(resources) == 0:
+                return self.encounterEngine.getEncounterResults(agents)
+
+            else:
+                # TODO encounter method does not handle more than one resource.
+                return self.encounterEngine.getEncounterResults(agents, resources[0]) 
+
 
     def run(self, timesToRun = 1):
         # run the loop for timesToRun times

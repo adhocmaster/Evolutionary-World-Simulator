@@ -12,13 +12,14 @@ from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
 from games.GoldHunters.localLib.GHSimulatedAgent import GHSimulatedAgent
 from games.GoldHunters.localLib.GHAgentType import GHAgentType
 from games.GoldHunters.localLib.GHAgentActions import GHAgentActions
+from games.GoldHunters.localLib.GHAgentFactory import GHAgentFactory
 
 # state-less
 
 class GoldHunterEncounter(Encounter):
 
 
-    def __init__(self, actionsHandler = None):
+    def __init__(self, actionsHandler = None, agentFactory = None):
 
         if actionsHandler is None:
             print("Warning: creating the default actionsHandler")
@@ -26,6 +27,15 @@ class GoldHunterEncounter(Encounter):
             self.actionsHandler = GHAgentActions()
         else:
             self.actionsHandler = actionsHandler
+
+        if agentFactory is None:
+            print("Warning: creating the default agentFactory")
+            # raise Exception("GHAgentFactory needs an agentFactory.")
+            self.agentFactory = GHAgentFactory()
+        else:
+            self.agentFactory = agentFactory
+
+
         self.passiveEncounters = [
 
             self.collaboration, 
@@ -76,11 +86,11 @@ class GoldHunterEncounter(Encounter):
             simulatedAgents = []
 
             kwargsForEncounter = {}
-            for agentType, agent in kwargs.items():
+            for agentType, agents in kwargs.items():
 
                 realAgents.append(agent)
                 
-                simulatedAgent = GHSimulatedAgent(agent)
+                simulatedAgent = self.agentFactory.copy(agent)
 
                 kwargsForEncounter[agentType] = simulatedAgent
                 simulatedAgents.append(simulatedAgent)
@@ -161,20 +171,31 @@ class GoldHunterEncounter(Encounter):
         return len(potentialParticipants) > 1
 
 
+    def getPossibleNearbyLocations(self, locationOfEncounter, gridWorld):
+
+        locations = []
+
+        for xd in range(-1, 2):
+            for yd in range(-1, 2):
+                inspectingLocation = self.addTuples(locationOfEncounter, (xd, yd))
+                if gridWorld.hasLocation(inspectingLocation):
+                    locations.append(inspectingLocation)
+
+        return locations
+
+
+
     def getPotentialEncounterParticipants(self, locationOfEncounter, gridWorld):
         """Returns potential agents that could be involved in an encounter at any location."""
 
         potentialAgents = []
 
-        for xd in range(-1, 2):
+        possibleNearbyLocations = self.getPossibleNearbyLocations(locationOfEncounter, gridWorld)
 
-            for yd in range(-1, 2):
+        for inspectingLocation in possibleNearbyLocations:
 
-                inspectingLocation = self.addTuples(locationOfEncounter, (xd, yd))
-
-                logging.debug(f"inspectingLocation: {inspectingLocation}")
-
-                potentialAgents.extend( gridWorld.getAgentsAtLocation(inspectingLocation) )
+            logging.debug(f"inspectingLocation: {inspectingLocation}")
+            potentialAgents.extend( gridWorld.getAgentsAtLocation(inspectingLocation) )
 
         return potentialAgents
 

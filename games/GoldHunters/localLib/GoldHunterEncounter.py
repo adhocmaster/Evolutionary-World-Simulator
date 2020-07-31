@@ -9,7 +9,6 @@ from library.Encounter import Encounter
 from library.ResourceType import ResourceType
 from games.GoldHunters.localLib.GHActionType import GHActionType
 from games.GoldHunters.localLib.GoldHunterAgent import GoldHunterAgent
-from games.GoldHunters.localLib.GHSimulatedAgent import GHSimulatedAgent
 from games.GoldHunters.localLib.GHAgentType import GHAgentType
 from games.GoldHunters.localLib.GHAgentActions import GHAgentActions
 from games.GoldHunters.localLib.GHAgentFactory import GHAgentFactory
@@ -82,27 +81,26 @@ class GoldHunterEncounter(Encounter):
 
         for encounter in encounters:
             
-            realAgents = []
-            simulatedAgents = []
+            allRealAgents = []
+            allSimulatedAgents = []
 
             kwargsForEncounter = {}
             for agentType, agents in kwargs.items():
 
-                realAgents.append(agent)
-                
-                simulatedAgent = self.agentFactory.copy(agent)
+                allRealAgents.extend(agents)
 
-                kwargsForEncounter[agentType] = simulatedAgent
-                simulatedAgents.append(simulatedAgent)
+                simulatedAgents = self.agentFactory.copyAgents(agents)
+                kwargsForEncounter[agentType] = simulatedAgents
+                allSimulatedAgents.extend(simulatedAgents)
 
             changes = {}
 
             encounter(**kwargsForEncounter)
 
-            for i in range(len(realAgents)):
+            for i in range(len(allRealAgents)):
 
-                realAgent = realAgents[i]
-                simulatedAgent = simulatedAgents[i]
+                realAgent = allRealAgents[i]
+                simulatedAgent = allSimulatedAgents[i]
 
                 changes[realAgent] = simulatedAgent
 
@@ -337,7 +335,7 @@ class GoldHunterEncounter(Encounter):
                 victim = unrobbedAgents[0]
                 unrobbedAgents.remove(victim)
 
-                robber.rob(victim)
+                self.actionsHandler.rob(robber, victim)
 
             else:
                 break
@@ -357,7 +355,7 @@ class GoldHunterEncounter(Encounter):
 
         totalGoldStolen = totalAggressiveStrength - totalPassiveStrength
     
-        if totalGoldStolen > 0:
+        if totalGoldStolen > 0 and totalGoldOwned > 0:
 
             for agent in passiveAgents:
 

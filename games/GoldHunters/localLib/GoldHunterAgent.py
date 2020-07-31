@@ -44,6 +44,10 @@ class GoldHunterAgent(Agent):
 
     def getGold(self):
         return self.getFromInventory('gold')
+
+    
+    def setGold(self, amount):
+        self.updateInventory('gold', amount)
     
 
     def getEfficiency(self):
@@ -65,7 +69,6 @@ class GoldHunterAgent(Agent):
     def getStrength(self):
         return self.getFromOtherProperties('strength')
     
-
 
     def setStrength(self, strength):
         self.setToOtherProperties('strength', strength)

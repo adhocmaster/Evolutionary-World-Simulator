@@ -66,11 +66,23 @@ class test_GHAgentActions(unittest.TestCase):
         agentFactory = test_GHAgentActions.agentFactory
         agent = agentFactory.buildDigger()
 
-        agent.updateAgentLocation((0, 0))
+        gridWorld = GridWorld(size=(10, 10))
 
-        assert actionsHandler.aLocationNearby(agent, (1, 1)) == (1, 1)
-        assert actionsHandler.aLocationNearby(agent, (-1, -1)) == (-1, -1)
-    
+        # testing agent on the world border
+        agent.updateAgentLocation((0, 0))
+        self.assertEqual(actionsHandler.aLocationNearby(agent, (1, 1), gridWorld), (1, 1))
+        self.assertEqual(actionsHandler.aLocationNearby(agent, (1, 0), gridWorld), (1, 0))
+        self.assertEqual(actionsHandler.aLocationNearby(agent, (0, 1), gridWorld), (0, 1))
+        with self.assertRaises(Exception):
+            actionsHandler.aLocationNearby(agent, (0, -1), gridWorld)
+
+        # testing agent in the middle
+        agent.updateAgentLocation((5, 5))
+        self.assertEqual(actionsHandler.aLocationNearby(agent, (1, 1), gridWorld), (6, 6))
+        self.assertEqual(actionsHandler.aLocationNearby(agent, (1, 0), gridWorld), (6, 5))
+        self.assertEqual(actionsHandler.aLocationNearby(agent, (0, 1), gridWorld), (5, 6))
+        self.assertEqual(actionsHandler.aLocationNearby(agent, (0, -1), gridWorld), (5, 4))
+
 
     def test_percieveWorld(self):
 
@@ -126,26 +138,30 @@ class test_GHAgentActions(unittest.TestCase):
 
                 assert len(world.getAgentsAtLocation(location)) == len(perceivedWorld.getAgentsAtLocation(perceivedLocation))
                 assert len(world.getResourcesAtLocation(location)) == len(perceivedWorld.getResourcesAtLocation(perceivedLocation))
+
+
     def test_dig(self):
         game = test_GHAgentActions.game
         actionsHandler = test_GHAgentActions.actionsHandler
         agent = game.agents[0]
         resource = game.resources[0]
-        oldResourceValue = resource
+        oldResourceQuantity = resource.quantity
 
         actionsHandler.dig(agent, resource)
 
-        assert oldResourceValue != resource
+        self.assertGreaterEqual(oldResourceQuantity, resource.quantity)
+
 
     def test_getMaxCollectableFromResource(self):
         game = test_GHAgentActions.game
         actionsHandler = test_GHAgentActions.actionsHandler
         goldResource = game.resources[0]
+        goldResource.setQuantity(100)
         agent = game.agents[0]
 
         collectableAmount = actionsHandler.getMaxCollectableFromResource(agent, goldResource) 
-
-        assert collectableAmount < goldResource.amountPerDig(agent.getDiggingRate())
+        self.assertLess(collectableAmount, goldResource.amountPerDig(agent.getDiggingRate()))
+ 
 
     def test_getMaxCollectableFromResources(self):
         game = test_GHAgentActions.game
@@ -154,6 +170,7 @@ class test_GHAgentActions(unittest.TestCase):
         agent = game.agents[0]
 
         actionsHandler.getMaxCollectableFromResources(agent, resources)
+
 
     def test_calculateBounds(self):
         actionsHandler = test_GHAgentActions.actionsHandler

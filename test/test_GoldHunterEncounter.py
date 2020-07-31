@@ -301,4 +301,14 @@ class test_GoldHunterEncounter(unittest.TestCase):
 
         pass
 
+
+    def test_simulateMultipleEncounters(self):
+        # TODO continue
+        agentFactory = GHAgentFactory()
+        encounter = GoldHunterEncounter()
+
+        
+
+        pass
+
     

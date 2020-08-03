@@ -18,10 +18,13 @@ class GHAgentFactory(AgentFactory):
 
 
     def __init__(self, actionsHandler = None, agentConfig = GHAgentConfig, strategy = None):
+
+        self.defaultLocation = (-1, -1)
         self.agentConfig = agentConfig
         self.traitFactory = GHTraitFactory()
         self.strategy = strategy
         self.defaultStrategy = TurnThreshholdStrategy()
+        
 
         if actionsHandler is None:
             print("Warning: creating the default actionsHandler")
@@ -40,6 +43,7 @@ class GHAgentFactory(AgentFactory):
         agent.setDiggingRate(type.value['diggingRate'])
         agent.setStrength(type.value['strength'])
         agent.setPerceptionDistance(perceptionDistance)
+        agent.updateAgentLocation(self.defaultLocation)
         
         agent.addTrait(trait)
 

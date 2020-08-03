@@ -72,12 +72,14 @@ class GoldHunterEncounter(Encounter):
         return self.simulateMultipleEncounters(self.robbingEncounters, passiveAgents = passiveAgents, aggressiveAgents = aggressiveAgents)
 
 
-    def simulateMultipleEncounters(self, encounters, **kwargs):
+    def simulateMultipleEncounters(self, encounters, goldResource = None, **kwargs):
         '''
         kwargs: passiveAgents, aggressiveAgents, goldResource
         '''
 
         allChanges = []
+
+        
 
         for encounter in encounters:
             
@@ -85,6 +87,11 @@ class GoldHunterEncounter(Encounter):
             allSimulatedAgents = []
 
             kwargsForEncounter = {}
+
+            if goldResource != None:
+                allRealAgents.append(goldResource)
+                allSimulatedAgents.append(copy.deepcopy(goldResource))
+
             for agentType, agents in kwargs.items():
 
                 allRealAgents.extend(agents)
@@ -95,7 +102,7 @@ class GoldHunterEncounter(Encounter):
 
             changes = {}
 
-            encounter(**kwargsForEncounter)
+            encounter(goldResource = goldResource, **kwargsForEncounter)
 
             for i in range(len(allRealAgents)):
 
@@ -105,6 +112,8 @@ class GoldHunterEncounter(Encounter):
                 changes[realAgent] = simulatedAgent
 
             allChanges.append(changes)
+
+        return allChanges
 
         
 
@@ -232,11 +241,10 @@ class GoldHunterEncounter(Encounter):
 
     # ENCOUNTERS START HERE #
 
-    def collaboration(self, **kwargs):
+    def collaboration(self, goldResource, **kwargs):
         """All agents attempt to dig their max amount and distribute the gold evenly."""
 
         agents = kwargs.get('passiveAgents')
-        goldResource = kwargs.get('goldResource')
         
         totalAmountCollected = self.collectiveDigging(agents, goldResource)
 
@@ -248,22 +256,20 @@ class GoldHunterEncounter(Encounter):
         pass
 
 
-    def philanthropy(self, **kwargs):
+    def philanthropy(self, goldResource, **kwargs):
         """Agents with less gold dig from the resource first"""
 
         agents = kwargs.get('passiveAgents')
-        goldResource = kwargs.get('goldResource')
 
         agents = sorted(agents, reverse = False, key = self.keyToSortByGold)
 
         self.priorityDigging(agents, goldResource)
 
 
-    def competition(self, **kwargs):
+    def competition(self, goldResource, **kwargs):
         """Agents gain gold based on their digging rate"""
 
         agents = kwargs.get('passiveAgents')
-        goldResource = kwargs.get('goldResource')
 
         totalMaxGold = self.getTotalMaxGoldPerTurn(agents)
 
@@ -275,11 +281,10 @@ class GoldHunterEncounter(Encounter):
         pass
 
 
-    def monopoly(self, **kwargs):
+    def monopoly(self, goldResource, **kwargs):
         """Agents with more strength dig from the resource first"""
 
         agents = kwargs.get('passiveAgents')
-        goldResource = kwargs.get('goldResource')
 
         agents = sorted(agents, reverse = True, key = self.keyToSortByStrength)
 

@@ -79,8 +79,6 @@ class GoldHunterEncounter(Encounter):
 
         allChanges = []
 
-        
-
         for encounter in encounters:
             
             allRealAgents = []
@@ -123,8 +121,8 @@ class GoldHunterEncounter(Encounter):
 
     def getEncounterResults(self, agents, goldResource = None):
         """
-        Simulates the event in which these agents meet.
-        Returns the encounter results as a dictionary with original agents as its keys and changed agents as its value.
+        Simulates the event in which these agents meet at a single location.
+        Returns the encounter results as a dictionary with original agents/resources as its keys and changed agents/resources as its value.
         """
 
         passiveAgents = []

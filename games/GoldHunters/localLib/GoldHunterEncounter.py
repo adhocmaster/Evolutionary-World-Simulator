@@ -88,9 +88,13 @@ class GoldHunterEncounter(Encounter):
 
             kwargsForEncounter = {}
 
+            goldResourceCopy = None
             if goldResource != None:
+
+                goldResourceCopy = copy.deepcopy(goldResource)
+                
                 allRealAgents.append(goldResource)
-                allSimulatedAgents.append(copy.deepcopy(goldResource))
+                allSimulatedAgents.append(goldResourceCopy)
 
             for agentType, agents in kwargs.items():
 
@@ -102,7 +106,7 @@ class GoldHunterEncounter(Encounter):
 
             changes = {}
 
-            encounter(goldResource = goldResource, **kwargsForEncounter)
+            encounter(goldResource = goldResourceCopy, **kwargsForEncounter)
 
             for i in range(len(allRealAgents)):
 

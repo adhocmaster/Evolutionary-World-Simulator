@@ -5,7 +5,7 @@ from games.GoldHunters.localLib.GHAgentFactory import GHAgentFactory
 from games.GoldHunters.localLib.GHAgentActions import GHAgentActions
 from games.GoldHunters.localLib.GoldHunterEncounter import GoldHunterEncounter
 from games.GoldHunters.localLib.GHAgentType import GHAgentType
-
+from games.GoldHunters.localLib.GHActionType import GHActionType
 
 class test_GHAgentActions(unittest.TestCase):
 
@@ -243,6 +243,19 @@ class test_GHAgentActions(unittest.TestCase):
 
         ## add boundary cases where bounds is determined by gridWorld size instead of perception distance
 
+    def test_locationByAction(self):
+        game = test_GHAgentActions.game
+        actionsHandler = test_GHAgentActions.actionsHandler
+        world = test_GHAgentActions.world
+        agent = game.agents[0]
+        nextAction = GHActionType.MoveUp
+        oldLocation = agent.location
+
+        locationAfterAction = actionsHandler.locationByAction(agent, nextAction, world)
+
+        assert locationAfterAction[0] == oldLocation[0]
+        assert locationAfterAction[1] == oldLocation[1]+1
+        
 
     
 

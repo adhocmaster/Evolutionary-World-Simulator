@@ -68,7 +68,7 @@ class GHAgentActions:
         return (leftBound, rightBound, topBound, bottomBound)
 
 
-    def percieveWorld(self, agent, world):
+    def perceiveWorld(self, agent, world):
 
         location = agent.getLocation()
         perceptionDistance = agent.getPerceptionDistance()
@@ -85,9 +85,9 @@ class GHAgentActions:
                 locationInPerceivedWorld = (x - bounds[0], y - bounds[2])
 
                 if world.hasLocation(locationInWorld):
-                    agents = world.getAgentsAtLocation(locationInWorld)
-                    for agent in agents:
-                        percievedWorldModel.addAgentToLocation(locationInPerceivedWorld, agent)
+                    agentsAtLocation = world.getAgentsAtLocation(locationInWorld)
+                    for agentAtLocation in agentsAtLocation:
+                        percievedWorldModel.addAgentToLocation(locationInPerceivedWorld, agentAtLocation)
 
                     resources = world.getResourcesAtLocation(locationInWorld)
                     for resource in resources:
@@ -99,21 +99,21 @@ class GHAgentActions:
         agent.setPerceivedWorld( percievedWorldModel )
 
     
-    def rob(self, agent, otherAgent):
+    def rob(self, robbingAgent, victimAgent):
             
-        otherAgentGold = otherAgent.getFromInventory(ResourceType.GOLD)
-        quantityToRob = agent.getStrength() - otherAgent.getStrength()
-        robbingPenalty = otherAgent.getStrength()       # the more the victim struggles, the more costly the robbery
+        victimAgentGold = victimAgent.getFromInventory(ResourceType.GOLD)
+        quantityToRob = robbingAgent.getStrength() - victimAgent.getStrength()
+        robbingPenalty = victimAgent.getStrength()       # the more the victim struggles, the more costly the robbery
 
         if (quantityToRob > 0):   # cant rob negative amount of gold
 
-            if quantityToRob > otherAgentGold:
-                quantityToRob = otherAgentGold
+            if quantityToRob > victimAgentGold:
+                quantityToRob = victimAgentGold
             
-            agent.addGold(quantityToRob)
-            otherAgent.removeGold(quantityToRob)
+            robbingAgent.addGold(quantityToRob)
+            victimAgent.removeGold(quantityToRob)
         
-        agent.removeGold(robbingPenalty)
+        robbingAgent.removeGold(robbingPenalty)
 
 
     def takeTurn(self, agent, gridworld, encounterEngine):
@@ -123,7 +123,7 @@ class GHAgentActions:
         if len(agent.previousGoldOwned) > agent.productionHistoryLength:
             agent.previousGoldOwned.pop(0)
 
-        self.percieveWorld(agent, gridworld)
+        self.perceiveWorld(agent, gridworld)
 
         self.updateStrategy(agent)
 

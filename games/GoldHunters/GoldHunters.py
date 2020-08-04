@@ -56,8 +56,8 @@ class GoldHunters(Game):
     def putAgentsInWorld(self):
 
         for agent in self.agents:
-            randomXLocation = randint(0,self.world.size[0] - 1)
-            randomYLocation = randint(0,self.world.size[1] - 1)
+            randomXLocation = randint(0, self.world.size[0] - 1)
+            randomYLocation = randint(0, self.world.size[1] - 1)
             self.moveAgent(agent, (randomXLocation, randomYLocation))
         pass
 

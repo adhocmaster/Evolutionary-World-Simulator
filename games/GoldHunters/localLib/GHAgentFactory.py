@@ -18,6 +18,11 @@ class GHAgentFactory(AgentFactory):
 
 
     def __init__(self, actionsHandler = None, agentConfig = GHAgentConfig, strategy = None):
+<<<<<<< Updated upstream
+=======
+
+        self.defaultLocation = (0, 0)
+>>>>>>> Stashed changes
         self.agentConfig = agentConfig
         self.traitFactory = GHTraitFactory()
         self.strategy = strategy

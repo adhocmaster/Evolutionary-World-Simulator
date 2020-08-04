@@ -18,5 +18,5 @@ class test_GridWorld(unittest.TestCase):
         for x in range (size[0]):
             for y in range (size[1]):
                 listOfLocations.append((x, y))
-        assert listOfLocations == world.locations
+        assert listOfLocations == list(world.locations)
         

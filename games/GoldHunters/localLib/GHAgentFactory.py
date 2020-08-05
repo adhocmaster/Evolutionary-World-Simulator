@@ -16,10 +16,12 @@ GHAgentConfig = {
 
 class GHAgentFactory(AgentFactory):
 
+    
+
 
     def __init__(self, actionsHandler = None, agentConfig = GHAgentConfig, strategy = None):
         
-        self.defaultLocation = (0, 0)
+        self.defaultLocation = (-1, -1)
 
         self.agentConfig = agentConfig
         self.traitFactory = GHTraitFactory()

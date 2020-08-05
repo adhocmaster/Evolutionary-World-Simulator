@@ -1,5 +1,5 @@
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 from library.Game import Game
 from library.GridWorld import GridWorld
@@ -21,7 +21,7 @@ class GoldHunters(Game):
         self.resources = None
         self.encounterEngine = encounterEngine
         if self.encounterEngine is None:
-            print("Warning: creating the default encounter engine as none is supplied")
+            logging.warning("creating the default encounter engine as none is supplied")
             self.encounterEngine = GoldHunterEncounter()
 
         self.actionsHandler = GHAgentActions()
@@ -66,13 +66,13 @@ class GoldHunters(Game):
 
         # TODO do not move if the there is no change in the location.
 
-        print(f"moving agent {agent} to location {newLocation}")
+        logging.info(f"moving agent {agent} to location {newLocation}")
 
         self.removeAgentFromOldLocation(agent)
 
         agent.updateAgentLocation(newLocation)
 
-        print(f"adding agent {agent} to location {newLocation}")
+        logging.info(f"adding agent {agent} to location {newLocation}")
         self.world.addAgentToLocation(newLocation, agent)
 
         pass
@@ -81,7 +81,10 @@ class GoldHunters(Game):
         
         try:
             oldLocation = agent.getLocation()
-            print(f"removing agent {agent} from location {oldLocation}")
+            if self.world.hasLocation(oldLocation) is False:
+                return
+
+            logging.info(f"removing agent {agent} from location {oldLocation}")
             self.world.removeAgentFromLocation(oldLocation, agent)
         except NotFoundInTheWorld as e:
             pass
@@ -105,8 +108,12 @@ class GoldHunters(Game):
 
     def putGoldResourcesInWorld(self):
         for resource in self.resources:
-            resource.setLocationX(randint(0, self.world.size[0]))
-            resource.setLocationY(randint(0, self.world.size[1]))
+            randomXLocation = randint(0, self.world.size[0] - 1)
+            randomYLocation = randint(0, self.world.size[1] - 1)
+            location = (randomXLocation, randomYLocation)
+            resource.setLocation(location)
+            logging.info(f"adding {resource} to {location}")
+            self.world.addResourceToLocation(location, resource)
         pass
 
     def changeState(self):
@@ -201,6 +208,8 @@ class GoldHunters(Game):
         for turn in range(timesToRun):
 
             self.runGameLoop(turn)
+            for agent in self.agents:
+                logging.info(agent.getResourceStats())
 
         pass
 

@@ -77,7 +77,7 @@ class GHAgentActions:
 
         percievedWorldModel = GridWorld(size = (bounds[1]-bounds[0],  bounds[3]-bounds[2])) # Makes a new world with "radius" of perceptionDistance
 
-        print(f"size of the perceived world: {percievedWorldModel.size}")
+        logging.debug(f"size of the perceived world: {percievedWorldModel.size}")
 
         for x in range(bounds[0], bounds[1]): # Spanning the entire diameter.
             for y in range(bounds[2], bounds[3]):

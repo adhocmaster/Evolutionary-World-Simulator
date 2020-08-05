@@ -203,7 +203,6 @@ class GoldHunterEncounter(Encounter):
 
         for inspectingLocation in possibleNearbyLocations:
 
-            logging.debug(f"inspectingLocation: {inspectingLocation}")
             potentialAgents.extend( gridWorld.getAgentsAtLocation(inspectingLocation) )
 
         return potentialAgents

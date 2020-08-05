@@ -51,6 +51,7 @@ class GridWorld(World):
 
 
     def removeAgentFromLocation(self, location, agent):
+
         id = self.getIdFromLocation(location)
         super().removeAgentFromNode(id, agent)
         pass

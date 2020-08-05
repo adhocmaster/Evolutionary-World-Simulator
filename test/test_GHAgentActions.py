@@ -1,4 +1,4 @@
-import unittest
+import unittest, math
 from library.GridWorld import GridWorld
 from games.GoldHunters.GoldHunters import GoldHunters
 from games.GoldHunters.localLib.GHAgentFactory import GHAgentFactory
@@ -14,6 +14,7 @@ class test_GHAgentActions(unittest.TestCase):
         cls.actionsHandler = GHAgentActions()
         cls.agentFactory = GHAgentFactory(actionsHandler=cls.actionsHandler)
         cls.game = GoldHunters(worldSize=(10,10))
+        cls.world = GridWorld(size=(10, 10))
         pass
 
 
@@ -34,7 +35,7 @@ class test_GHAgentActions(unittest.TestCase):
 
         actionsHandler = test_GHAgentActions.actionsHandler
         agentFactory = test_GHAgentActions.agentFactory
-        world = GridWorld(size = (10, 10))
+        world = test_GHAgentActions.world
         agent = agentFactory.buildDigger()
         encounterEngine = GoldHunterEncounter(actionsHandler)
 
@@ -64,6 +65,7 @@ class test_GHAgentActions(unittest.TestCase):
 
         actionsHandler = test_GHAgentActions.actionsHandler
         agentFactory = test_GHAgentActions.agentFactory
+        world = test_GHAgentActions.world
         agent = agentFactory.buildDigger()
 
         gridWorld = GridWorld(size=(10, 10))
@@ -83,6 +85,11 @@ class test_GHAgentActions(unittest.TestCase):
         self.assertEqual(actionsHandler.aLocationNearby(agent, (0, 1), gridWorld), (5, 6))
         self.assertEqual(actionsHandler.aLocationNearby(agent, (0, -1), gridWorld), (5, 4))
 
+        agent.updateAgentLocation((5, 5))
+
+        assert actionsHandler.aLocationNearby(agent, (1, 1), world) == (6, 6)
+        assert actionsHandler.aLocationNearby(agent, (-1, -1), world) == (4, 4)
+    
 
     def test_perceiveWorld(self):
 
@@ -145,12 +152,11 @@ class test_GHAgentActions(unittest.TestCase):
         actionsHandler = test_GHAgentActions.actionsHandler
         agent = game.agents[0]
         resource = game.resources[0]
-        oldResourceQuantity = resource.quantity
+        oldResourceValue = resource.quantity
 
         actionsHandler.dig(agent, resource)
 
-        self.assertGreaterEqual(oldResourceQuantity, resource.quantity)
-
+        assert oldResourceValue != resource.quantity
 
     def test_getMaxCollectableFromResource(self):
         game = test_GHAgentActions.game
@@ -160,8 +166,8 @@ class test_GHAgentActions(unittest.TestCase):
         agent = game.agents[0]
 
         collectableAmount = actionsHandler.getMaxCollectableFromResource(agent, goldResource) 
-        self.assertLess(collectableAmount, goldResource.amountPerDig(agent.getDiggingRate()))
- 
+
+        assert collectableAmount == math.ceil(agent.getEfficiency() * goldResource.amountPerDig(agent.getDiggingRate()))
 
     def test_getMaxCollectableFromResources(self):
         game = test_GHAgentActions.game
@@ -174,17 +180,66 @@ class test_GHAgentActions(unittest.TestCase):
 
     def test_calculateBounds(self):
         actionsHandler = test_GHAgentActions.actionsHandler
-        world = GridWorld()
+        world = test_GHAgentActions.world
 
-        perceptonDistance = 2
+        perceptionDistance = 2
         location = (5,5)
 
-        bounds = actionsHandler.calculateBounds(location, world, perceptonDistance)
+        bounds = actionsHandler.calculateBounds(location, world, perceptionDistance)
 
         assert bounds[0] == 3
         assert bounds[1] == 8
         assert bounds[2] == 3
         assert bounds[3] == 8
+
+        location = (0, 5)
+        bounds = actionsHandler.calculateBounds(location, world, perceptionDistance)
+        assert bounds[0] == 0
+        assert bounds[1] == 3
+        assert bounds[2] == 3
+        assert bounds[3] == 8
+
+        location = (1, 5)
+        bounds = actionsHandler.calculateBounds(location, world, perceptionDistance)
+        assert bounds[0] == 0
+        assert bounds[1] == 4
+        assert bounds[2] == 3
+        assert bounds[3] == 8
+        
+        location = (5, 0)
+        bounds = actionsHandler.calculateBounds(location, world, perceptionDistance)
+        assert bounds[0] == 3
+        assert bounds[1] == 8
+        assert bounds[2] == 0
+        assert bounds[3] == 3
+
+        location = (5, 1)
+        bounds = actionsHandler.calculateBounds(location, world, perceptionDistance)
+        assert bounds[0] == 3
+        assert bounds[1] == 8
+        assert bounds[2] == 0
+        assert bounds[3] == 4
+
+        location = (0, 0)
+        bounds = actionsHandler.calculateBounds(location, world, perceptionDistance)
+        assert bounds[0] == 0
+        assert bounds[1] == 3
+        assert bounds[2] == 0
+        assert bounds[3] == 3
+
+        location = (1, 1)
+        bounds = actionsHandler.calculateBounds(location, world, perceptionDistance)
+        assert bounds[0] == 0
+        assert bounds[1] == 4
+        assert bounds[2] == 0
+        assert bounds[3] == 4
+
+        location = (9, 9)
+        bounds = actionsHandler.calculateBounds(location, world, perceptionDistance)
+        assert bounds[0] == 7
+        assert bounds[1] == 10
+        assert bounds[2] == 7
+        assert bounds[3] == 10
 
         ## add boundary cases where bounds is determined by gridWorld size instead of perception distance
 

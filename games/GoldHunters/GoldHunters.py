@@ -64,6 +64,8 @@ class GoldHunters(Game):
 
     def moveAgent(self, agent, newLocation):
 
+        # TODO do not move if the there is no change in the location.
+
         print(f"moving agent {agent} to location {newLocation}")
 
         self.removeAgentFromOldLocation(agent)
@@ -141,10 +143,41 @@ class GoldHunters(Game):
             result = self.doEncounterAtLocation(location)
             if result is not None:
                 encounterResults.append(result)
+                self.updateAgentsAndResourcesFromEncounterResult(result)
 
         logging.debug(encounterResults)
         pass
     
+
+    def updateAgentsAndResourcesFromEncounterResult(self, encounterResult):
+
+        """
+        { agent1Object: changedObject,
+          agent2Object: changedObject,
+          goldResource1: changed...
+        }
+        """
+
+        for originalObject in encounterResult:
+            changedObject = encounterResult[originalObject]
+            if isinstance(originalObject, GoldResource):
+                # TODO changed resource.
+                self.updateResource(originalObject, changedObject)
+
+            else:
+                # this is an agent.
+                self.updateAgent(originalObject, changedObject)
+        
+        pass
+
+
+    def updateResource(self, originalObject, changedObject):
+        #1. copy properties
+        pass
+    def updateAgent(self, originalObject, changedObject):
+        #1. copy properties getPayoffFromEncounterResults
+        pass
+
 
     def doEncounterAtLocation(self, location):
 

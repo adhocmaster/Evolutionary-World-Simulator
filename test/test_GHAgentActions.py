@@ -91,14 +91,14 @@ class test_GHAgentActions(unittest.TestCase):
         assert actionsHandler.aLocationNearby(agent, (-1, -1), world) == (4, 4)
     
 
-    def test_percieveWorld(self):
+    def test_perceiveWorld(self):
 
         game = test_GHAgentActions.game 
         for agent in game.agents:
             agent.setPerceptionDistance(2)
             game.moveAgent(agent, (5,5))
-            agent.actionsHandler.percieveWorld(agent, game.world)
-            
+            agent.actionsHandler.perceiveWorld(agent, game.world)
+
             perceivedWorld =  agent.getPerceivedWorld()
 
             # fail case: world is not 5x5
@@ -111,7 +111,7 @@ class test_GHAgentActions(unittest.TestCase):
         firstAgent = game.agents[0]
         game.moveAgent(firstAgent, (0,0))
 
-        firstAgent.actionsHandler.percieveWorld(firstAgent, game.world)
+        firstAgent.actionsHandler.perceiveWorld(firstAgent, game.world)
         perceivedWorld = firstAgent.getPerceivedWorld()
 
         assert perceivedWorld.size == (3,3)
@@ -123,7 +123,7 @@ class test_GHAgentActions(unittest.TestCase):
         secondAgent = game.agents[1]
         game.moveAgent(secondAgent, (0,5))
 
-        secondAgent.actionsHandler.percieveWorld(secondAgent, game.world)
+        secondAgent.actionsHandler.perceiveWorld(secondAgent, game.world)
         perceivedWorld = secondAgent.getPerceivedWorld()
 
         assert perceivedWorld.size == (3,5)

@@ -145,7 +145,7 @@ class Agent(Object):
 
     
     def getFromOtherProperties(self, key):
-        if key in self.otherProperties:
+        if key in self.otherProperties.keys():
             return self.otherProperties[key]
         else:
             raise Exception(f'No such item in otherProperties with key {key}')

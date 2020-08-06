@@ -203,7 +203,6 @@ class GoldHunterEncounter(Encounter):
 
         for inspectingLocation in possibleNearbyLocations:
 
-            logging.debug(f"inspectingLocation: {inspectingLocation}")
             potentialAgents.extend( gridWorld.getAgentsAtLocation(inspectingLocation) )
 
         return potentialAgents
@@ -385,7 +384,7 @@ class GoldHunterEncounter(Encounter):
     def sabotage(self, **kwargs):
         """Agents attempt to rob each other"""
 
-        agents = kwargs.get('aggresiveAgents')
+        agents = kwargs.get('aggressiveAgents')
 
         for i in range(len(agents)):
 
@@ -395,7 +394,7 @@ class GoldHunterEncounter(Encounter):
             if i < len(agents) - 1:
                 victimAgent = agents[i + 1]
 
-            robbingAgent.rob(victimAgent)
+            self.actionsHandler.rob(robbingAgent, victimAgent)
             
         pass
 
@@ -403,7 +402,7 @@ class GoldHunterEncounter(Encounter):
     def combat(self, **kwargs):
         """Agents fight each other to get gold, strongest agent gets half of everyone's gold"""
 
-        agents = kwargs.get('aggresiveAgents')
+        agents = kwargs.get('aggressiveAgents')
 
         strongestAgent = self.getStrongestAgent(agents)
         agents.remove(strongestAgent)

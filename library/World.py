@@ -61,10 +61,10 @@ class World(ABC):
 
 
     def removeAgentFromNode(self, id, agent):
-        if id in self.nodes:
+        if id in self.nodes.keys():
             self.nodes[id].removeAgent(agent)
         else:
-            raise Exception(f"Node node in the world with id {id}")
+            raise Exception(f"No node in the world with id {id}")
         pass
 
     

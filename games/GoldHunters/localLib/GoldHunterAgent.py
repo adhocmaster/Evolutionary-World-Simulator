@@ -119,4 +119,9 @@ class GoldHunterAgent(Agent):
         self.setToOtherProperties('perceptionDistance', perceptionDistance)
 
 
+    def getResourceStats(self):
+        return (
+            f"id: {self.id}"
+            f"gold: {self.getGold()}"
+        )
     

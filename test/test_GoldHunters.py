@@ -21,7 +21,7 @@ class test_GoldHunters(unittest.TestCase):
             game.moveAgent(agent, rootLocation)
 
 
-        assert len(game.agents) == len(game.world.getAgentsAtLocation(rootLocation))
+        self.assertEqual(len(game.world.getAgentsAtLocation(rootLocation)), len(game.agents))
 
         for oldLocation in oldLocations:
             assert 0 == len(game.world.getAgentsAtLocation(oldLocation))
@@ -30,8 +30,10 @@ class test_GoldHunters(unittest.TestCase):
     def test_RemoveAgentFromOldLocation(self):
         game = GoldHunters()
         oldLocations = set([])
+
         for agent in game.agents:
-            oldLocations.add(agent.getLocation())
+            oldLocation = agent.getLocation()
+            oldLocations.add(oldLocation)
 
         print(oldLocations)
 
@@ -40,7 +42,6 @@ class test_GoldHunters(unittest.TestCase):
             print(game.world.getAgentsAtLocation(oldLocation))
             objectsBefore = objectsBefore + len(game.world.getAgentsAtLocation(oldLocation))
 
-            
         
         for agent in game.agents:
             game.removeAgentFromOldLocation(agent)

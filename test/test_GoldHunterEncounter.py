@@ -310,18 +310,69 @@ class test_GoldHunterEncounter(unittest.TestCase):
         goldResource = GoldResource(originalGoldQuantity)
 
         diggers = agentFactory.buildDiggers(5)
+        robbers = agentFactory.buildRobbers(4)
+
 
         # single passive encounter
         allEncounterResults = encounter.simulateMultipleEncounters([encounter.collaboration], passiveAgents = diggers, goldResource = goldResource)
         
         for encounterResults in allEncounterResults:
+            self.assertIsNotNone(encounterResults.get(goldResource))
             for digger in diggers:
                 self.assertIsNotNone(encounterResults.get(digger))
         
-        self.assertEqual(originalGoldQuantity, goldResource.getQuantity())  # original gold resource shouldn't be changed
+        self.assertEqual(originalGoldQuantity, goldResource.getQuantity())
 
-        # TODO single aggressive encounter
+
+        # all passive encounters
+        allEncounterResults = encounter.simulateMultipleEncounters(encounter.passiveEncounters, passiveAgents = diggers, goldResource = goldResource)
         
+        for encounterResults in allEncounterResults:
+            self.assertIsNotNone(encounterResults.get(goldResource))
+            for digger in diggers:
+                self.assertIsNotNone(encounterResults.get(digger))
+        
+        self.assertEqual(originalGoldQuantity, goldResource.getQuantity())
+
+
+        # single robbing encounter
+        allEncounterResults = encounter.simulateMultipleEncounters([encounter.intimidation], passiveAgents = diggers, aggressiveAgents = robbers)
+        
+        for encounterResults in allEncounterResults:
+            for digger in diggers:
+                self.assertIsNotNone(encounterResults.get(digger))
+            
+            for robber in robbers:
+                self.assertIsNotNone(encounterResults.get(robber))
+
+            
+        # all robbing encounters
+        allEncounterResults = encounter.simulateMultipleEncounters(encounter.robbingEncounters, passiveAgents = diggers, aggressiveAgents = robbers)
+        
+        for encounterResults in allEncounterResults:
+            for digger in diggers:
+                self.assertIsNotNone(encounterResults.get(digger))
+            
+            for robber in robbers:
+                self.assertIsNotNone(encounterResults.get(robber))
+
+
+        # single aggressive encounter
+        allEncounterResults = encounter.simulateMultipleEncounters([encounter.combat], aggressiveAgents = robbers)
+        
+        for encounterResults in allEncounterResults:
+            for robber in robbers:
+                self.assertIsNotNone(encounterResults.get(robber))
+
+
+        # all aggressive encounters
+        allEncounterResults = encounter.simulateMultipleEncounters(encounter.aggressiveEncounters, aggressiveAgents = robbers)
+        
+        for encounterResults in allEncounterResults:
+            for robber in robbers:
+                self.assertIsNotNone(encounterResults.get(robber))
+
+
         pass
 
     

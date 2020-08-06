@@ -375,4 +375,20 @@ class test_GoldHunterEncounter(unittest.TestCase):
 
         pass
 
-    
+    def test_getPossibleNearbyLocations(self):
+        world = GridWorld()
+        agentFactory = GHAgentFactory()
+        encounter = GoldHunterEncounter()
+
+        assert world.size == (10,10)
+        locationOfEncounter = (5,5)
+        nearByLocations = encounter.getPossibleNearbyLocations(locationOfEncounter, world)
+        assert nearByLocations[0] == (4, 4)
+
+        locationOfEncounter = (0,0)
+        nearByLocations = encounter.getPossibleNearbyLocations(locationOfEncounter, world)
+        assert nearByLocations[0] == (0, 0)
+        
+
+
+

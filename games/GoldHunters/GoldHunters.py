@@ -16,9 +16,9 @@ class GoldHunters(Game):
     
     def __init__(self, worldSize = (3, 3), encounterEngine = None):
 
-        self.agents = None
+        self.agents = []
         self.world = None
-        self.resources = None
+        self.resources = []
         self.encounterEngine = encounterEngine
         if self.encounterEngine is None:
             logging.warning("creating the default encounter engine as none is supplied")
@@ -66,13 +66,18 @@ class GoldHunters(Game):
 
         # TODO do not move if the there is no change in the location.
 
-        logging.info(f"moving agent {agent} to location {newLocation}")
+        oldLocation = agent.getLocation()
+        logging.info(f"moving agent {agent.id} from {oldLocation} to {newLocation}")
+
+        if oldLocation[0] == newLocation[0] and oldLocation[1] == newLocation[1]:
+            return
+
 
         self.removeAgentFromOldLocation(agent)
 
         agent.updateAgentLocation(newLocation)
 
-        logging.info(f"adding agent {agent} to location {newLocation}")
+        # logging.info(f"adding agent {agent} to location {newLocation}")
         self.world.addAgentToLocation(newLocation, agent)
 
         pass
@@ -84,7 +89,7 @@ class GoldHunters(Game):
             if self.world.hasLocation(oldLocation) is False:
                 return
 
-            logging.info(f"removing agent {agent} from location {oldLocation}")
+            # logging.info(f"removing agent {agent} from location {oldLocation}")
             self.world.removeAgentFromLocation(oldLocation, agent)
         except NotFoundInTheWorld as e:
             pass
@@ -101,9 +106,10 @@ class GoldHunters(Game):
         return self.agents
 
 
-    def createGoldResources(self):
-        self.resources = []
-        self.resources.append(GoldResource(2))
+    def createGoldResources(self, count = 5):
+        
+        for _ in range(count):
+            self.resources.append(GoldResource(500))
         pass
 
     def putGoldResourcesInWorld(self):
@@ -112,7 +118,7 @@ class GoldHunters(Game):
             randomYLocation = randint(0, self.world.size[1] - 1)
             location = (randomXLocation, randomYLocation)
             resource.setLocation(location)
-            logging.info(f"adding {resource} to {location}")
+            logging.info(f"adding gold [{resource}] to {location}")
             self.world.addResourceToLocation(location, resource)
         pass
 
@@ -148,9 +154,21 @@ class GoldHunters(Game):
         encounterResults = []
         for location in self.world.locations():
             result = self.doEncounterAtLocation(location)
-            if result is not None:
+            if result is None:
+                # TODO less than one agent here. DIG DIG.
+                agents = self.world.getAgentsAtLocation(location);
+                resources = self.world.getResourcesAtLocation(location);
+
+                if len(agents) >0 and len(resources) > 0:    
+                    logging.info(f"agent {agents[0].id} is digging gold at {location}")
+                    amount = self.actionsHandler.dig(agents[0], resources[0])
+                    agents[0].addGold(amount)
+                    # TODO update it to handle arrays)
+
+            else:
                 encounterResults.append(result)
                 self.updateAgentsAndResourcesFromEncounterResult(result)
+            
 
         logging.debug(encounterResults)
         pass
@@ -180,9 +198,16 @@ class GoldHunters(Game):
 
     def updateResource(self, originalObject, changedObject):
         #1. copy properties
+        logging.info(f"updating resource: {originalObject.getQuantity()} to {changedObject.getQuantity()}")
+        originalObject.setQuantity(changedObject.getQuantity())
         pass
+
+
     def updateAgent(self, originalObject, changedObject):
         #1. copy properties getPayoffFromEncounterResults
+        logging.info(f"updating agent: {originalObject.getGold()} to {changedObject.getGold()}")
+        originalObject.setGold(changedObject.getGold())
+
         pass
 
 
@@ -202,14 +227,18 @@ class GoldHunters(Game):
                 return self.encounterEngine.getEncounterResults(agents, resources[0]) 
 
 
-    def run(self, timesToRun = 1):
+    def run(self, timesToRun = 1, interactive = False):
         # run the loop for timesToRun times
 
         for turn in range(timesToRun):
 
+            logging.info(f"turn: {turn + 1}")
             self.runGameLoop(turn)
             for agent in self.agents:
                 logging.info(agent.getResourceStats())
+
+            if interactive is True:
+                _ = input("press any key to continue")
 
         pass
 

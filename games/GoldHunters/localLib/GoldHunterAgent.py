@@ -119,9 +119,14 @@ class GoldHunterAgent(Agent):
         self.setToOtherProperties('perceptionDistance', perceptionDistance)
 
 
+    def updateStrategyProperties(self):
+        self.actionsHandler.updateStrategyProperties(self)
+        pass
+
+
     def getResourceStats(self):
         return (
-            f"id: {self.id}"
-            f"gold: {self.getGold()}"
+            f"\n id: {self.id} "
+            f"\ngold: {self.getGold()}\n"
         )
     

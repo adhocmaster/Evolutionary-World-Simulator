@@ -14,9 +14,10 @@ class TurnThreshholdStrategy(PureStrategy):
             goldGained = agent.previousGoldOwned[4] - agent.previousGoldOwned[0]
 
             if goldGained < agent.goldQuota:
-                agent.changeStrategy()
+                return True
 
-        pass
+        return False
+
 
     
     def changeStrategy(self, agent):

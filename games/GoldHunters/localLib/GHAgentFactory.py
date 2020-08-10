@@ -61,7 +61,7 @@ class GHAgentFactory(AgentFactory):
     def buildDigger(self):
         trait = self.traitFactory.createRandom()
         
-        id = hex(uuid.getnode())
+        id = uuid.uuid1()
         perceptionDistance = random.randint(self.agentConfig['minPerceptionDistance'], self.agentConfig['maxPerceptionDistance'])
         return self.create(GHAgentType.DIGGER, id, trait, perceptionDistance)
 
@@ -69,7 +69,7 @@ class GHAgentFactory(AgentFactory):
     def buildRobber(self):
         trait = self.traitFactory.createRandom()
 
-        id = hex(uuid.getnode())
+        id = uuid.uuid1()
         perceptionDistance = random.randint(self.agentConfig['minPerceptionDistance'], self.agentConfig['maxPerceptionDistance'])
         return self.create(GHAgentType.ROBBER, id, trait, perceptionDistance)
 

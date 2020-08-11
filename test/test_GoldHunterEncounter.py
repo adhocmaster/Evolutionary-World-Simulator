@@ -391,8 +391,9 @@ class test_GoldHunterEncounter(unittest.TestCase):
 
         locationOfEncounter = (9,9)
         nearByLocations = encounter.getPossibleNearbyLocations(locationOfEncounter, world)
+        print(len(nearByLocations))
         assert nearByLocations[0] == (8, 8)
-        assert nearByLocations.size == 3
+        assert len(nearByLocations) == 4
 
 
 

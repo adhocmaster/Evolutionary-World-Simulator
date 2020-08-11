@@ -6,6 +6,7 @@ from games.GoldHunters.localLib.GHAgentActions import GHAgentActions
 from games.GoldHunters.localLib.GoldHunterEncounter import GoldHunterEncounter
 from games.GoldHunters.localLib.GHAgentType import GHAgentType
 from games.GoldHunters.localLib.GHActionType import GHActionType
+from games.GoldHunters.localLib.GHMoveAction import GHMoveAction
 
 class test_GHAgentActions(unittest.TestCase):
 
@@ -248,13 +249,22 @@ class test_GHAgentActions(unittest.TestCase):
         actionsHandler = test_GHAgentActions.actionsHandler
         world = test_GHAgentActions.world
         agent = game.agents[0]
-        nextAction = GHActionType.MoveUp
-        oldLocation = agent.location
+        game.moveAgent(agent, (0, 0))
+        oldLocation = agent.getLocation()
 
+        nextAction = GHMoveAction(GHActionType.MoveUp)
         locationAfterAction = actionsHandler.locationByAction(agent, nextAction, world)
 
         assert locationAfterAction[0] == oldLocation[0]
-        assert locationAfterAction[1] == oldLocation[1]+1
+        assert locationAfterAction[1] == oldLocation[1] + 1
+
+        nextAction = GHMoveAction(GHActionType.MoveDown)
+        locationAfterAction = actionsHandler.locationByAction(agent, nextAction, world)
+        
+        print(oldLocation)
+        print(locationAfterAction)
+        assert locationAfterAction[0] == oldLocation[0]
+        assert locationAfterAction[1] == oldLocation[1]
         
 
     

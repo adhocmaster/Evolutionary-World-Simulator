@@ -10,7 +10,7 @@ class test_GridWorld(unittest.TestCase):
         print(world)
 
     def test_locations(self):
-        world = GridWorld()
+        world = GridWorld(size=(3,3))
         size = world.size
 
         listOfLocations = []
@@ -18,5 +18,7 @@ class test_GridWorld(unittest.TestCase):
         for x in range (size[0]):
             for y in range (size[1]):
                 listOfLocations.append((x, y))
-        assert listOfLocations == list(world.locations)
+
+
+        assert len(listOfLocations) == len(list(world.locations()))
         

@@ -51,13 +51,16 @@ class GHAgentActions:
     def locationByAction(self, agent, nextAction, world):
         """If `nextAction` is a move action, then return the new location. Otherwise, return the original location.
         raises error if the location is invalid"""
-        try:
+        # try:
             
-            if isinstance(nextAction, GHMoveAction):
-                return self.aLocationNearby(agent, nextAction.direction, world)
+        #     if isinstance(nextAction, GHMoveAction):
+        #         return self.aLocationNearby(agent, nextAction.direction, world)
 
-        except:
-            pass
+        # except:
+        #     pass
+        
+        if isinstance(nextAction, GHMoveAction):
+            return self.aLocationNearby(agent, nextAction.direction, world)
         return agent.getLocation()
 
 

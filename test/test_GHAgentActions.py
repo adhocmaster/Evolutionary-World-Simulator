@@ -259,12 +259,11 @@ class test_GHAgentActions(unittest.TestCase):
         assert locationAfterAction[1] == oldLocation[1] + 1
 
         nextAction = GHMoveAction(GHActionType.MoveDown)
-        locationAfterAction = actionsHandler.locationByAction(agent, nextAction, world)
-        
-        print(oldLocation)
-        print(locationAfterAction)
-        assert locationAfterAction[0] == oldLocation[0]
-        assert locationAfterAction[1] == oldLocation[1]
+        try:
+            locationAfterAction = actionsHandler.locationByAction(agent, nextAction, world)
+            assert false
+        except:
+            pass
         
 
     

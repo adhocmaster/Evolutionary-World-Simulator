@@ -395,6 +395,26 @@ class test_GoldHunterEncounter(unittest.TestCase):
         assert nearByLocations[0] == (8, 8)
         assert len(nearByLocations) == 4
 
+    def test_getPotentialEncounterParticipants(self):
+        world = GridWorld(size = (10,10))
+        agentFactory = GHAgentFactory()
+        encounter = GoldHunterEncounter()
+
+        locationOfEncounter = (5,5)
+        digger = agentFactory.buildDigger()
+        digger.updateLocation(6,5)
+
+        robber = agentFactory.buildRobber()
+        robber.updateLocation(5,4)
+
+        possibleEncounterParticipants = encounter.getPotentialEncounterParticipants(locationOfEncounter, world)
+
+        assert len(possibleEncounterParticipants) == 2
+
+
+
+
+ 
 
 
 
